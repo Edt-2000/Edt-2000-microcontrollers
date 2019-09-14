@@ -1,15 +1,13 @@
-#include <Arduino.h>
+#include <ledApp.hpp>
 
-bool on = true;
+LedApp ledApp = LedApp("LedApp1");
 
-void setup() {
-  pinMode(1, OUTPUT);
+void setup()
+{
+  ledApp.setup(0, 0);
 }
 
-void loop() {
-  digitalWrite(1, on);
-
-  on = !on;
-
-  delay(1000);
+void loop()
+{
+  ledApp.loop();
 }
