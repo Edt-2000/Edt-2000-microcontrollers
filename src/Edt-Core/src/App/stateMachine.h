@@ -1,19 +1,25 @@
 #pragma once
 
-#include "state.hpp"
+#include "state.h"
 
-class StateMachine {
+namespace App
+{
+class StateMachine
+{
 public:
-	StateMachine() : _state(State::begin) {};
+	StateMachine() : _state(State::begin){};
 
-	inline State current() {
+	inline State current()
+	{
 		return _state;
 	}
 
-	inline void step() {
+	inline void step()
+	{
 		State newState;
 
-		switch (_state) {
+		switch (_state)
+		{
 		case State::begin:
 			newState = State::networking;
 			break;
@@ -33,6 +39,8 @@ public:
 
 		_state = newState;
 	};
+
 private:
 	State _state;
 };
+} // namespace App

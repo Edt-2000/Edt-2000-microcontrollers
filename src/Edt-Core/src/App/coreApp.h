@@ -1,9 +1,12 @@
 #pragma once
 
-#include "blinker.hpp"
-#include "stateMachine.hpp"
-#include "time.hpp"
+#include "blinker.h"
+#include "state.h"
+#include "stateMachine.h"
+#include "time.h"
 
+namespace App
+{
 class CoreApp
 {
 private:
@@ -23,17 +26,31 @@ public:
   inline void loop()
   {
     time.loop();
+    int i = 0;
 
     switch (_stateMachine.current())
     {
     case State::run:
-      appLoop();
+      // run the app loop 1000 times before checking if it needs to be restarted
+      while (++i < 1000)
+      {
+        time.loop();
+        appLoop();
+      }
+      if (appRestartRequired())
+      {
+        ESP.restart();
+      }
       break;
 
     case State::begin:
       _blinker.begin();
       _stateMachine.step();
+
+      Serial.println("START NETWORK");
+
       startSetupNetwork();
+
       break;
 
     case State::networking:
@@ -41,6 +58,9 @@ public:
       if (setupNetwork())
       {
         _stateMachine.step();
+
+        Serial.println("START OSC");
+
         startSetupOsc();
       }
       break;
@@ -49,27 +69,41 @@ public:
       _blinker.blink(true);
       if (setupOsc())
       {
+        Serial.println("INITING");
+
         _stateMachine.step();
       }
       break;
 
     case State::initialized:
-      if (_blinker.initialized())
-      {
-        _stateMachine.step();
-        _blinker.release();
-        startApp();
-      }
+      Serial.println("INIT");
+
+      _blinker.release();
+      _stateMachine.step();
+
+      Serial.println("APP START");
+
+      startApp();
       break;
     }
   }
 
+  // start network setup
   virtual void startSetupNetwork() = 0;
+  // monitor network setup
   virtual bool setupNetwork() = 0;
 
+  // start osc setup
   virtual void startSetupOsc() = 0;
+  // monitor osc setup
   virtual bool setupOsc() = 0;
 
+  // start the app
   virtual void startApp() = 0;
+  // main application loop
   virtual void appLoop() = 0;
+
+  // monitor app fail states, if true, app is reset
+  virtual bool appRestartRequired() = 0;
 };
+} // namespace App

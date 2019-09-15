@@ -1,14 +1,15 @@
 #pragma once
 
 #include <Arduino.h>
-#include "time.hpp"
+#include "time.h"
 
+namespace App
+{
 class Blinker
 {
 private:
     bool _currentState = false;
     unsigned long _previousTime = 0;
-    unsigned long _startLoops = 1;
     int _ledPin = 0;
     int _offState = LOW;
 
@@ -43,7 +44,7 @@ public:
     {
         auto now = _time->now();
 
-        if (now - _previousTime > (fast ? 250 : 500))
+        if (now - _previousTime > (fast ? 150 : 500))
         {
             _currentState = !_currentState;
 
@@ -53,32 +54,19 @@ public:
         led();
     }
 
-    inline bool initialized()
+    // blocks for some seconds to signal starting of program
+    inline void release()
     {
-        auto now = _time->now();
-
-        if (now - _previousTime > (1000 / _startLoops))
+        int loops = 1;
+        do
         {
+            delay(1000.0 / loops);
             _currentState = !_currentState;
+            led();
+        } while (loops++ <= 16);
 
-            _startLoops++;
-            _previousTime = now;
-        }
-
+        _currentState = _offState;
         led();
-
-        if (_startLoops >= 16)
-        {
-            _startLoops = 1;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    inline void release() {
-        pinMode(_ledPin, 0);
     }
 
     inline void led()
@@ -86,3 +74,4 @@ public:
         digitalWrite(_ledPin, _currentState ? !_offState : _offState);
     }
 };
+} // namespace App

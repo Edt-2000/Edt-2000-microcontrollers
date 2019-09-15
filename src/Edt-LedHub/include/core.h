@@ -1,0 +1,6 @@
+#include "coreApp.h"
+#include "ethernetClient.h"
+#include "fastLedTask.h"
+#include "FastLED.h"
+#include "OSCArduino.h"
+#include "commandMessage.h"

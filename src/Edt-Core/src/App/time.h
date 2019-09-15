@@ -2,6 +2,8 @@
 
 #include <Arduino.h>
 
+namespace App
+{
 class Time
 {
 private:
@@ -67,3 +69,4 @@ public:
         return _now;
     }
 };
+} // namespace App

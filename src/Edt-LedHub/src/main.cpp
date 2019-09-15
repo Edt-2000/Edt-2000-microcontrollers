@@ -1,10 +1,11 @@
-#include <ledApp.hpp>
+#include <ledApp.h>
 
-LedApp ledApp = LedApp("LedApp1");
+LedApp ledApp = LedApp("LedApp1", IPAddress(10, 0, 0, 10), IPAddress(255, 0, 0, 0), IPAddress(10, 0, 0, 255), 12345);
 
 void setup()
 {
-  ledApp.setup(0, 0);
+  Serial.begin(115200);
+  ledApp.setup(5, 0);
 }
 
 void loop()
