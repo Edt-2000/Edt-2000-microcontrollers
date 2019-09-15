@@ -4,3 +4,4 @@
 #include "FastLED.h"
 #include "OSCArduino.h"
 #include "commandMessage.h"
+#include "commandMessageConsumer.h"

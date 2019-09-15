@@ -4,7 +4,7 @@
 
 namespace OSC
 {
-enum ColorCommands : uint8_t
+enum ColorCommands : uint32_t
 {
 	SingleSolid = 0,
 	SinglePulse = 1,
@@ -27,63 +27,63 @@ enum ColorCommands : uint8_t
 struct SingleColorCommand
 {
 	// 0 - 127
-	uint8_t start : 8;
-	uint8_t end : 8;
+	uint32_t start;
+	uint32_t end;
 
 	// 0 - 255
-	uint8_t hue : 8;
-	uint8_t saturation : 8;
-	uint8_t value : 8;
-	uint8_t duration : 8;
+	uint32_t hue;
+	uint32_t saturation;
+	uint32_t value;
+	uint32_t duration;
 };
 
 struct DualColorCommand
 {
 	// 0 - 127
-	uint8_t start : 8;
-	uint8_t end : 8;
+	uint32_t start;
+	uint32_t end;
 
 	// 0 - 255
-	uint8_t hue1 : 8;
-	uint8_t hue2 : 8;
-	uint8_t percentage : 8;
-	uint8_t duration : 8;
+	uint32_t hue1;
+	uint32_t hue2;
+	uint32_t percentage;
+	uint32_t duration;
 };
 
 struct RainbowCommand
 {
 	// 0 - 127
-	uint8_t start : 8;
-	uint8_t end : 8;
+	uint32_t start;
+	uint32_t end;
 
 	// 0 - 255
-	uint8_t hue : 8;
-	uint8_t deltaHue : 8;
-	uint8_t duration : 8;
+	uint32_t hue;
+	uint32_t deltaHue;
+	uint32_t duration;
 };
 
 struct VuMeterCommand
 {
 	// 0 - 127
-	uint8_t start : 8;
-	uint8_t end : 8;
-	uint8_t center : 8;
+	uint32_t start;
+	uint32_t end;
+	uint32_t center;
 
 	// 0 - 255
-	uint8_t hue : 8;
-	uint8_t deltaHue : 8;
-	uint8_t intensity : 8;
+	uint32_t hue;
+	uint32_t deltaHue;
+	uint32_t intensity;
 };
 
 struct TwinkleCommand
 {
 	// 0 - 127
-	uint8_t start : 8;
-	uint8_t end : 8;
+	uint32_t start;
+	uint32_t end;
 
 	// 0 - 255
-	uint8_t hue : 8;
-	uint8_t intensity : 8;
+	uint32_t hue;
+	uint32_t intensity;
 };
 
 enum ChaseStyle
@@ -94,39 +94,39 @@ enum ChaseStyle
 struct ChaseCommand
 {
 	// 0 - 255
-	uint8_t hue : 8;
-	uint8_t speed : 8;
+	uint32_t hue;
+	uint32_t speed;
 	ChaseStyle style: 8;
 };
 
 struct BashCommand
 {
 	// 0 - 255
-	uint8_t hue : 8;
-	uint8_t intensity : 8;
+	uint32_t hue;
+	uint32_t intensity;
 };
 
 struct StroboCommand
 {
 	// 0 - 255
-	uint8_t hue : 8;
-	uint8_t intensity : 8;
+	uint32_t hue;
+	uint32_t intensity;
 };
 
 struct DMXConfigCommand 
 {
 	// 0 - 255
 	
-	uint8_t config : 8;
-	uint8_t slaveAddress : 8;
-	uint8_t slaveType : 8;
-	uint8_t maximumBrightness: 8;
-	uint8_t minimumBrightness: 8;
+	uint32_t config;
+	uint32_t slaveAddress;
+	uint32_t slaveType;
+	uint32_t maximumBrightness;
+	uint32_t minimumBrightness;
 };
 
 struct CommandMessage
 {
-	ColorCommands command : 8;
+	ColorCommands command;
 	union Commands {
 		SingleColorCommand singleColor;
 		DualColorCommand dualColor;

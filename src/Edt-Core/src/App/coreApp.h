@@ -47,7 +47,7 @@ public:
       _blinker.begin();
       _stateMachine.step();
 
-      Serial.println("START NETWORK");
+      //Serial.println("START NETWORK");
 
       startSetupNetwork();
 
@@ -59,7 +59,7 @@ public:
       {
         _stateMachine.step();
 
-        Serial.println("START OSC");
+        //Serial.println("START OSC");
 
         startSetupOsc();
       }
@@ -69,19 +69,19 @@ public:
       _blinker.blink(true);
       if (setupOsc())
       {
-        Serial.println("INITING");
+        //Serial.println("INITING");
 
         _stateMachine.step();
       }
       break;
 
     case State::initialized:
-      Serial.println("INIT");
+      //Serial.println("INIT");
 
       _blinker.release();
       _stateMachine.step();
 
-      Serial.println("APP START");
+      //Serial.println("APP START");
 
       startApp();
       break;
