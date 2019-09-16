@@ -2,19 +2,28 @@
 
 #include "core.h"
 
-QueueHandle_t queues[2] = {
+const int fastLedCount = 6;
+
+QueueHandle_t queues[fastLedCount] = {
+    xQueueCreate(3, sizeof(Messages::CommandMessage)),
+    xQueueCreate(3, sizeof(Messages::CommandMessage)),
+    xQueueCreate(3, sizeof(Messages::CommandMessage)),
+    xQueueCreate(3, sizeof(Messages::CommandMessage)),
     xQueueCreate(3, sizeof(Messages::CommandMessage)),
     xQueueCreate(3, sizeof(Messages::CommandMessage))};
 
-Messages::CommandMessageConsumer consumers[2] = {
+Messages::CommandMessageConsumer consumers[fastLedCount] = {
     {"/F1", queues[0]},
-    {"/F2", queues[1]}};
+    {"/F2", queues[1]},
+    {"/F3", queues[2]},
+    {"/F4", queues[3]},
+    {"/F5", queues[4]},
+    {"/F6", queues[5]}};
 
 class LedApp : public App::CoreApp
 {
 private:
 public:
-    int setupCount = 0;
     const char *ledAppHostname;
     IPAddress localIp;
     IPAddress subnet;
@@ -44,11 +53,13 @@ public:
     {
         EthernetClient::setupUdp(broadcastPort);
 
-        osc = OSC::Arduino<OSC::StructMessage<Messages::CommandMessage, uint32_t>>(1, 0);
+        osc = OSC::Arduino<OSC::StructMessage<Messages::CommandMessage, uint32_t>>(fastLedCount, 0);
         osc.bindUDP(&EthernetClient::udp, broadcastIp, broadcastPort);
 
-        osc.addConsumer(&consumers[0]);
-        osc.addConsumer(&consumers[1]);
+        for (int i = 0; i < fastLedCount; i++)
+        {
+            osc.addConsumer(&consumers[i]);
+        }
     }
 
     bool setupOsc()
@@ -58,8 +69,12 @@ public:
 
     void startApp()
     {
-        xTaskCreate(&fastLedTask<APA102, 13, 16, BGR, 1>, "fastLedTask1", 10240, (void *)queues[0], 10, NULL);
-        xTaskCreate(&fastLedTask<APA102, 2, 16, BGR, 1>, "fastLedTask2", 10240, (void *)queues[1], 10, NULL);
+        xTaskCreate(&fastLedTask<APA102, 13, 16, BGR, 59>, "fastLedTask1", 10240, (void *)queues[0], 10, NULL);
+        xTaskCreate(&fastLedTask<APA102, 2, 16, BGR, 59>, "fastLedTask2", 10240, (void *)queues[1], 10, NULL);
+        xTaskCreate(&fastLedTask<APA102, 4, 16, BGR, 59>, "fastLedTask3", 10240, (void *)queues[2], 10, NULL);
+        xTaskCreate(&fastLedTask<APA102, 15, 16, BGR, 59>, "fastLedTask4", 10240, (void *)queues[3], 10, NULL);
+        xTaskCreate(&fastLedTask<APA102, 14, 16, BGR, 59>, "fastLedTask5", 10240, (void *)queues[4], 10, NULL);
+        xTaskCreate(&fastLedTask<APA102, 5, 16, BGR, 59>, "fastLedTask6", 10240, (void *)queues[5], 10, NULL);
     }
 
     void appLoop()

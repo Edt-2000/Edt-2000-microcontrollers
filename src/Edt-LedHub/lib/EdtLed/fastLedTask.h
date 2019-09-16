@@ -8,9 +8,6 @@ void fastLedTask(void *parameters)
     auto queue = (QueueHandle_t)parameters;
 
     Messages::CommandMessage message;
-    // CRGB leds[params->numberOfLeds];
-    // FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER>(leds, params->numberOfLeds);
-
     Devices::EdtFastLed<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER, NUMBER_OF_LEDS> device;
 
     device.init();
