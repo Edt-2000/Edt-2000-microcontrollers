@@ -1,35 +1,29 @@
 #pragma once
 
-#include <Arduino.h>
-#include <FastLed.h>
-#include <commandMessage.h>
+#include "core.h"
 
-struct FastLedTaskParameters
-{
-    int numberOfLeds;
-    QueueHandle_t queue;
-    FastLedTaskParameters(int numberOfLeds, QueueHandle_t queue)
-        : numberOfLeds(numberOfLeds), queue(queue) {}
-};
-
-template <ESPIChipsets CHIPSET, uint8_t DATA_PIN, uint8_t CLOCK_PIN, EOrder RGB_ORDER>
+template <ESPIChipsets CHIPSET, uint8_t DATA_PIN, uint8_t CLOCK_PIN, EOrder RGB_ORDER, uint8_t NUMBER_OF_LEDS>
 void fastLedTask(void *parameters)
 {
-    auto params = (FastLedTaskParameters *)parameters;
+    auto queue = (QueueHandle_t)parameters;
 
-    OSC::CommandMessage message;
-    CRGB leds[params->numberOfLeds];
-    FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER>(leds, params->numberOfLeds);
+    Messages::CommandMessage message;
+    // CRGB leds[params->numberOfLeds];
+    // FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER>(leds, params->numberOfLeds);
+
+    Devices::EdtFastLed<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER, NUMBER_OF_LEDS> device;
+
+    device.init();
 
     while (true)
     {
-        if (xQueueReceive(params->queue, &message, 20 * portTICK_PERIOD_MS))
+        if (xQueueReceive(queue, &message, 20 * portTICK_PERIOD_MS))
         {
-            leds[0] = CHSV(message.commands.twinkle.hue, 255, message.commands.twinkle.intensity);
+            device.handleMessage(message);
         }
         else
         {
-            fadeToBlackBy(leds, 1, 10);
+            device.animate();
         }
     }
 }

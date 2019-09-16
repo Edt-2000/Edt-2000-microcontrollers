@@ -1,5 +1,5 @@
-#include <stateMachine.h>
-#include <state.h>
+#include <StateMachine.h>
+#include <State.h>
 #include <unity.h>
 
 void test_statemachine_starts_with_begin()
@@ -49,7 +49,7 @@ void process()
 #include <Arduino.h>
 
 void setup() {
-    delay(2000);
+    delay(3000);
     process();
 }
 void loop() {

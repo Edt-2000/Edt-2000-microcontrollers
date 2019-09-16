@@ -51,7 +51,7 @@ bool ethernetIsConnected()
   return _ethernetConnected;
 }
 
-void setupUdp(int port) 
+void setupUdp(int port)
 {
   udp.begin(port);
 }

@@ -1,7 +1,10 @@
 #include <ledApp.h>
 
-LedApp ledApp = LedApp("LedApp1", IPAddress(10, 0, 0, 10), IPAddress(255, 0, 0, 0), IPAddress(10, 0, 0, 255), 12345);
-
+LedApp ledApp = LedApp("LedApp1", 
+  IPAddress(10, 0, 0, 10), 
+  IPAddress(255, 0, 0, 0), 
+  IPAddress(10, 0, 0, 255), 
+  12345);
 
 void setup()
 {

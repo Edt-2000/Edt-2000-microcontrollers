@@ -1,6 +1,6 @@
 #pragma once
 
-#include "state.h"
+#include "State.h"
 
 namespace App
 {
@@ -30,6 +30,9 @@ public:
 			newState = State::initialized;
 			break;
 		case State::initialized:
+			newState = State::run;
+			break;
+		case State::run:
 			newState = State::run;
 			break;
 		default:

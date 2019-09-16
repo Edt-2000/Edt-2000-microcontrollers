@@ -1,8 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
-
-namespace OSC
+namespace Messages
 {
 enum ColorCommands : uint32_t
 {
