@@ -1,0 +1,3 @@
+[submodule "src/OSC-light"]
+	path = src/OSC-light
+	url = git@github.com:Edt-2000/OSC-light.git

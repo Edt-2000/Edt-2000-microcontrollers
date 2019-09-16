@@ -1,0 +1,10 @@
+			NOTCH
+
+Pin	9	7	5	3	1
+GPIO	14	15	16	4	3.3V
+FL	5	4	CL	3	
+
+Pin	10	8	6	4	2
+GPIO	5	2	13	36?	GND
+FL	6	2	1	
+
