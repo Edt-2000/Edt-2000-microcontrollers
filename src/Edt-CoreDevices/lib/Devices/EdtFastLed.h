@@ -19,26 +19,26 @@ template <ESPIChipsets CHIPSET, uint8_t DATA_PIN, uint8_t CLOCK_PIN, EOrder RGB_
 class EdtFastLed : public EdtDevice
 {
 private:
-    CRGB _leds[NUMBER_OF_LEDS];
-    Animators::FastLedAnimator _animator;
+	CRGB _leds[NUMBER_OF_LEDS];
+	Animators::FastLedAnimator _animator;
 
 public:
-    EdtFastLed()
-    {
-        FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER>(_leds, NUMBER_OF_LEDS);
-        _animator = Animators::FastLedAnimator(_leds, NUMBER_OF_LEDS);
-    }
+	EdtFastLed()
+	{
+		FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER>(_leds, NUMBER_OF_LEDS);
+		_animator = Animators::FastLedAnimator(_leds, NUMBER_OF_LEDS);
+	}
 
-    void init()
-    {
-        _animator.solid(0, 127, 120, 240, 255);
+	void init()
+	{
+		_animator.solid(0, 127, 120, 240, 255);
 		_animator.fade(0, 127, 2);
-    }
+	}
 
-    void handleMessage(Messages::CommandMessage message)
-    {
-        // todo: remove these variables
-        const auto command = message.command;
+	void handleMessage(Messages::CommandMessage message)
+	{
+		// todo: remove these variables
+		const auto command = message.command;
 		const auto dualColor = message.commands.dualColor;
 		const auto chase = message.commands.chase;
 		const auto bash = message.commands.bash;
@@ -163,12 +163,15 @@ public:
 			_animator.bash(bash.hue, bash.intensity);
 
 			break;
-		}
-    }
 
-    void animate()
-    {
-        _animator.loop();
-    }
+		default:
+			break;
+		}
+	}
+
+	void animate()
+	{
+		_animator.loop();
+	}
 };
 } // namespace Devices

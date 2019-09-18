@@ -1,7 +1,8 @@
 #pragma once
 
-#include "OSCArduino.h"
-#include "CommandMessage.h"
+#include <Blinker.h>
+#include <OSCArduino.h>
+#include <CommandMessage.h>
 
 namespace Messages
 {
@@ -25,7 +26,11 @@ public:
 
     void callbackMessage(OSC::StructMessage<CommandMessage, uint32_t> *message)
     {
-        xQueueSend(_queue, &message->messageStruct, 0);
+        if (xQueueSend(_queue, &message->messageStruct, 0))
+        {
+            // queue exhausted
+            // App::Blinker::signalFailure();
+        }
     }
 };
 } // namespace Messages
