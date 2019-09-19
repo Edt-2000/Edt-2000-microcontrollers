@@ -22,12 +22,18 @@ public:
         : oscAddress(oscAddress), taskFunction(taskFunction), taskStackDepth(taskStackDepth)
     {
         taskQueue = xQueueCreate(queueElements, sizeof(CommandMessage));
-        messageConsumer = CommandMessageConsumer("/F1", taskQueue);
+
+        if (taskQueue == NULL)
+        {
+            Serial.println("NO QUEUE!!!");
+        }
+
+        messageConsumer = CommandMessageConsumer(oscAddress, taskQueue);
     }
 
     void start()
     {
-        xTaskCreate(taskFunction, oscAddress, 10240, (void *)taskQueue, 10, NULL);
+        xTaskCreate(taskFunction, oscAddress, 10240, taskQueue, 10, NULL);
     }
 };
 } // namespace Tasks
