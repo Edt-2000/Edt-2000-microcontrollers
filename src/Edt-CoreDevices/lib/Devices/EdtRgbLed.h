@@ -24,7 +24,7 @@ private:
     Animators::RgbLedAnimator _animator;
 
 public:
-    EdtRgbLed(Drivers::RgbLedDriver * driver)
+    EdtRgbLed(Drivers::RgbLedDriver *driver)
     {
         _animator = Animators::RgbLedAnimator(_leds, NUMBER_OF_LEDS, driver);
     }
@@ -37,34 +37,25 @@ public:
 
     void handleMessage(Messages::CommandMessage message)
     {
-        // todo: remove these variables
-        auto command = message.command;
-        auto dualColor = message.commands.dualColor;
-        auto rainbow = message.commands.rainbow;
-        auto singleColor = message.commands.singleColor;
-        auto strobo = message.commands.strobo;
-        auto twinkle = message.commands.twinkle;
-        auto vuMeter = message.commands.vuMeter;
-
-        switch (command)
+        switch (message.command)
         {
 
         case Messages::ColorCommands::SinglePulse:
         case Messages::ColorCommands::SingleSolid:
         case Messages::ColorCommands::SingleSpark:
 
-            if (singleColor.value > 0)
+            if (message.commands.singleColor.value > 0)
             {
-                _animator.solid(singleColor.hue, singleColor.saturation, singleColor.value);
+                _animator.solid(message.commands.singleColor.hue, message.commands.singleColor.saturation, message.commands.singleColor.value);
             }
 
-            if (command == Messages::ColorCommands::SinglePulse || singleColor.value == 0)
+            if (message.command == Messages::ColorCommands::SinglePulse || message.commands.singleColor.value == 0)
             {
-                _animator.fade(singleColor.duration, FadeMode::FadeToBlack);
+                _animator.fade(message.commands.singleColor.duration, FadeMode::FadeToBlack);
             }
-            else if (command == Messages::ColorCommands::SingleSpark)
+            else if (message.command == Messages::ColorCommands::SingleSpark)
             {
-                _animator.fade(singleColor.duration, FadeMode::FadeOneByOne);
+                _animator.fade(message.commands.singleColor.duration, FadeMode::FadeOneByOne);
             }
             else
             {
@@ -77,15 +68,15 @@ public:
         case Messages::ColorCommands::DualSolid:
         case Messages::ColorCommands::DualSparkle:
 
-            _animator.solid(dualColor.hue1, dualColor.hue2, 255, 254, dualColor.percentage);
+            _animator.solid(message.commands.dualColor.hue1, message.commands.dualColor.hue2, 255, 254, message.commands.dualColor.percentage);
 
-            if (command == Messages::ColorCommands::DualPulse)
+            if (message.command == Messages::ColorCommands::DualPulse)
             {
-                _animator.fade(dualColor.duration, FadeMode::FadeToBlack);
+                _animator.fade(message.commands.dualColor.duration, FadeMode::FadeToBlack);
             }
-            else if (command == Messages::ColorCommands::DualSparkle)
+            else if (message.command == Messages::ColorCommands::DualSparkle)
             {
-                _animator.fade(dualColor.duration, FadeMode::FadeOneByOne);
+                _animator.fade(message.commands.dualColor.duration, FadeMode::FadeOneByOne);
             }
             else
             {
@@ -98,18 +89,18 @@ public:
         case Messages::ColorCommands::RainbowSolid:
         case Messages::ColorCommands::RainbowSpark:
 
-            if (rainbow.deltaHue > 0)
+            if (message.commands.rainbow.deltaHue > 0)
             {
-                _animator.rainbow(rainbow.hue, rainbow.deltaHue);
+                _animator.rainbow(message.commands.rainbow.hue, message.commands.rainbow.deltaHue);
             }
 
-            if (command == Messages::ColorCommands::RainbowPulse || rainbow.deltaHue == 0)
+            if (message.command == Messages::ColorCommands::RainbowPulse || message.commands.rainbow.deltaHue == 0)
             {
-                _animator.fade(rainbow.duration, FadeMode::FadeToBlack);
+                _animator.fade(message.commands.rainbow.duration, FadeMode::FadeToBlack);
             }
-            else if (command == Messages::ColorCommands::RainbowSpark)
+            else if (message.command == Messages::ColorCommands::RainbowSpark)
             {
-                _animator.fade(rainbow.duration, FadeMode::FadeOneByOne);
+                _animator.fade(message.commands.rainbow.duration, FadeMode::FadeOneByOne);
             }
             else
             {
@@ -120,9 +111,9 @@ public:
 
         case Messages::ColorCommands::VuMeter:
 
-            if (vuMeter.intensity > 0)
+            if (message.commands.vuMeter.intensity > 0)
             {
-                _animator.intensity(vuMeter.intensity);
+                _animator.intensity(message.commands.vuMeter.intensity);
             }
             else
             {
@@ -135,9 +126,9 @@ public:
 
             _animator.disableFade();
 
-            if (twinkle.intensity > 0)
+            if (message.commands.twinkle.intensity > 0)
             {
-                _animator.solid(twinkle.hue, 255, twinkle.intensity - 1);
+                _animator.solid(message.commands.twinkle.hue, 255, message.commands.twinkle.intensity - 1);
             }
             else
             {
@@ -148,7 +139,7 @@ public:
 
         case Messages::ColorCommands::Strobo:
 
-            _animator.strobo(strobo.hue, strobo.intensity);
+            _animator.strobo(message.commands.strobo.hue, message.commands.strobo.intensity);
 
             break;
 

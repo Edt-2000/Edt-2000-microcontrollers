@@ -11,6 +11,8 @@ public:
 };
 } // namespace Drivers
 
+// logic for tlc based v1 circuit board:
+
 // inline void Animators::RgbLedAnimator::output() {
 // 	// moronic pinout:
 // 	//

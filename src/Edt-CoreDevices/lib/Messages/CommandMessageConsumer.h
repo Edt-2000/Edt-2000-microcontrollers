@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Blinker.h>
 #include <OSCArduino.h>
 #include <CommandMessage.h>
 
@@ -13,7 +12,12 @@ private:
     QueueHandle_t _queue;
 
 public:
-    CommandMessageConsumer(const char *pattern, QueueHandle_t queue) : MessageConsumer()
+    bool queueExhausted = false;
+
+    CommandMessageConsumer()
+    {
+    }
+    CommandMessageConsumer(const char *pattern, QueueHandle_t queue)
     {
         _pattern = pattern;
         _queue = queue;
@@ -26,10 +30,11 @@ public:
 
     void callbackMessage(OSC::StructMessage<CommandMessage, uint32_t> *message)
     {
-        if (xQueueSend(_queue, &message->messageStruct, 0))
+        // failed to insert into queue, probably due to high traffic
+        // flagging this exhaustion occurance for debugging
+        if (xQueueSend(_queue, &message->messageStruct, 0) != pdPASS)
         {
-            // queue exhausted
-            // App::Blinker::signalFailure();
+            queueExhausted = true;
         }
     }
 };

@@ -27,11 +27,14 @@ void Animators::RgbLedAnimator::solid(CHSV color)
 
 void Animators::RgbLedAnimator::solid(uint8_t hue1, uint8_t hue2, uint8_t saturation, uint8_t value, uint8_t percentage)
 {
-	for (int i = 0; i < nrOfLeds; i++) {
-		if (percentage > random8()) {
+	for (int i = 0; i < nrOfLeds; i++)
+	{
+		if (percentage > random8())
+		{
 			_leds[i].setHSV(HUE(hue2), saturation, VALUE(value));
 		}
-		else {
+		else
+		{
 			_leds[i].setHSV(HUE(hue1), saturation, VALUE(value));
 		}
 	}
@@ -42,11 +45,14 @@ void Animators::RgbLedAnimator::rainbow(uint8_t hue, uint8_t deltaHue)
 	fill_rainbow(_leds, nrOfLeds, HUE(hue), (deltaHue / 127.0) * (255.0 / nrOfLeds));
 }
 
-void Animators::RgbLedAnimator::intensity(uint8_t intensity) {
-	if (intensity == 0) {
+void Animators::RgbLedAnimator::intensity(uint8_t intensity)
+{
+	if (intensity == 0)
+	{
 		fill_solid(_leds, nrOfLeds, CRGB::HTMLColorCode::Black);
 	}
-	else {
+	else
+	{
 		fill_solid(_leds, nrOfLeds, CHSV(HUE(0) + (85 - (intensity / 2.5)), 255, VALUE(intensity)));
 	}
 }
@@ -114,14 +120,16 @@ void Animators::RgbLedAnimator::loop()
 
 		fadeToBlackBy(_leds, nrOfLeds, _ledState.fade);
 	}
-	
+
 	_output();
 }
 
-inline void Animators::RgbLedAnimator::_output() {
-    _driver->reset();
+inline void Animators::RgbLedAnimator::_output()
+{
+	_driver->reset();
 
-    for (int i = 0; i < nrOfLeds; i++) {
-        _driver->output(_leds[i].red, _leds[i].green, _leds[i].blue);
+	for (int i = 0; i < nrOfLeds; i++)
+	{
+		_driver->output(_leds[i].red, _leds[i].green, _leds[i].blue);
 	}
 }
