@@ -41,6 +41,10 @@ public:
       {
         ESP.restart();
       }
+      if (appWarningRequired())
+      {
+        _blinker.warning();
+      }
       break;
 
     case State::begin:
@@ -105,5 +109,8 @@ public:
 
   // monitor app fail states, if true, app is reset
   virtual bool appRestartRequired() = 0;
+
+  // monitor app warning states, if true, signal for warning
+  virtual bool appWarningRequired() = 0;
 };
 } // namespace App

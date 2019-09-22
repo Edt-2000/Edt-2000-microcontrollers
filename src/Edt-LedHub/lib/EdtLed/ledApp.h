@@ -3,22 +3,18 @@
 #include "core.h"
 
 const int fastLedCount = 6;
+const int rgbLedCount = 0;
 
-QueueHandle_t queues[fastLedCount] = {
-    xQueueCreate(3, sizeof(Messages::CommandMessage)),
-    xQueueCreate(3, sizeof(Messages::CommandMessage)),
-    xQueueCreate(3, sizeof(Messages::CommandMessage)),
-    xQueueCreate(3, sizeof(Messages::CommandMessage)),
-    xQueueCreate(3, sizeof(Messages::CommandMessage)),
-    xQueueCreate(3, sizeof(Messages::CommandMessage))};
+const int messageConsumerCount = fastLedCount + rgbLedCount;
 
-Messages::CommandMessageConsumer consumers[fastLedCount] = {
-    {"/F1", queues[0]},
-    {"/F2", queues[1]},
-    {"/F3", queues[2]},
-    {"/F4", queues[3]},
-    {"/F5", queues[4]},
-    {"/F6", queues[5]}};
+Tasks::CommandMessageTask tasks[] = {
+    Tasks::CommandMessageTask("/R1", &pca9685RgbLedTask<0x40, 1>, 5120, 3),
+    Tasks::CommandMessageTask("/F1", &fastLedTask<APA102, 3, 32, BGR, 59>, 5120, 3),
+    Tasks::CommandMessageTask("/F2", &fastLedTask<APA102, 2, 32, BGR, 59>, 5120, 3),
+    Tasks::CommandMessageTask("/F3", &fastLedTask<APA102, 4, 32, BGR, 59>, 5120, 3),
+    Tasks::CommandMessageTask("/F4", &fastLedTask<APA102, 15, 32, BGR, 59>, 5120, 3),
+    Tasks::CommandMessageTask("/F5", &fastLedTask<APA102, 14, 32, BGR, 59>, 5120, 3),
+    Tasks::CommandMessageTask("/F6", &fastLedTask<APA102, 5, 32, BGR, 59>, 5120, 3)};
 
 class LedApp : public App::CoreApp
 {
@@ -53,12 +49,12 @@ public:
     {
         EthernetClient::setupUdp(broadcastPort);
 
-        osc = OSC::Arduino<OSC::StructMessage<Messages::CommandMessage, uint32_t>>(fastLedCount, 0);
+        osc = OSC::Arduino<OSC::StructMessage<Messages::CommandMessage, uint32_t>>(sizeof(tasks) / sizeof(Tasks::CommandMessageTask), 0);
         osc.bindUDP(&EthernetClient::udp, broadcastIp, broadcastPort);
 
-        for (int i = 0; i < fastLedCount; i++)
+        for (auto &task : tasks)
         {
-            osc.addConsumer(&consumers[i]);
+            osc.addConsumer(&task.messageConsumer);
         }
     }
 
@@ -69,12 +65,10 @@ public:
 
     void startApp()
     {
-        xTaskCreate(&fastLedTask<APA102, 13, 16, BGR, 59>, "fastLedTask1", 10240, (void *)queues[0], 10, NULL);
-        xTaskCreate(&fastLedTask<APA102, 2, 16, BGR, 59>, "fastLedTask2", 10240, (void *)queues[1], 10, NULL);
-        xTaskCreate(&fastLedTask<APA102, 4, 16, BGR, 59>, "fastLedTask3", 10240, (void *)queues[2], 10, NULL);
-        xTaskCreate(&fastLedTask<APA102, 15, 16, BGR, 59>, "fastLedTask4", 10240, (void *)queues[3], 10, NULL);
-        xTaskCreate(&fastLedTask<APA102, 14, 16, BGR, 59>, "fastLedTask5", 10240, (void *)queues[4], 10, NULL);
-        xTaskCreate(&fastLedTask<APA102, 5, 16, BGR, 59>, "fastLedTask6", 10240, (void *)queues[5], 10, NULL);
+        for (auto &task : tasks)
+        {
+            task.start();
+        }
     }
 
     void appLoop()
@@ -91,5 +85,19 @@ public:
     bool appRestartRequired()
     {
         return !EthernetClient::ethernetIsConnected();
+    }
+
+    // check for queue exhaustion in the consumers of the OSC messages
+    bool appWarningRequired()
+    {
+        for (auto &task : tasks)
+        {
+            if (task.messageConsumer.queueExhausted)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 };

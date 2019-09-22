@@ -9,7 +9,7 @@ LedApp ledApp = LedApp("LedApp1",
 void setup()
 {
   Serial.begin(115200);
-  ledApp.setup(5, 0);
+  ledApp.setup(33, LOW);
 }
 
 void loop()

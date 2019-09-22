@@ -12,15 +12,6 @@ using namespace Animations;
 
 namespace Animators
 {
-// #ifdef _MSC_VER
-// #include "../Edt-devicesTest/stdafx.h"
-
-// int floorf(double d) { return (int)d; }
-// int ceilf(double d) { return(int)d; }
-// #else
-// #include "FastLED.h"
-// #endif
-
 class FastLedAnimator
 {
 private:
@@ -71,14 +62,5 @@ public:
     void bash(uint8_t h, uint8_t intensity);
 
     void loop();
-
-    // #ifdef _MSC_VER
-    // 			Command getCommandColor();
-    // 			Command getCommandTwinkle();
-    // 			Command getCommandFade();
-    // 			Command commandColor;
-    // 			Command commandTwinkle;
-    // 			Command commandFade;
-    // #endif
 };
 } // namespace Animators

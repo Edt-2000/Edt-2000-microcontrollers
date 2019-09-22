@@ -8,7 +8,6 @@ namespace App
 class Blinker
 {
 private:
-    bool _currentState = false;
     unsigned long _previousTime = 0;
     int _ledPin = 0;
     int _offState = LOW;
@@ -16,6 +15,8 @@ private:
     Time *_time;
 
 public:
+    // TEMP HERE
+    bool _currentState = false;
     Blinker(Time *time) : _time(time){};
 
     inline void setup(int ledPin, int offState)
@@ -66,6 +67,12 @@ public:
         } while (loops++ <= 16);
 
         _currentState = _offState;
+        led();
+    }
+
+    inline void warning()
+    {
+        _currentState = !_offState;
         led();
     }
 

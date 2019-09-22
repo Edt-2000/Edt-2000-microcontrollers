@@ -14,7 +14,7 @@ void fastLedTask(void *parameters)
 
     while (true)
     {
-        if (xQueueReceive(queue, &message, 20 * portTICK_PERIOD_MS))
+        if (xQueueReceive(queue, &message, 12 * portTICK_PERIOD_MS))
         {
             device.handleMessage(message);
         }

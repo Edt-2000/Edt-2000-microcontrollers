@@ -110,6 +110,7 @@ void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t speed, uint8_t style
 	}
 	else
 	{
+		_fadeMode = FadeMode::FadeOneByOne;
 		_animations.addAnimation(Animation((AnimationType)style, CHSV(hue, 255, 255), speed, 0));
 	}
 }

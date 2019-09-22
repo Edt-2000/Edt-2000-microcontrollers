@@ -13,6 +13,6 @@ enum AnimationType
     Bash = 10,
 
     Strobo = 20
-};
 
+};
 }
