@@ -43,9 +43,6 @@ public:
       }
       if (appWarningRequired())
       {
-        _blinker._currentState = !_blinker._currentState;
-        _blinker.led();
-
         _blinker.warning();
       }
       break;

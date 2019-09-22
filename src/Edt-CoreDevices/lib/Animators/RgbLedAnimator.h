@@ -18,7 +18,7 @@ class RgbLedAnimator
 private:
     CRGB *_leds;
     LedState _ledState;
-    
+
     Drivers::RgbLedDriver *_driver;
 
     void _output();

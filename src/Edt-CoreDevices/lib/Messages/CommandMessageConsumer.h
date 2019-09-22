@@ -32,7 +32,7 @@ public:
     {
         // failed to insert into queue, probably due to high traffic
         // flagging this exhaustion occurance for debugging
-        if (xQueueSend(_queue, &message->messageStruct, 0) != pdPASS)
+        if (xQueueSend(_queue, &message->messageStruct, 0) == errQUEUE_FULL)
         {
             queueExhausted = true;
         }

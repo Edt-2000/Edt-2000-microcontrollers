@@ -3,6 +3,7 @@
 #include "CommandMessageTask.h"
 #include "FastLedTask.h"
 #include "HardwiredRgbLedTask.h"
+#include "Pca9685RgbLedTask.h"
 #include "FastLED.h"
 #include "Arduino.h"
 #include "OSCArduino.h"
@@ -12,3 +13,4 @@
 #include "EdtRgbLed.h"
 #include "RgbLedDriver.h"
 #include "HardwiredRgbLedDriver.h"
+#include "Pca9685RgbLedDriver.h"
