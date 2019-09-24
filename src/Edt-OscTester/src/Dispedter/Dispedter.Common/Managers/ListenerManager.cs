@@ -12,7 +12,7 @@ namespace Dispedter.Common.Managers
 {
     public class ListenerManager
     {
-        private const int _udpPort = 12346;
+        private const int _udpPort = 12345;
         private readonly bool _detectUsb;
 
         private List<IListener> _listeners = new List<IListener>();
