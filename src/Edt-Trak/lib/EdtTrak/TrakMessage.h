@@ -2,7 +2,7 @@
 
 #include <OSCArduino.h>
 
-struct SimpleMessage
+struct TrakMessage
 {
-    uint32_t id;
+    uint32_t data[6];
 };

@@ -2,7 +2,7 @@
 
 #include "core.h"
 
-class DrumApp : public App::CoreApp
+class TrakApp : public App::CoreApp
 {
 private:
 public:
@@ -14,11 +14,11 @@ public:
 
     EthernetUDP udp;
 
-    OSC::Arduino<OSC::StructMessage<SimpleMessage, uint32_t>> osc;
+    OSC::Arduino<OSC::StructMessage<TrakMessage, uint32_t>> osc;
 
-    DrumMessageProducer producer = DrumMessageProducer("/DR");
+    TrakMessageProducer producer = TrakMessageProducer("/TR");
 
-    DrumApp(uint8_t *macAddress, IPAddress localIp, IPAddress subnet, IPAddress broadcastIp, int broadcastPort)
+    TrakApp(uint8_t *macAddress, IPAddress localIp, IPAddress subnet, IPAddress broadcastIp, int broadcastPort)
         : macAddress(macAddress),
           localIp(localIp),
           subnet(subnet),
@@ -41,7 +41,7 @@ public:
     {
         udp.begin(broadcastPort);
 
-        osc = OSC::Arduino<OSC::StructMessage<SimpleMessage, uint32_t>>(0, 1);
+        osc = OSC::Arduino<OSC::StructMessage<TrakMessage, uint32_t>>(0, 1);
         osc.bindUDP(&udp, broadcastIp, broadcastPort);
 
         osc.addProducer(&producer);

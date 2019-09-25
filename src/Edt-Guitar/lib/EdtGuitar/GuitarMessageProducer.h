@@ -63,7 +63,7 @@ public:
             blendColor(leds, nrOfLeds, state);
         }
 
-        message.setValidData(state != previousState && state != 0);
+        message.setValidData(state != previousState);
 
         message.messageStruct.id = state;
 
