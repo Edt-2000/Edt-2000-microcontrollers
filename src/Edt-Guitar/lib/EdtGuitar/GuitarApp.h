@@ -85,6 +85,7 @@ public:
 
         if (time.tVISUAL)
         {
+            fadeToBlackBy(leds, 3, 16);
             FastLED.show();
         }
 

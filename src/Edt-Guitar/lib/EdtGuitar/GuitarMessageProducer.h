@@ -58,7 +58,10 @@ public:
 
     virtual OSC::StructMessage<SimpleMessage, uint32_t> *generateMessage()
     {
-        blendColor(leds, nrOfLeds, state);
+        if (state > 0)
+        {
+            blendColor(leds, nrOfLeds, state);
+        }
 
         message.setValidData(state != previousState && state != 0);
 
