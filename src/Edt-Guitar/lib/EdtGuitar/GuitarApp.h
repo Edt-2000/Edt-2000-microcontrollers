@@ -34,6 +34,7 @@ public:
     {
         WiFi.disconnect();
         WiFi.mode(WIFI_STA);
+        WiFi.config(localIp, IPAddress(10, 0, 0, 0), IPAddress(255, 0, 0, 0));
         WiFi.begin(wifiName, wifiPassword);
 
         yield();

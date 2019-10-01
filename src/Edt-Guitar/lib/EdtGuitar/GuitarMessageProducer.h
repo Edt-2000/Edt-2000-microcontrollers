@@ -11,7 +11,7 @@ class GuitarMessageProducer : public OSC::MessageProducer<OSC::StructMessage<Sim
 public:
     OSC::StructMessage<SimpleMessage, uint32_t> message;
 
-    uint8_t pins[5] = {0, 4, 13, 12, 5};
+    uint8_t pins[1] = {0};
     uint8_t state = 0;
     uint8_t previousState = 0;
 
@@ -64,6 +64,11 @@ public:
         }
 
         message.setValidData(state != previousState);
+
+        if (message.isSendableMessage())
+        {
+            Serial.println("SENDING");
+        }
 
         message.messageStruct.id = state;
 

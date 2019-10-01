@@ -3,7 +3,7 @@
 #include "Arduino.h"
 #include "OSCArduino.h"
 #include "CommandMessage.h"
-#include "ESP8266WiFi.h"
+#include "WiFi.h"
 #include "WiFiUdp.h"
 
 #include "SimpleMessage.h"
