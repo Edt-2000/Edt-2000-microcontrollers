@@ -1,0 +1,6 @@
+#include "CoreApp.h"
+#include "EthernetClient.h"
+#include "Arduino.h"
+#include "OSCArduino.h"
+#include "Consumer.h"
+#include "Producer.h"
