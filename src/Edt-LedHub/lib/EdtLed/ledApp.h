@@ -2,19 +2,14 @@
 
 #include "core.h"
 
-const int fastLedCount = 6;
-const int rgbLedCount = 0;
-
-const int messageConsumerCount = fastLedCount + rgbLedCount;
-
-Tasks::CommandMessageTask tasks[] = {
-    Tasks::CommandMessageTask("/R1", &pca9685RgbLedTask<0x40, 1>, 5120, 3),
-    Tasks::CommandMessageTask("/F1", &fastLedTask<APA102, 3, 32, BGR, 59>, 5120, 3),
-    Tasks::CommandMessageTask("/F2", &fastLedTask<APA102, 2, 32, BGR, 59>, 5120, 3),
-    Tasks::CommandMessageTask("/F3", &fastLedTask<APA102, 4, 32, BGR, 59>, 5120, 3),
-    Tasks::CommandMessageTask("/F4", &fastLedTask<APA102, 15, 32, BGR, 59>, 5120, 3),
-    Tasks::CommandMessageTask("/F5", &fastLedTask<APA102, 14, 32, BGR, 59>, 5120, 3),
-    Tasks::CommandMessageTask("/F6", &fastLedTask<APA102, 5, 32, BGR, 59>, 5120, 3)};
+Messages::MessageQueue<Messages::CommandMessage> tasks[] = {
+    Messages::MessageQueue<Messages::CommandMessage>("/R1", &pca9685RgbLedTask<0x40, 1>, 5120, 3),
+    Messages::MessageQueue<Messages::CommandMessage>("/F1", &fastLedTask<APA102, 3, 32, BGR, 59>, 5120, 3),
+    Messages::MessageQueue<Messages::CommandMessage>("/F2", &fastLedTask<APA102, 2, 32, BGR, 59>, 5120, 3),
+    Messages::MessageQueue<Messages::CommandMessage>("/F3", &fastLedTask<APA102, 4, 32, BGR, 59>, 5120, 3),
+    Messages::MessageQueue<Messages::CommandMessage>("/F4", &fastLedTask<APA102, 15, 32, BGR, 59>, 5120, 3),
+    Messages::MessageQueue<Messages::CommandMessage>("/F5", &fastLedTask<APA102, 14, 32, BGR, 59>, 5120, 3),
+    Messages::MessageQueue<Messages::CommandMessage>("/F6", &fastLedTask<APA102, 5, 32, BGR, 59>, 5120, 3)};
 
 class LedApp : public App::CoreApp
 {
@@ -26,7 +21,7 @@ public:
     IPAddress broadcastIp;
     int broadcastPort;
 
-    OSC::Arduino<OSC::StructMessage<Messages::CommandMessage, uint32_t>> osc;
+    OSC::Arduino<sizeof(tasks) / sizeof(Messages::MessageQueue<Messages::CommandMessage>), 0> osc;
 
     LedApp(const char *ledAppHostname, IPAddress localIp, IPAddress subnet, IPAddress broadcastIp, int broadcastPort)
         : ledAppHostname(ledAppHostname),
@@ -49,12 +44,11 @@ public:
     {
         EthernetClient::setupUdp(broadcastPort);
 
-        osc = OSC::Arduino<OSC::StructMessage<Messages::CommandMessage, uint32_t>>(sizeof(tasks) / sizeof(Tasks::CommandMessageTask), 0);
         osc.bindUDP(&EthernetClient::udp, broadcastIp, broadcastPort);
 
         for (auto &task : tasks)
         {
-            osc.addConsumer(&task.messageConsumer);
+            osc.addConsumer(&task);
         }
     }
 
@@ -92,7 +86,7 @@ public:
     {
         for (auto &task : tasks)
         {
-            if (task.messageConsumer.queueExhausted)
+            if (task.queueExhausted)
             {
                 return true;
             }

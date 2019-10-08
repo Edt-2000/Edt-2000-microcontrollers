@@ -1,0 +1,11 @@
+#include "CoreApp.h"
+#include "FastLED.h"
+#include "Arduino.h"
+#include "OSCArduino.h"
+#include "CommandMessage.h"
+#include "ESP8266WiFi.h"
+#include "WiFiUdp.h"
+
+#include "SimpleMessage.h"
+#include "GuitarMessageProducer.h"
+#include "DrumMessageConsumer.h"
