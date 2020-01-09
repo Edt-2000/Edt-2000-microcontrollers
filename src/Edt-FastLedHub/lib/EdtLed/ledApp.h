@@ -3,13 +3,14 @@
 #include "core.h"
 
 Messages::MessageQueue<Messages::CommandMessage> tasks[] = {
-    Messages::MessageQueue<Messages::CommandMessage>("/R1", &pca9685RgbLedTask<0x40, 1>, 5120, 3),
+    //Messages::MessageQueue<Messages::CommandMessage>("/R1", &pca9685RgbLedTask<0x40, 1>, 5120, 3),
     Messages::MessageQueue<Messages::CommandMessage>("/F1", &fastLedTask<APA102, 3, 32, BGR, 59>, 5120, 3),
     Messages::MessageQueue<Messages::CommandMessage>("/F2", &fastLedTask<APA102, 2, 32, BGR, 59>, 5120, 3),
     Messages::MessageQueue<Messages::CommandMessage>("/F3", &fastLedTask<APA102, 4, 32, BGR, 59>, 5120, 3),
     Messages::MessageQueue<Messages::CommandMessage>("/F4", &fastLedTask<APA102, 15, 32, BGR, 59>, 5120, 3),
     Messages::MessageQueue<Messages::CommandMessage>("/F5", &fastLedTask<APA102, 14, 32, BGR, 59>, 5120, 3),
-    Messages::MessageQueue<Messages::CommandMessage>("/F6", &fastLedTask<APA102, 5, 32, BGR, 59>, 5120, 3)};
+    Messages::MessageQueue<Messages::CommandMessage>("/F6", &fastLedTask<APA102, 5, 32, BGR, 59>, 5120, 3),
+    Messages::MessageQueue<Messages::CommandMessage>("/F7", &fastLedTask<APA102, 13, 32, BGR, 59>, 5120, 3)};
 
 class LedApp : public App::CoreApp
 {
