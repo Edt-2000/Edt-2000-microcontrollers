@@ -8,7 +8,7 @@ void pca9685RgbLedTask(void *parameters)
     auto queue = (QueueHandle_t)parameters;
 
     Messages::CommandMessage message;
-    Devices::EdtRgbLed<NUMBER_OF_LEDS> device(new Drivers::Pca9685RgbLedDriver<address>());
+    Devices::EdtRgbLed<NUMBER_OF_LEDS> device(new Drivers::Pca9685RgbLedDriver<address, NUMBER_OF_LEDS>());
 
     device.init();
 
