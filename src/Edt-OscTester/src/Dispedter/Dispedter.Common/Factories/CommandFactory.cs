@@ -89,6 +89,11 @@ namespace Dispedter.Common.Factories
             return _addresses.Select(a => new OscMessage(a, (int)Command.Chase, (int)h, speed, style));
         }
 
+        public IEnumerable<OscMessage> CreateChaseStill(ColorPreset h, int length)
+        {
+            return _addresses.Select(a => new OscMessage(a, (int)Command.ChaseStill, (int)h, length));
+        }
+
         public IEnumerable<OscMessage> CreateBash(ColorPreset h, int intensity)
         {
             return _addresses.Select(a => new OscMessage(a, (int)Command.Bash, (int)h, intensity));

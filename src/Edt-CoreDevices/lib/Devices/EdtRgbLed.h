@@ -137,6 +137,12 @@ public:
 
             break;
 
+        case Messages::ColorCommands::ChaseStill:
+
+            _animator.chase(message.commands.chaseStill.hue, message.commands.chaseStill.length);
+
+            break;
+
         case Messages::ColorCommands::Strobo:
 
             _animator.strobo(message.commands.strobo.hue, message.commands.strobo.intensity);

@@ -18,6 +18,7 @@ enum ColorCommands : uint32_t
 	DualSparkle = 11,
 	Chase = 12,
 	Bash = 13,
+	ChaseStill = 14,
 
 	DMXConfig = 254
 };
@@ -94,7 +95,14 @@ struct ChaseCommand
 	// 0 - 255
 	uint32_t hue;
 	uint32_t speed;
-	ChaseStyle style: 8;
+	ChaseStyle style : 8;
+};
+
+struct ChaseStillCommand
+{
+	// 0 - 255
+	uint32_t hue;
+	uint32_t length;
 };
 
 struct BashCommand
@@ -111,10 +119,10 @@ struct StroboCommand
 	uint32_t intensity;
 };
 
-struct DMXConfigCommand 
+struct DMXConfigCommand
 {
 	// 0 - 255
-	
+
 	uint32_t config;
 	uint32_t slaveAddress;
 	uint32_t slaveType;
@@ -132,6 +140,7 @@ struct CommandMessage
 		VuMeterCommand vuMeter;
 		TwinkleCommand twinkle;
 		ChaseCommand chase;
+		ChaseStillCommand chaseStill;
 		BashCommand bash;
 		StroboCommand strobo;
 
@@ -140,4 +149,4 @@ struct CommandMessage
 
 	Commands commands;
 };
-}
+} // namespace Messages

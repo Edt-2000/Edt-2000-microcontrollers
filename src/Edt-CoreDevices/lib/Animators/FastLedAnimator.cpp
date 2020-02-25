@@ -102,9 +102,27 @@ void Animators::FastLedAnimator::twinkle(uint8_t start, uint8_t end, uint8_t hue
 	}
 }
 
+void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t length)
+{
+	auto existingChase = _animations.getAnimation(AnimationType::ChaseStill);
+
+	if (existingChase != nullptr)
+	{
+		existingChase->state += length;
+	}
+	else
+	{
+		_animations.addAnimation(Animation(AnimationType::ChaseStill, CHSV(hue, 255, 255), length, 0));
+	}
+}
+
 void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t speed, uint8_t style)
 {
-	if (speed == 0 || style > 3)
+	if (speed == 0 || style <= 3)
+	{
+		_animations.removeAnimation((AnimationType)style);
+	}
+	else if (speed == 0)
 	{
 		_animations.resetAnimations();
 	}
@@ -119,7 +137,7 @@ void Animators::FastLedAnimator::bash(uint8_t hue, uint8_t intensity)
 {
 	if (intensity == 0)
 	{
-		_animations.resetAnimations();
+		_animations.removeAnimation(AnimationType::Bash);
 	}
 	else
 	{
@@ -152,27 +170,25 @@ void Animators::FastLedAnimator::strobo(uint8_t hue, uint8_t fps)
 
 void Animators::FastLedAnimator::loop()
 {
-	uint8_t i = 0;
-
 	uint8_t from;
 	uint8_t to;
 
-	while (i < _animations.animationsActive)
+	for (auto &animation : _animations.animations)
 	{
 		uint8_t chaseFadeSpeed = 63;
 		bool chaseReverse = false;
-		
-		switch (_animations.animations[i].type)
+
+		switch (animation.type)
 		{
 		case AnimationType::Strobo:
 
 			fill_solid(_leds, nrOfLeds, CHSV(0, 0, 0));
 
-			if ((_animations.animations[i].state++) > _animations.animations[i].data)
+			if ((animation.state++) > animation.data)
 			{
-				_animations.animations[i].state = 0;
+				animation.state = 0;
 
-				fill_solid(_leds, nrOfLeds, _animations.animations[i].color);
+				fill_solid(_leds, nrOfLeds, animation.color);
 			}
 
 			// there is nothing else to animate besides flashing of the strobo
@@ -183,21 +199,21 @@ void Animators::FastLedAnimator::loop()
 		case AnimationType::ChaseLongTail:
 		case AnimationType::ChaseLongTailReverse:
 
-			chaseFadeSpeed = ((_animations.animations[i].type & AnimationType::ChaseLongTail) > 0) ? 1 : 63;
-			chaseReverse = (_animations.animations[i].type & AnimationType::ChaseDefaultReverse) > 0;
+			chaseFadeSpeed = ((animation.type & AnimationType::ChaseLongTail) > 0) ? 1 : 63;
+			chaseReverse = (animation.type & AnimationType::ChaseDefaultReverse) > 0;
 
-			if (_animations.animations[i].state > 255 - _animations.animations[i].data)
+			if (animation.state > 255 - animation.data)
 			{
-				_animations.removeAnimation(i);
+				_animations.removeAnimation(animation);
 
 				// cycle to next animation type without incrementing i, since _animationsActive -= 1
 				continue;
 			}
 
-			_animations.animations[i].state += _animations.animations[i].data;
+			animation.state += animation.data;
 
-			from = _animations.animations[i].state / 2;
-			to = (_animations.animations[i].state / 2) + 1;
+			from = animation.state / 2;
+			to = (animation.state / 2) + 1;
 			if (to > 127)
 			{
 				to = 127;
@@ -205,12 +221,12 @@ void Animators::FastLedAnimator::loop()
 
 			if (chaseReverse)
 			{
-				solid(127 - to, 127 - from, _animations.animations[i].color);
-				fade(127 - to, 127  - from, chaseFadeSpeed, _fadeMode);
+				solid(127 - to, 127 - from, animation.color);
+				fade(127 - to, 127 - from, chaseFadeSpeed, _fadeMode);
 			}
 			else
 			{
-				solid(from, to, _animations.animations[i].color);
+				solid(from, to, animation.color);
 				fade(from, to, chaseFadeSpeed, _fadeMode);
 			}
 
@@ -218,9 +234,9 @@ void Animators::FastLedAnimator::loop()
 
 		case AnimationType::Bash:
 
-			if (_animations.animations[i].state >= 250)
+			if (animation.state >= 250)
 			{
-				_animations.removeAnimation(i);
+				_animations.removeAnimation(animation);
 
 				fade(0, 127, 16, FadeMode::FadeToBlack);
 
@@ -228,29 +244,36 @@ void Animators::FastLedAnimator::loop()
 				continue;
 			}
 
-			_animations.animations[i].state += 2;
+			animation.state += 2;
 
-			if (_animations.animations[i].state % 16 == 0)
+			if (animation.state % 16 == 0)
 			{
 				from = 0;
-				to = 64 + (_animations.animations[i].state / 4);
+				to = 64 + (animation.state / 4);
 
-				solid(from, to, _animations.animations[i].color);
+				solid(from, to, animation.color);
 				solid(to, 127, CHSV(0, 0, 0));
 			}
-			else if (_animations.animations[i].state % 8 == 0)
+			else if (animation.state % 8 == 0)
 			{
-				from = 64 - (_animations.animations[i].state / 4);
+				from = 64 - (animation.state / 4);
 				to = 127;
 
-				solid(from, to, _animations.animations[i].color);
+				solid(from, to, animation.color);
 				solid(0, from, CHSV(0, 0, 0));
 			}
 
 			break;
-		}
 
-		i++;
+		case AnimationType::ChaseStill:
+
+			from = animation.state;
+			to = animation.state + animation.data;
+
+			solid(from, to, animation.color);
+
+			break;
+		}
 	}
 
 	switch (_fadeMode)
@@ -278,11 +301,21 @@ void Animators::FastLedAnimator::loop()
 		{
 			if (_ledState[i].fade < 255)
 			{
-				if (_ledState[i].fade > random8())
+				if (_ledState[i].fade / 2 > random8())
 				{
-					_ledState[i].fade = 255;
+					if (_ledState[i].fade / 4 > random8())
+					{
+						_ledState[i].fade--;
+						_leds[i] = CRGB::White;
 
-					fadeToBlackBy(_leds + i, 1, 255);
+						FastLED.show();
+					}
+					else
+					{
+						_ledState[i].fade = 255;
+
+						fadeToBlackBy(_leds + i, 1, 255);
+					}
 				}
 				else
 				{

@@ -12,7 +12,8 @@ enum AnimationType
 
     Bash = 10,
 
-    Strobo = 20
+    Strobo = 20,
 
+    ChaseStill = 30
 };
 }

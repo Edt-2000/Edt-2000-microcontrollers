@@ -151,6 +151,12 @@ public:
 
 			break;
 
+		case Messages::ColorCommands::ChaseStill:
+
+			_animator.chase(message.commands.chaseStill.hue, message.commands.chaseStill.length);
+
+			break;
+
 		case Messages::ColorCommands::Bash:
 
 			_animator.bash(message.commands.bash.hue, message.commands.bash.intensity);

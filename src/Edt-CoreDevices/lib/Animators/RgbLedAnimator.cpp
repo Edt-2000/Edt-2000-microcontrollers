@@ -80,31 +80,52 @@ void Animators::RgbLedAnimator::strobo(uint8_t hue, uint8_t fps)
 	}
 }
 
+void Animators::RgbLedAnimator::chase(uint8_t hue, uint8_t length)
+{
+	auto existingChase = _animations.getAnimation(AnimationType::ChaseStill);
+
+	if (existingChase != nullptr)
+	{
+		existingChase->state += length;
+	}
+	else
+	{
+		_animations.addAnimation(Animation(AnimationType::ChaseStill, CHSV(hue, 255, 255), length, 0));
+	}
+}
+
 void Animators::RgbLedAnimator::loop()
 {
-	int i = 0;
+	uint8_t from;
+	uint8_t to;
 
-	while (i < _animations.animationsActive)
+	for (auto &animation : _animations.animations)
 	{
-		switch (_animations.animations[i].type)
+		switch (animation.type)
 		{
 		case AnimationType::Strobo:
 
 			fill_solid(_leds, nrOfLeds, CHSV(0, 0, 0));
 
-			if ((_animations.animations[i].state++) > _animations.animations[i].data)
+			if ((animation.state++) > animation.data)
 			{
-				_animations.animations[i].state = 0;
+				animation.state = 0;
 
-				fill_solid(_leds, nrOfLeds, _animations.animations[i].color);
+				fill_solid(_leds, nrOfLeds, animation.color);
 			}
 
 			// there is nothing else to animate besides flashing of the strobo
 			_output();
 			return;
-		}
+		case AnimationType::ChaseStill:
 
-		i++;
+			from = animation.state;
+			to = animation.state + animation.data;
+
+			solid(from, to, animation.color);
+
+			break;
+		}
 	}
 
 	if (_ledState.fade < 255)
@@ -132,4 +153,12 @@ inline void Animators::RgbLedAnimator::_output()
 	{
 		_driver->output(_leds[i].red, _leds[i].green, _leds[i].blue);
 	}
+}
+
+void Animators::RgbLedAnimator::solid(uint8_t start, uint8_t end, CHSV color)
+{
+	_start = normalizeLedNrDown(start);
+	_end = normalizeLedNrUp(end);
+
+	fill_solid(_leds + _start, _end - _start, color);
 }

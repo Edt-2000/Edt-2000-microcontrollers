@@ -329,6 +329,7 @@ namespace Dispedter.Tester
                 { VirtualKey.Z, () => _commandFactory.CreateTwinkle((ColorPreset)Random(), Random()) },
                 { VirtualKey.X, () => _commandFactory.CreateRainbowSolid() },
                 { VirtualKey.CapitalLock, () => _specialCommandFactory.CreateRainbowUsingAddresses() },
+                { (VirtualKey)191, () => _commandFactory.CreateChaseStill((ColorPreset)Random(), 4) },
 
                 { VirtualKey.C, () => _commandFactory.CreateChase((ColorPreset)Random(), 1, 1) },
                 { VirtualKey.V, () => _commandFactory.CreateChase((ColorPreset)Random(), Math.Max(1, Random() / 16), 0) },
