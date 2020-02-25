@@ -2,8 +2,6 @@
 #include "EthernetClient.h"
 #include "MessageQueue.h"
 #include "FastLedTask.h"
-#include "HardwiredRgbLedTask.h"
-#include "Pca9685RgbLedTask.h"
 #include "FastLED.h"
 #include "Arduino.h"
 #include "OSCArduino.h"
