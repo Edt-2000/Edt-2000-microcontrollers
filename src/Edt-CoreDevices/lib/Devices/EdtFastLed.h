@@ -27,7 +27,9 @@ private:
 public:
 	EdtFastLed()
 	{
-		FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER, DATA_RATE_KHZ(500)>(_leds, NUMBER_OF_LEDS);
+		// TODO: check if higher frequency is correct now
+		// FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER, DATA_RATE_KHZ(500)>(_leds, NUMBER_OF_LEDS);
+		FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER>(_leds, NUMBER_OF_LEDS);
 		_animator = Animators::FastLedAnimator(_leds, NUMBER_OF_LEDS);
 	}
 
