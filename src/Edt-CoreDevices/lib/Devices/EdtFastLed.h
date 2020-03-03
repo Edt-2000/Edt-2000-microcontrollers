@@ -28,8 +28,8 @@ public:
 	EdtFastLed()
 	{
 		// TODO: check if higher frequency is correct now
-		// FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER, DATA_RATE_KHZ(500)>(_leds, NUMBER_OF_LEDS);
-		FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER>(_leds, NUMBER_OF_LEDS);
+		FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER, DATA_RATE_KHZ(500)>(_leds, NUMBER_OF_LEDS);
+		// FastLED.addLeds<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER>(_leds, NUMBER_OF_LEDS);
 		_animator = Animators::FastLedAnimator(_leds, NUMBER_OF_LEDS);
 	}
 
@@ -145,9 +145,21 @@ public:
 
 			break;
 
+		case Messages::ColorCommands::Berserk:
+
+			_animator.berserk();
+
+			break;
+
 		case Messages::ColorCommands::Chase:
 
 			_animator.chase(message.commands.chase.hue, message.commands.chase.speed, (uint8_t)message.commands.chase.style);
+
+			break;
+
+		case Messages::ColorCommands::ChaseStill:
+
+			_animator.chase(message.commands.chaseStill.hue, message.commands.chaseStill.length);
 
 			break;
 

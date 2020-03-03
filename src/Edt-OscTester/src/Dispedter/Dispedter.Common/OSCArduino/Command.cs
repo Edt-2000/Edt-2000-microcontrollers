@@ -11,10 +11,12 @@
         VUMeter = 4,
         Twinkle = 5,
         Strobo = 6,
+        Berserk = 15,
         DualSolid = 9,
         DualPulse = 10,
         DualSpark = 11,
         Chase = 12,
-        Bash = 13
+        Bash = 13,
+        ChaseStill = 14
     }
 }

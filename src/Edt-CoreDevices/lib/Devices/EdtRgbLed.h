@@ -143,6 +143,30 @@ public:
 
             break;
 
+        case Messages::ColorCommands::Berserk:
+
+            _animator.strobo(255, 18);
+
+            break;
+
+        case Messages::ColorCommands::Chase:
+
+            _animator.solid(message.commands.chase.hue, 255, message.commands.chase.speed * 3);
+
+            break;
+
+        case Messages::ColorCommands::ChaseStill:
+
+            _animator.chase(message.commands.chaseStill.hue, message.commands.chaseStill.length);
+
+            break;
+
+        case Messages::ColorCommands::Bash:
+
+            _animator.solid(message.commands.bash.hue, 255, message.commands.bash.intensity);
+
+            break;
+
         default:
 
             break;

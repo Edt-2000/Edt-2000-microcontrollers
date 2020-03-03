@@ -19,9 +19,23 @@ private:
     CRGB *_leds;
     LedState _ledState;
 
+    uint8_t _start;
+    uint8_t _center;
+    uint8_t _end;
+
     Drivers::RgbLedDriver *_driver;
 
     void _output();
+
+    uint8_t normalizeLedNrDown(uint8_t percentage)
+    {
+        return floorf((percentage / 127.0) * nrOfLeds);
+    }
+    uint8_t normalizeLedNrUp(uint8_t percentage)
+    {
+        return ceilf((percentage / 127.0) * nrOfLeds);
+    }
+    void solid(uint8_t start, uint8_t end, CHSV color);
 
     Animations::Animations _animations;
 
@@ -49,6 +63,7 @@ public:
     void rainbow(uint8_t h, uint8_t dh);
     void intensity(uint8_t intensity);
     void strobo(uint8_t h, uint8_t intensity);
+    void chase(uint8_t h, uint8_t length);
 
     void loop();
 };

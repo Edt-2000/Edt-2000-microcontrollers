@@ -39,8 +39,7 @@ public:
         t1000ms = false;
         t100ms = false;
 
-        // visual tick is always behind the osc tick
-        tVISUAL = tOSC;
+        tVISUAL = (_now - _previous >= 12UL);
         tOSC = (_now - _previous >= 12UL);
 
         if (tOSC)

@@ -38,7 +38,7 @@ namespace Dispedter.Tester
         private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
         private readonly CommandFactory _specialCommandFactory = new CommandFactory(new[] { "/?1", "/?2", "/?3", "/?4", "/?5", "/?6", "/?7", "/?8" });
         private readonly ListenerManager _listenerManager = new ListenerManager(detectUsb: false);
-        private readonly SenderManager _senderManager = new SenderManager(detectUsb: true, udpDestinations: new[] { IPAddress.Parse("10.0.0.21") });
+        private readonly SenderManager _senderManager = new SenderManager(detectUsb: true, udpDestinations: new[] { IPAddress.Parse("10.0.0.20"), IPAddress.Parse("10.0.0.21"), IPAddress.Parse("10.0.0.30") });
 
         private Dictionary<Mode, Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>> _commandMapping = new Dictionary<Mode, Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>>();
         private Dictionary<Mode, Dictionary<VirtualKey, Func<int, (int delay, IEnumerable<OscMessage> command)>>> _proceduralCommandMapping = new Dictionary<Mode, Dictionary<VirtualKey, Func<int, (int delay, IEnumerable<OscMessage> command)>>>();
@@ -325,10 +325,12 @@ namespace Dispedter.Tester
 
                 { VirtualKey.Space, () => _commandFactory.CreateStrobo((ColorPreset)Random(), strobo) },
                 { VirtualKey.Escape, () => _commandFactory.CreateStrobo(0, 0) },
+                { VirtualKey.Enter, () => _commandFactory.CreateBerserk() },
 
                 { VirtualKey.Z, () => _commandFactory.CreateTwinkle((ColorPreset)Random(), Random()) },
                 { VirtualKey.X, () => _commandFactory.CreateRainbowSolid() },
                 { VirtualKey.CapitalLock, () => _specialCommandFactory.CreateRainbowUsingAddresses() },
+                { (VirtualKey)191, () => _commandFactory.CreateChaseStill((ColorPreset)Random(), 4) },
 
                 { VirtualKey.C, () => _commandFactory.CreateChase((ColorPreset)Random(), 1, 1) },
                 { VirtualKey.V, () => _commandFactory.CreateChase((ColorPreset)Random(), Math.Max(1, Random() / 16), 0) },
