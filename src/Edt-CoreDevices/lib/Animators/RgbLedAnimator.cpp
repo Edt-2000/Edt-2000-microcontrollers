@@ -86,7 +86,15 @@ void Animators::RgbLedAnimator::chase(uint8_t hue, uint8_t length)
 
 	if (existingChase != nullptr)
 	{
-		existingChase->state += length;
+		if (existingChase->state >= 120 - length)
+		{
+			_animations.removeAnimation(AnimationType::ChaseStill);
+			fade(127, FadeMode::FadeToBlack);
+		}
+		else
+		{
+			existingChase->state += length;
+		}
 	}
 	else
 	{

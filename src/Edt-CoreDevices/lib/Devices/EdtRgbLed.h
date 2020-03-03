@@ -137,15 +137,33 @@ public:
 
             break;
 
+        case Messages::ColorCommands::Strobo:
+
+            _animator.strobo(message.commands.strobo.hue, message.commands.strobo.intensity);
+
+            break;
+
+        case Messages::ColorCommands::Berserk:
+
+            _animator.strobo(255, 18);
+
+            break;
+
+        case Messages::ColorCommands::Chase:
+
+            _animator.solid(message.commands.chase.hue, 255, message.commands.chase.speed * 3);
+
+            break;
+
         case Messages::ColorCommands::ChaseStill:
 
             _animator.chase(message.commands.chaseStill.hue, message.commands.chaseStill.length);
 
             break;
 
-        case Messages::ColorCommands::Strobo:
+        case Messages::ColorCommands::Bash:
 
-            _animator.strobo(message.commands.strobo.hue, message.commands.strobo.intensity);
+            _animator.solid(message.commands.bash.hue, 255, message.commands.bash.intensity);
 
             break;
 

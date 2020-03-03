@@ -13,6 +13,7 @@ enum AnimationType
     Bash = 10,
 
     Strobo = 20,
+    Berserk = 21,
 
     ChaseStill = 30
 };

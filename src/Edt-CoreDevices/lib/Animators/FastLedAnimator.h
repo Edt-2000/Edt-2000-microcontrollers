@@ -61,6 +61,7 @@ public:
     void chase(uint8_t h, uint8_t speed, uint8_t style);
     void chase(uint8_t h, uint8_t length);
     void bash(uint8_t h, uint8_t intensity);
+    void berserk();
 
     void loop();
 };

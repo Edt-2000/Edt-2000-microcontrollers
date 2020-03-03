@@ -325,6 +325,7 @@ namespace Dispedter.Tester
 
                 { VirtualKey.Space, () => _commandFactory.CreateStrobo((ColorPreset)Random(), strobo) },
                 { VirtualKey.Escape, () => _commandFactory.CreateStrobo(0, 0) },
+                { VirtualKey.Enter, () => _commandFactory.CreateBerserk() },
 
                 { VirtualKey.Z, () => _commandFactory.CreateTwinkle((ColorPreset)Random(), Random()) },
                 { VirtualKey.X, () => _commandFactory.CreateRainbowSolid() },

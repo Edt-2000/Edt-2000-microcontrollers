@@ -13,6 +13,7 @@ enum ColorCommands : uint32_t
 	VuMeter = 4,
 	Twinkle = 5,
 	Strobo = 6,
+	Berserk = 15,
 	DualSolid = 9,
 	DualPulse = 10,
 	DualSparkle = 11,

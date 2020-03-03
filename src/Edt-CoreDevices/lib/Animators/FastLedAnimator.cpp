@@ -65,7 +65,9 @@ void Animators::FastLedAnimator::rainbow(uint8_t start, uint8_t center, uint8_t 
 			_ledState[i].fade = 255;
 		}
 
-		fill_rainbow(&_leds[_center - leds - 1], leds, hue, -1 * 255 - (deltaHue / (_center - _start)));
+		auto normalizedDeltaHue = 255 - (deltaHue / (_center - _start));
+
+		fill_rainbow(&_leds[_center - leds], leds, hue + (leds * normalizedDeltaHue), 255 - normalizedDeltaHue);
 	}
 	if (_center != _end)
 	{
@@ -80,7 +82,9 @@ void Animators::FastLedAnimator::rainbow(uint8_t start, uint8_t center, uint8_t 
 			_ledState[i].fade = 255;
 		}
 
-		fill_rainbow(&_leds[_center], leds, hue, 255 - (deltaHue / (_end - _center)));
+		auto normalizedDeltaHue = 255 - (deltaHue / (_end - _center));
+
+		fill_rainbow(&_leds[_center], leds, hue, normalizedDeltaHue);
 	}
 }
 
@@ -108,7 +112,15 @@ void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t length)
 
 	if (existingChase != nullptr)
 	{
-		existingChase->state += length;
+		if (existingChase->state >= 127 - length)
+		{
+			_animations.removeAnimation(AnimationType::ChaseStill);
+			fade(0, 127, 127, FadeMode::FadeToBlack);
+		}
+		else
+		{
+			existingChase->state += length;
+		}
 	}
 	else
 	{
@@ -118,7 +130,7 @@ void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t length)
 
 void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t speed, uint8_t style)
 {
-	if (speed == 0 || style <= 3)
+	if (speed == 0 && style <= 3)
 	{
 		_animations.removeAnimation((AnimationType)style);
 	}
@@ -168,6 +180,14 @@ void Animators::FastLedAnimator::strobo(uint8_t hue, uint8_t fps)
 	}
 }
 
+void Animators::FastLedAnimator::berserk()
+{
+	disableFade(0, 127);
+	_fadeMode = FadeMode::FadeOneByOne;
+
+	_animations.insertAnimation(Animation(AnimationType::Berserk, CHSV(0, 0, 0), 255.0, 0));
+}
+
 void Animators::FastLedAnimator::loop()
 {
 	uint8_t from;
@@ -193,6 +213,21 @@ void Animators::FastLedAnimator::loop()
 
 			// there is nothing else to animate besides flashing of the strobo
 			return;
+
+		case AnimationType::Berserk:
+
+			from = random8() / 2;
+			to = from + (random8() / 16) + 1;
+
+			if (to > 127)
+			{
+				break;
+			}
+
+			solid(from, to, CHSV(random8() > 127 ? 0 : 158, random8() > 127 ? 0 : 255, 127 + (random8() / 2)));
+			fade(0, 127, 5, FadeMode::FadeOneByOne);
+
+			break;
 
 		case AnimationType::ChaseDefault:
 		case AnimationType::ChaseDefaultReverse:
