@@ -36,13 +36,20 @@ namespace Edt_Kontrol.Midi
 
             if (x == 0x90)
             {
-                var channel = y & 0x07;
-                var mode = (y & 0xFC)>>3;
-                Channels[channel].Mode = mode;
-                if (z == 0x7F)
+                if (y < 0x18)
                 {
-                    Channels[channel].ButtonPresses++;
+                    var channel = y & 0x07;
+                    var mode = (y & 0xFC) >> 3;
+                    Channels[channel].Mode = mode < 3 ? mode : 0;
+                    if (z == 0x7F)
+                    {
+                        Channels[channel].ButtonPresses++;
+                    }
                 }
+
+                Play = (y == 0x5E && z == 0x7F);
+                Rec = (y == 0x5F && z == 0x7F);
+                Stop = (y == 0x5D && z == 0x7F);
             }
             else if (x == 0xb0)
             {
@@ -78,12 +85,31 @@ namespace Edt_Kontrol.Midi
             Console.WriteLine($"{x:X2} {y:X2} {z:X2}.");
             Console.WriteLine();
 
+            Console.WriteLine("  M   | I   IL  | S   SL  | ");
+
             for (var i = 0; i < 8; i++)
             {
-                Console.WriteLine($"- {Channels[i].Mode:000} {Channels[i].Intensity:000} {Channels[i].Select:000} {Channels[i].ButtonPresses}   ");
+                Console.WriteLine(
+                    $"- " +
+                    $"{Channels[i].Mode:000} | " +
+                    $"{Channels[i].Intensity:000} " +
+                    $"{Channels[i].IntensityLog:000} | " +
+                    $"{Channels[i].Select:000} " +
+                    $"{Channels[i].SelectLog:000} | " +
+                    $"{Channels[i].ButtonPresses}" +
+                    $"   ");
             }
+
+            Console.WriteLine();
+            Console.WriteLine(Play ? "Play" : "    ");
+            Console.WriteLine(Rec ? "Rec" : "    ");
+            Console.WriteLine(Stop ? "Stop" : "    ");
         }
 
         public ChannelState[] Channels { get; set; } = new ChannelState[8];
+
+        public bool Play { get; set; }
+        public bool Rec { get; set; }
+        public bool Stop { get; set; }
     }
 }

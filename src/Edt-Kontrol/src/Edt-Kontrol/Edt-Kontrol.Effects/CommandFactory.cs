@@ -24,6 +24,11 @@ namespace Dispedter.Common.Factories
             return _addresses.Select(a => new OscMessage(a, (int)Command.SingleSolid, 0, 127, (int)h, s, v));
         }
 
+        public IEnumerable<OscMessage> CreateSingleSolid(ColorPreset h, int s, int v, int start, int stop)
+        {
+            return _addresses.Select(a => new OscMessage(a, (int)Command.SingleSolid, start, stop, (int)h, s, v));
+        }
+
         public IEnumerable<OscMessage> CreateSinglePulse(ColorPreset h, int s, int v, PulseLength p)
         {
             return _addresses.Select(a => new OscMessage(a, (int)Command.SinglePulse, 0, 127, (int)h, s, v, (int)p));
