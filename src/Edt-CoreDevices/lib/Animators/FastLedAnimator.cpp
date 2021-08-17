@@ -1,4 +1,5 @@
 #include <FastLedAnimator.h>
+#include <ColorHelper.h>
 
 using namespace Animations;
 
@@ -28,7 +29,7 @@ void Animators::FastLedAnimator::disableFade(uint8_t start, uint8_t end)
 
 void Animators::FastLedAnimator::solid(uint8_t start, uint8_t end, uint8_t hue, uint8_t saturation, uint8_t value)
 {
-	solid(start, end, CHSV(hue, saturation, value));
+	solid(start, end, ColorHelper::CreateColor(hue, saturation, value));
 }
 
 void Animators::FastLedAnimator::solid(uint8_t start, uint8_t end, CHSV color)
@@ -97,11 +98,11 @@ void Animators::FastLedAnimator::twinkle(uint8_t start, uint8_t end, uint8_t hue
 	{
 		if (intensity > random8())
 		{
-			_leds[i] = CHSV(hue, saturation, value);
+			_leds[i] = ColorHelper::CreateColor(hue, saturation, value);
 		}
 		else if (blackOut)
 		{
-			_leds[i] = CHSV(0, 0, 0);
+			_leds[i] = ColorHelper::CreateColor(0, 0, 0);
 		}
 	}
 }
@@ -124,7 +125,7 @@ void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t length)
 	}
 	else
 	{
-		_animations.addAnimation(Animation(AnimationType::ChaseStill, CHSV(hue, 255, 255), length, 0));
+		_animations.addAnimation(Animation(AnimationType::ChaseStill, ColorHelper::CreateColor(hue), length, 0));
 	}
 }
 
@@ -141,7 +142,7 @@ void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t speed, uint8_t style
 	else
 	{
 		_fadeMode = FadeMode::FadeOneByOne;
-		_animations.addAnimation(Animation((AnimationType)style, CHSV(hue, 255, 255), speed, 0));
+		_animations.addAnimation(Animation((AnimationType)style, ColorHelper::CreateColor(hue), speed, 0));
 	}
 }
 
@@ -153,7 +154,7 @@ void Animators::FastLedAnimator::bash(uint8_t hue, uint8_t intensity)
 	}
 	else
 	{
-		_animations.addAnimation(Animation(AnimationType::Bash, CHSV(hue, 255, 255), intensity, 0));
+		_animations.addAnimation(Animation(AnimationType::Bash, ColorHelper::CreateColor(hue), intensity, 0));
 	}
 }
 
@@ -169,14 +170,7 @@ void Animators::FastLedAnimator::strobo(uint8_t hue, uint8_t fps)
 	}
 	else
 	{
-		if (hue < 255)
-		{
-			_animations.insertAnimation(Animation(AnimationType::Strobo, CHSV(hue, 255, 255), 255.0 / fps, 0));
-		}
-		else
-		{
-			_animations.insertAnimation(Animation(AnimationType::Strobo, CHSV(0, 0, 255), 255.0 / fps, 0));
-		}
+		_animations.insertAnimation(Animation(AnimationType::Strobo, ColorHelper::CreateColor(hue), 255.0 / fps, 0));
 	}
 }
 
@@ -185,7 +179,7 @@ void Animators::FastLedAnimator::berserk()
 	disableFade(0, 127);
 	_fadeMode = FadeMode::FadeOneByOne;
 
-	_animations.insertAnimation(Animation(AnimationType::Berserk, CHSV(0, 0, 0), 255.0, 0));
+	_animations.insertAnimation(Animation(AnimationType::Berserk, ColorHelper::CreateColor(0, 0, 0), 255.0, 0));
 }
 
 void Animators::FastLedAnimator::loop()
@@ -202,7 +196,7 @@ void Animators::FastLedAnimator::loop()
 		{
 		case AnimationType::Strobo:
 
-			fill_solid(_leds, nrOfLeds, CHSV(0, 0, 0));
+			fill_solid(_leds, nrOfLeds, ColorHelper::CreateColor(0, 0, 0));
 
 			if ((animation.state++) > animation.data)
 			{
@@ -224,7 +218,7 @@ void Animators::FastLedAnimator::loop()
 				break;
 			}
 
-			solid(from, to, CHSV(random8() > 127 ? 0 : 158, random8() > 127 ? 0 : 255, 127 + (random8() / 2)));
+			solid(from, to, ColorHelper::CreateColor(random8() > 127 ? 0 : 158, random8() > 127 ? 0 : 255, 127 + (random8() / 2)));
 			fade(0, 127, 5, FadeMode::FadeOneByOne);
 
 			break;
@@ -287,7 +281,7 @@ void Animators::FastLedAnimator::loop()
 				to = 64 + (animation.state / 4);
 
 				solid(from, to, animation.color);
-				solid(to, 127, CHSV(0, 0, 0));
+				solid(to, 127, ColorHelper::CreateColor(0, 0, 0));
 			}
 			else if (animation.state % 8 == 0)
 			{
@@ -295,7 +289,7 @@ void Animators::FastLedAnimator::loop()
 				to = 127;
 
 				solid(from, to, animation.color);
-				solid(0, from, CHSV(0, 0, 0));
+				solid(0, from, ColorHelper::CreateColor(0, 0, 0));
 			}
 
 			break;

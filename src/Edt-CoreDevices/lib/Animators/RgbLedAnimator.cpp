@@ -1,7 +1,5 @@
-#include "RgbLedAnimator.h"
-
-#define HUE(h) h
-#define VALUE(v) v // + ((255 - v) * INTENSITY_BOOST)
+#include <RgbLedAnimator.h>
+#include <ColorHelper.h>
 
 using namespace Animations;
 
@@ -17,7 +15,7 @@ void Animators::RgbLedAnimator::disableFade()
 
 void Animators::RgbLedAnimator::solid(uint8_t hue, uint8_t saturation, uint8_t value)
 {
-	fill_solid(_leds, nrOfLeds, CHSV(HUE(hue), saturation, VALUE(value)));
+	fill_solid(_leds, nrOfLeds, ColorHelper::CreateColor(hue, saturation, value));
 }
 
 void Animators::RgbLedAnimator::solid(CHSV color)
@@ -31,18 +29,20 @@ void Animators::RgbLedAnimator::solid(uint8_t hue1, uint8_t hue2, uint8_t satura
 	{
 		if (percentage > random8())
 		{
-			_leds[i].setHSV(HUE(hue2), saturation, VALUE(value));
+			auto color = ColorHelper::CreateColor(hue2, saturation, value);
+			_leds[i].setHSV(color.hue, color.saturation, color.value);
 		}
 		else
 		{
-			_leds[i].setHSV(HUE(hue1), saturation, VALUE(value));
+			auto color = ColorHelper::CreateColor(hue1, saturation, value);
+			_leds[i].setHSV(color.hue, color.saturation, color.value);
 		}
 	}
 }
 
 void Animators::RgbLedAnimator::rainbow(uint8_t hue, uint8_t deltaHue)
 {
-	fill_rainbow(_leds, nrOfLeds, HUE(hue), (deltaHue / 127.0) * (255.0 / nrOfLeds));
+	fill_rainbow(_leds, nrOfLeds, hue, (deltaHue / 127.0) * (255.0 / nrOfLeds));
 }
 
 void Animators::RgbLedAnimator::intensity(uint8_t intensity)
@@ -53,7 +53,7 @@ void Animators::RgbLedAnimator::intensity(uint8_t intensity)
 	}
 	else
 	{
-		fill_solid(_leds, nrOfLeds, CHSV(HUE(0) + (85 - (intensity / 2.5)), 255, VALUE(intensity)));
+		fill_solid(_leds, nrOfLeds, ColorHelper::CreateColor(0 + (85 - (intensity / 2.5)), 255, intensity));
 	}
 }
 
@@ -69,14 +69,7 @@ void Animators::RgbLedAnimator::strobo(uint8_t hue, uint8_t fps)
 	}
 	else
 	{
-		if (hue < 255)
-		{
-			_animations.insertAnimation(Animation(AnimationType::Strobo, CHSV(HUE(hue), 255, 255), 255.0 / fps, 0));
-		}
-		else
-		{
-			_animations.insertAnimation(Animation(AnimationType::Strobo, CHSV(0, 0, 255), 255.0 / fps, 0));
-		}
+		_animations.insertAnimation(Animation(AnimationType::Strobo, ColorHelper::CreateColor(hue, 255, 255), 255.0 / fps, 0));
 	}
 }
 
@@ -98,7 +91,7 @@ void Animators::RgbLedAnimator::chase(uint8_t hue, uint8_t length)
 	}
 	else
 	{
-		_animations.addAnimation(Animation(AnimationType::ChaseStill, CHSV(hue, 255, 255), length, 0));
+		_animations.addAnimation(Animation(AnimationType::ChaseStill, ColorHelper::CreateColor(hue, 255, 255), length, 0));
 	}
 }
 
@@ -113,7 +106,7 @@ void Animators::RgbLedAnimator::loop()
 		{
 		case AnimationType::Strobo:
 
-			fill_solid(_leds, nrOfLeds, CHSV(0, 0, 0));
+			fill_solid(_leds, nrOfLeds, ColorHelper::CreateColor(0, 0, 0));
 
 			if ((animation.state++) > animation.data)
 			{

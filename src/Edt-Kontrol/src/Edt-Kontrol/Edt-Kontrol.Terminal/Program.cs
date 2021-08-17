@@ -32,9 +32,11 @@ namespace Edt_Kontrol.Terminal
         {
             // TODO: RED + WHITE // RED + BLUE // TURQOISE + PINK // GREEN + AMBER
             // TODO: chase lower intensity
-            [0] = new[] { ColorPreset.Red, ColorPreset.Blue },
-            [1] = new[] { ColorPreset.Pink, ColorPreset.Turquoise },
-            [2] = new[] { ColorPreset.Orange, ColorPreset.Green }
+            [0] = new[] { ColorPreset.Red, ColorPreset.White },
+            [1] = new[] { ColorPreset.Red, ColorPreset.Blue },
+            [2] = new[] { ColorPreset.Turquoise, ColorPreset.Pink },
+            [3] = new[] { ColorPreset.Green, ColorPreset.Amber },
+
         };
 
         static async Task Main(string[] args)
