@@ -40,7 +40,20 @@ namespace Edt_Kontrol.Midi
                 {
                     var channel = y & 0x07;
                     var mode = (y & 0xFC) >> 3;
-                    Channels[channel].Mode = mode < 3 ? mode : 0;
+
+                    if (mode < 3)
+                    {
+                        var value = (Mode)(int)Math.Pow(2, mode);
+
+                        if (Channels[channel].Mode.HasFlag(value))
+                        {
+                            Channels[channel].Mode &= ~value;
+                        }
+                        else
+                        {
+                            Channels[channel].Mode |= value;
+                        }
+                    }
                     if (z == 0x7F)
                     {
                         Channels[channel].ButtonPresses++;

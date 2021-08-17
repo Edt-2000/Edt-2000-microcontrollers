@@ -30,12 +30,11 @@ namespace Edt_Kontrol.Terminal
 
         private static Dictionary<int, ColorPreset[]> _colorSets = new Dictionary<int, ColorPreset[]>()
         {
-            // TODO: RED + WHITE // RED + BLUE // TURQOISE + PINK // GREEN + AMBER
             // TODO: chase lower intensity
             [0] = new[] { ColorPreset.Red, ColorPreset.White },
             [1] = new[] { ColorPreset.Red, ColorPreset.Blue },
             [2] = new[] { ColorPreset.Turquoise, ColorPreset.Pink },
-            [3] = new[] { ColorPreset.Green, ColorPreset.Amber },
+            [3] = new[] { ColorPreset.Green, ColorPreset.Amber }
 
         };
 
@@ -115,8 +114,8 @@ namespace Edt_Kontrol.Terminal
             if (Changed(channel, state.Intensity + state.Select))
             {
                 var h = (ColorPreset)(state.Select * 2);
-                var s = state.Mode == 0 ? state.Intensity : 255;
-                var v = state.Mode == 1 ? state.Intensity : 255;
+                var s = state.Mode == Mode.One ? state.Intensity : 255;
+                var v = state.Mode == Mode.Two ? state.Intensity : 255;
 
                 var message = _commandFactory.CreateSingleSolid(h, s, v);
                 await SendAsync(message);
@@ -179,9 +178,9 @@ namespace Edt_Kontrol.Terminal
 
         static PulseLength Pulse(int input) => input < 50 ? PulseLength.Long : PulseLength.Medium;
 
-        static ColorPreset RandomColor(int mode)
+        static ColorPreset RandomColor(Mode mode)
         {
-            var set = _colorSets[mode];
+            var set = _colorSets[(int)mode];
             return set[(int)(_random.NextDouble() * 2)];
         }
 

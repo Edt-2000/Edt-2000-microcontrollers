@@ -4,7 +4,7 @@ namespace Edt_Kontrol.Midi
 {
     public struct ChannelState
     {
-        public int Mode { get; set; }
+        public Mode Mode { get; set; }
         public int Intensity { get; set; }
         public int IntensityLog => Log(Intensity);
         public int Select { get; set; }
