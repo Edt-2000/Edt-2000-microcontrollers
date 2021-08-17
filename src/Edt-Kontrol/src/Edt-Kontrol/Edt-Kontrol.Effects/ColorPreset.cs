@@ -3,7 +3,7 @@
     public enum ColorPreset
     {
         Red = 0,
-        Orange = 18,
+        Orange = 11,
         Yellow = 58,
         Lime = 85,
         Green = 95,
@@ -11,6 +11,6 @@
         Turquoise = 129,
         Blue = 158,
         Purple = 183,
-        Pink = 218
+        Pink = 238
     }
 }

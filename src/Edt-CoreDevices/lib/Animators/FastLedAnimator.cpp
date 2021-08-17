@@ -338,19 +338,9 @@ void Animators::FastLedAnimator::loop()
 			{
 				if (_ledState[i].fade / 2 > random8())
 				{
-					if (_ledState[i].fade / 4 > random8())
-					{
-						_ledState[i].fade--;
-						_leds[i] = CRGB::White;
+					_ledState[i].fade = 255;
 
-						FastLED.show();
-					}
-					else
-					{
-						_ledState[i].fade = 255;
-
-						fadeToBlackBy(_leds + i, 1, 255);
-					}
+					fadeToBlackBy(_leds + i, 1, 255);
 				}
 				else
 				{

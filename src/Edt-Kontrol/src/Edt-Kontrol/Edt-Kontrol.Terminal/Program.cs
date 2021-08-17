@@ -4,6 +4,7 @@ using Edt_Kontrol.Midi;
 using Edt_Kontrol.OSC;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,7 +15,8 @@ namespace Edt_Kontrol.Terminal
     {
         private static Kontrol _kontrol = new Kontrol();
 
-        private static ISender _sender = new UdpSender(IPAddress.Parse("10.0.0.20"), 12345);
+        private static ISender _senderF = new UdpSender(IPAddress.Parse("10.0.0.20"), 12345);
+        private static ISender _senderR = new UdpSender(IPAddress.Parse("10.0.0.21"), 12345);
 
         private static CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
 
@@ -28,9 +30,11 @@ namespace Edt_Kontrol.Terminal
 
         private static Dictionary<int, ColorPreset[]> _colorSets = new Dictionary<int, ColorPreset[]>()
         {
+            // TODO: RED + WHITE // RED + BLUE // TURQOISE + PINK // GREEN + AMBER
+            // TODO: chase lower intensity
             [0] = new[] { ColorPreset.Red, ColorPreset.Blue },
-            [1] = new[] { ColorPreset.Lime, ColorPreset.Pink },
-            [2] = new[] { ColorPreset.Turquoise, ColorPreset.Yellow }
+            [1] = new[] { ColorPreset.Pink, ColorPreset.Turquoise },
+            [2] = new[] { ColorPreset.Orange, ColorPreset.Green }
         };
 
         static async Task Main(string[] args)
@@ -44,7 +48,6 @@ namespace Edt_Kontrol.Terminal
                 new Timer((o) => PulseMuxAsync(2, _kontrol.Channels[2]), default, 10, 40),
                 new Timer((o) => ChaseAsync(3, _kontrol.Channels[3], 1), default, 15, 40),
                 new Timer((o) => ChaseAsync(4, _kontrol.Channels[4], 3), default, 20, 40),
-                new Timer((o) => ChaseStillAsync(5, _kontrol.Channels[5]), default, 25, 40),
 
                 new Timer((o) => VuMeterAsync(6, _kontrol.Channels[6]), default, 30, 1),
                 new Timer((o) => SolidAsync(7, _kontrol.Channels[7]), default, 35, 1),
@@ -60,7 +63,7 @@ namespace Edt_Kontrol.Terminal
             if (PulseOncePer(channel, state.IntensityLog))
             {
                 var message = _commandFactory.CreateTwinkle((ColorPreset)(state.Select * 2), 160 - (state.Intensity / 2));
-                await _sender.SendAsync(message);
+                await SendAsync(message);
             }
         }
 
@@ -78,7 +81,7 @@ namespace Edt_Kontrol.Terminal
                     4 => _commandFactory.CreateDualSpark(color1, color2, 63, PulseLength.Long),
                     _ => _commandFactory.CreateRainbowPulse(Pulse(state.Intensity))
                 };
-                await _sender.SendAsync(message);
+                await SendAsync(message);
             }
         }
 
@@ -91,21 +94,7 @@ namespace Edt_Kontrol.Terminal
                     var color = RandomColor(state.Mode);
 
                     var message = _commandFactory.CreateChase(color, state.Select / 16, type);
-                    await _sender.SendAsync(message);
-                }
-            }
-        }
-
-        static async void ChaseStillAsync(int channel, ChannelState state)
-        {
-            if (state.Select > 15)
-            {
-                if (PulseOncePer(channel, state.Intensity))
-                {
-                    var color = RandomColor(state.Mode);
-
-                    var message = _commandFactory.CreateChaseStill(color, (state.Select / 30) + 1); // TODO: suffers error on ESP
-                    await _sender.SendAsync(message);
+                    await SendAsync(message);
                 }
             }
         }
@@ -115,7 +104,7 @@ namespace Edt_Kontrol.Terminal
             if (Changed(channel, state.Select))
             {
                 var message = _commandFactory.CreateVuMeter(state.Select * 2);
-                await _sender.SendAsync(message);
+                await SendAsync(message);
             }
         }
 
@@ -123,8 +112,12 @@ namespace Edt_Kontrol.Terminal
         {
             if (Changed(channel, state.Intensity + state.Select))
             {
-                var message = _commandFactory.CreateSingleSolid((ColorPreset)(state.Select * 2), 250, state.Intensity);
-                await _sender.SendAsync(message);
+                var h = (ColorPreset)(state.Select * 2);
+                var s = state.Mode == 0 ? state.Intensity : 255;
+                var v = state.Mode == 1 ? state.Intensity : 255;
+
+                var message = _commandFactory.CreateSingleSolid(h, s, v);
+                await SendAsync(message);
             }
         }
 
@@ -133,20 +126,18 @@ namespace Edt_Kontrol.Terminal
             if (!_strobo && _kontrol.Play)
             {
                 _strobo = true;
-                await _sender.SendAsync(_commandFactory.CreateStrobo((ColorPreset)255, 130));
+                await SendAsync(_commandFactory.CreateStrobo((ColorPreset)255, 130));
             }
             else if (_strobo && _kontrol.Stop)
             {
                 _strobo = false;
-                await _sender.SendAsync(_commandFactory.CreateStrobo(0, 0));
+                await SendAsync(_commandFactory.CreateStrobo(0, 0));
             }
 
             if (_kontrol.Rec)
             {
-                await _sender.SendAsync(_commandFactory.CreateSingleSpark(ColorPreset.Yellow, 250, 250, PulseLength.Medium)); // TODO: really suffers error on ESP
+                await SendAsync(_commandFactory.CreateSingleSpark((ColorPreset)(_kontrol.Channels[7].Select * 2), 250, 250, PulseLength.Medium)); 
             }
-
-            // TODO: rec?
         }
 
         static bool PulseOncePer(int channel, int delay)
@@ -195,6 +186,13 @@ namespace Edt_Kontrol.Terminal
         private static int Random()
         {
             return (int)(255 * _random.NextDouble());
+        }
+
+        private static async Task SendAsync(IEnumerable<OscMessage> messages)
+        {
+            await Task.WhenAll(
+                _senderF.SendAsync(messages.Where(x => x.Address.Contains("F"))),
+                _senderR.SendAsync(messages.Where(x => x.Address.Contains("R"))));
         }
     }
 }
