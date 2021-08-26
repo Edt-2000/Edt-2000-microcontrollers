@@ -41,18 +41,11 @@ namespace Edt_Kontrol.Midi
                     var channel = y & 0x07;
                     var mode = (y & 0xFC) >> 3;
 
-                    if (mode < 3)
+                    if (mode < 3 && z != 0)
                     {
-                        var value = (Mode)(int)Math.Pow(2, mode);
+                        var value = (Mode)(mode + 1);
 
-                        if (Channels[channel].Mode.HasFlag(value))
-                        {
-                            Channels[channel].Mode &= ~value;
-                        }
-                        else
-                        {
-                            Channels[channel].Mode |= value;
-                        }
+                        Channels[channel].Mode = (Channels[channel].Mode == value) ? 0 : value;
                     }
                     if (z == 0x7F)
                     {
@@ -104,7 +97,7 @@ namespace Edt_Kontrol.Midi
             {
                 Console.WriteLine(
                     $"- " +
-                    $"{Channels[i].Mode:000} | " +
+                    $"{((int)Channels[i].Mode):000} | " +
                     $"{Channels[i].Intensity:000} " +
                     $"{Channels[i].IntensityLog:000} | " +
                     $"{Channels[i].Select:000} " +

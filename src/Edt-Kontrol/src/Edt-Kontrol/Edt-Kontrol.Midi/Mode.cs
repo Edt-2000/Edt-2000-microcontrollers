@@ -2,11 +2,11 @@
 
 namespace Edt_Kontrol.Midi
 {
-    [Flags]
     public enum Mode
     {
-        One = 0,
-        Two = 1,
-        Four = 2
+        Zero = 0,
+        One = 1,
+        Two = 2,
+        Three = 3
     }
 }
