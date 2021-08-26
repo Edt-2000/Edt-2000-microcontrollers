@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Edt_Kontrol.Midi
+﻿namespace Edt_Kontrol.Midi
 {
     public enum Mode
     {

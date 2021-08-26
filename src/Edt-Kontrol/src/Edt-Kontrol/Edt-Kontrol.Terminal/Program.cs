@@ -17,6 +17,7 @@ namespace Edt_Kontrol.Terminal
 
         private static ISender _senderF = new UdpSender(IPAddress.Parse("10.0.0.20"), 12345);
         private static ISender _senderR = new UdpSender(IPAddress.Parse("10.0.0.21"), 12345);
+        //  ADD 10.0.0.30
 
         private static CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
 
@@ -63,7 +64,7 @@ namespace Edt_Kontrol.Terminal
         {
             if (PulseOncePer(channel, state.IntensityLog))
             {
-                var message = _commandFactory.CreateTwinkle((ColorPreset)(state.Select * 2), 160 - (state.Intensity / 2));
+                var message = _commandFactory.CreateTwinkle((ColorPreset)((state.Select * 2) + 1), 160 - (state.Intensity / 2));
                 await SendAsync(message);
             }
         }
@@ -113,9 +114,9 @@ namespace Edt_Kontrol.Terminal
         {
             if (Changed(channel, state.Intensity + state.Select))
             {
-                var h = (ColorPreset)(state.Select * 2);
-                var s = state.Mode == Mode.One ? state.Intensity : 255;
-                var v = state.Mode == Mode.Two ? state.Intensity : 255;
+                var h = (ColorPreset)((state.Select * 2) + 1);
+                var s = state.Mode == Mode.One ? state.Intensity * 2 : 255;
+                var v = state.Mode == Mode.Two ? state.Intensity * 2 : 255;
 
                 var message = _commandFactory.CreateSingleSolid(h, s, v);
                 await SendAsync(message);
@@ -137,8 +138,11 @@ namespace Edt_Kontrol.Terminal
 
             if (_kontrol.Rec)
             {
-                await SendAsync(_commandFactory.CreateSingleSpark((ColorPreset)(_kontrol.Channels[7].Select * 2), 250, 250, PulseLength.Medium)); 
+                await SendAsync(_commandFactory.CreateSingleSpark((ColorPreset)((_kontrol.Channels[0].Select * 2) + 1), 250, 250, PulseLength.Medium)); 
             }
+
+            // back: -> solid channel 0 color
+            // forward: -> inverted channel 0 color
         }
 
         static bool PulseOncePer(int channel, int delay)
