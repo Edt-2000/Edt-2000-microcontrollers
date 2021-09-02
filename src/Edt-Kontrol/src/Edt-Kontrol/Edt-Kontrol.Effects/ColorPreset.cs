@@ -1,4 +1,4 @@
-﻿namespace Dispedter.Common.OSCArduino
+﻿namespace Edt_Kontrol.Effects
 {
     public enum ColorPreset
     {

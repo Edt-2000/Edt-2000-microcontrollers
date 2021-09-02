@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>Edt_Kontrol.Effects</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Edt-Kontrol.OSC\Edt-Kontrol.OSC.csproj" />
+  </ItemGroup>
+
+</Project>
