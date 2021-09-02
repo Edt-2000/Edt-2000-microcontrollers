@@ -53,9 +53,11 @@ namespace Edt_Kontrol.Midi
                     }
                 }
 
+                Backward = (y == 0x5B && z == 0x7F);
+                Forward = (y == 0x5C && z == 0x7F);
+                Stop = (y == 0x5D && z == 0x7F);
                 Play = (y == 0x5E && z == 0x7F);
                 Rec = (y == 0x5F && z == 0x7F);
-                Stop = (y == 0x5D && z == 0x7F);
             }
             else if (x == 0xb0)
             {
@@ -114,8 +116,10 @@ namespace Edt_Kontrol.Midi
 
         public ChannelState[] Channels { get; set; } = new ChannelState[8];
 
+        public bool Backward { get; set; }
+        public bool Forward { get; set; }
+        public bool Stop { get; set; }
         public bool Play { get; set; }
         public bool Rec { get; set; }
-        public bool Stop { get; set; }
     }
 }

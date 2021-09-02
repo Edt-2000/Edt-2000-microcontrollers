@@ -17,6 +17,7 @@ namespace Edt_Kontrol.Terminal
 
         private static ISender _senderF = new UdpSender(IPAddress.Parse("10.0.0.20"), 12345);
         private static ISender _senderR = new UdpSender(IPAddress.Parse("10.0.0.21"), 12345);
+        private static ISender _senderDmx = new UdpSender(IPAddress.Parse("10.0.0.30"), 12345);
         //  ADD 10.0.0.30
 
         private static CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
@@ -138,11 +139,18 @@ namespace Edt_Kontrol.Terminal
 
             if (_kontrol.Rec)
             {
-                await SendAsync(_commandFactory.CreateSingleSpark((ColorPreset)((_kontrol.Channels[0].Select * 2) + 1), 250, 250, PulseLength.Medium)); 
+                await SendAsync(_commandFactory.CreateSingleSpark((ColorPreset)((_kontrol.Channels[0].Select * 2) + 1), 255, 255, PulseLength.Medium));
             }
 
-            // back: -> solid channel 0 color
-            // forward: -> inverted channel 0 color
+            if (_kontrol.Backward)
+            {
+                await SendAsync(_commandFactory.CreateSinglePulse((ColorPreset)((_kontrol.Channels[0].Select * 2) + 1), 255, 255, PulseLength.Medium));
+            }
+
+            if (_kontrol.Forward)
+            {
+                await SendAsync(_commandFactory.CreateSinglePulse(Rotate((ColorPreset)((_kontrol.Channels[0].Select * 2) + 1), (ColorPreset)127), 255, 255, PulseLength.Medium));
+            }
         }
 
         static bool PulseOncePer(int channel, int delay)
@@ -182,22 +190,14 @@ namespace Edt_Kontrol.Terminal
 
         static PulseLength Pulse(int input) => input < 50 ? PulseLength.Long : PulseLength.Medium;
 
-        static ColorPreset RandomColor(Mode mode)
-        {
-            var set = _colorSets[(int)mode];
-            return set[(int)(_random.NextDouble() * 2)];
-        }
+        static ColorPreset RandomColor(Mode mode) => _colorSets[(int)mode][(int)(_random.NextDouble() * 2)];
 
-        private static int Random()
-        {
-            return (int)(255 * _random.NextDouble());
-        }
+        static ColorPreset Rotate(ColorPreset color, ColorPreset degree) => (ColorPreset)(((int)color + (int)degree) % 255);
 
         private static async Task SendAsync(IEnumerable<OscMessage> messages)
-        {
-            await Task.WhenAll(
+            => await Task.WhenAll(
                 _senderF.SendAsync(messages.Where(x => x.Address.Contains("F"))),
-                _senderR.SendAsync(messages.Where(x => x.Address.Contains("R"))));
-        }
+                _senderR.SendAsync(messages.Where(x => x.Address.Contains("R"))),
+                _senderDmx.SendAsync(messages.Where(x => x.Address.Contains("R"))));
     }
 }
