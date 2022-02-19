@@ -2,14 +2,17 @@
 
 namespace Drivers
 {
-class RgbLedDriver
-{
-private:
-public:
-    virtual inline void reset() = 0;
-    virtual inline void output(int r, int g, int b) = 0;
-};
-} // namespace Drivers
+    namespace Led
+    {
+        class RgbLedDriver
+        {
+        private:
+        public:
+            virtual inline void reset() = 0;
+            virtual inline void output(int r, int g, int b) = 0;
+        };
+    }
+}
 
 // logic for tlc based v1 circuit board:
 

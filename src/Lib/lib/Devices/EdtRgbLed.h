@@ -3,8 +3,8 @@
 #include <CommandMessage.h>
 #include <EdtDevice.h>
 #include <FastLED.h>
-#include <RgbLedDriver.h>
-#include <RgbLedAnimator.h>
+#include "../Drivers/Led/RgbLedDriver.h"
+#include "../Animators/RgbLedAnimator.h"
 
 #include <Animation.h>
 #include <Animations.h>

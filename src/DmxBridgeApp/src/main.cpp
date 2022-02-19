@@ -1,9 +1,13 @@
-#include <Arduino.h>
+#include "DMXApplication.h"
 
-void setup() {
-  // put your setup code here, to run once:
+DMXApplication application = DMXApplication();
+
+void setup()
+{
+	application.setup();
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop()
+{
+	application.loop();
 }
