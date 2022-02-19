@@ -34,12 +34,12 @@ namespace Drivers
 			void virtual disableFade() = 0;
 			void virtual strobo(uint8_t h, uint8_t intesity) = 0;
 
-			static void clearSlaveConfig()
+			static void clearConfig()
 			{
-				setSlaveCount(0);
+				setDeviceCount(0);
 			}
 
-			static uint8_t getSlaveCount()
+			static uint8_t getDeviceCount()
 			{
 				uint8_t count;
 
@@ -48,12 +48,12 @@ namespace Drivers
 				return count;
 			}
 
-			static void setSlaveCount(uint8_t count)
+			static void setDeviceCount(uint8_t count)
 			{
 				EEPROM.update(COUNTLOCATION, count);
 			}
 
-			static DmxDriverConfig getSlaveConfig(uint8_t nr)
+			static DmxDriverConfig getDeviceConfig(uint8_t nr)
 			{
 				DmxDriverConfig config;
 
@@ -62,13 +62,13 @@ namespace Drivers
 				return config;
 			}
 
-			static void setSlaveConfig(DmxDriverConfig config)
+			static void setDeviceConfig(DmxDriverConfig config)
 			{
-				uint8_t nr = getSlaveCount();
+				uint8_t nr = getDeviceCount();
 
 				EEPROM.put(1 + (sizeof(DmxDriverConfig) * nr), config);
 
-				setSlaveCount(nr + 1);
+				setDeviceCount(nr + 1);
 			}
 		};
 	}
