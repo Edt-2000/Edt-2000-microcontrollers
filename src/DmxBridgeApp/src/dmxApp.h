@@ -7,25 +7,35 @@ class DmxApp : public App::CoreApp
 private:
 public:
 	const char *dmxAppHostname;
+	uint8_t *macAddress;
 	IPAddress localIp;
 	IPAddress subnet;
 	IPAddress broadcastIp;
 	int broadcastPort;
 
 	OSC::Arduino<1, 0> osc;
-	OSC::Device::EdtDMX dmx = Devices::EdtDmx("/R1"));
+	Devices::EdtDmx dmx;
+	EthernetUDP udp;
 
-	DmxApp(const char *dmxAppHostname, IPAddress localIp, IPAddress subnet, IPAddress broadcastIp, int broadcastPort)
+	DmxApp(const char *dmxAppHostname, 
+		const char *oscAddress,
+		uint8_t* macAddress, 
+		IPAddress localIp, 
+		IPAddress subnet, 
+		IPAddress broadcastIp, 
+		int broadcastPort)
 		: dmxAppHostname(dmxAppHostname),
+		  macAddress(macAddress),
 		  localIp(localIp),
 		  subnet(subnet),
 		  broadcastIp(broadcastIp),
-		  broadcastPort(broadcastPort) {}
+		  broadcastPort(broadcastPort),
+		  dmx(Devices::EdtDmx(oscAddress)) {
+		  }
 
 	void startSetupNetwork()
 	{
-		Ethernet.begin();
-		EthernetClient::setupEthernet(dmxAppHostname, localIp, subnet);
+		
 	}
 
 	bool setupNetwork()
@@ -35,19 +45,19 @@ public:
 		Serial.begin(57600);
 
 #else
-		Ethernet.begin(MAC_DOSMCX, localIp);
+		Ethernet.begin(macAddress, localIp);
 
 		udp.begin(broadcastPort);
 
 #endif
-		// return EthernetClient::ethernetIsConnected();
+
+		return true;
 	}
 
 	void startSetupOsc()
 	{
 		DMXSerial.init(DMXController);
 
-		osc = OSC::Arduino<OSC::StructMessage<OSC::EdtMessage, uint8_t>>(0, 0);
 #ifndef ETHERNET
 		osc.bindStream(&Serial);
 #else
@@ -73,7 +83,7 @@ public:
 
 		if (time.tVISUAL)
 		{
-			FastLED.show();
+			dmx.animationLoop();
 		}
 	}
 

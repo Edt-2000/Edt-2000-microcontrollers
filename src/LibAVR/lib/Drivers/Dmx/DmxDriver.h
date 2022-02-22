@@ -34,7 +34,7 @@ namespace Drivers
 			void virtual disableFade() = 0;
 			void virtual strobo(uint8_t h, uint8_t intesity) = 0;
 
-			static void clearConfig()
+			static void clearDeviceConfig()
 			{
 				setDeviceCount(0);
 			}

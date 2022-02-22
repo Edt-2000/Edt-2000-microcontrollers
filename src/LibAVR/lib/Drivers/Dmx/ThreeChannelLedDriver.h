@@ -8,7 +8,7 @@ namespace Drivers
 {
     namespace Dmx
     {
-        class ThreeChannelLed : public DmxDriver
+        class ThreeChannelLedDriver : public DmxDriver
         {
         private:
             enum Mode

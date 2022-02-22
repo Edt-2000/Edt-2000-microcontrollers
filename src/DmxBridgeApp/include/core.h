@@ -6,7 +6,6 @@
 #include "HardwareSerial.h"
 #include "Statemachine.h"
 #include "Time.h"
-#include "MessageQueue.h"
 #include "FastLED.h"
 #include "Arduino.h"
 #include "OSCArduino.h"

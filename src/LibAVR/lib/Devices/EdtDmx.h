@@ -1,8 +1,10 @@
 #pragma once
 
 #include <OSCArduino.h>
-#include <OSCMessageConsumer.h>
-#include <OSCMessageDefinitions.h>
+#include <CommandMessage.h>
+#include <IMessage.h>
+#include <OSCStructMessage.h>
+#include <FadeMode.h>
 
 #include "../Drivers/Dmx/DmxDriver.h"
 #include "../Drivers/Dmx/DmxDriverConfig.h"
@@ -11,24 +13,32 @@
 #include "../Drivers/Dmx/ShowTecCompactParDriver.h"
 #include "../Drivers/Dmx/ThreeChannelLedDriver.h"
 
+using namespace Animations;
+
 namespace Devices
 {
-	class EdtDmx : public OSC::MessageConsumer<OSC::StructMessage<OSC::EdtMessage, uint8_t>>
+	class EdtDmx : public OSC::MessageConsumer
 	{
 	private:
-		const char *_pattern;
+		OSC::StructMessage<Messages::CommandMessage, uint32_t> _message;
+		const char *_address;
 		Drivers::Dmx::DmxDriver **_devices;
 		uint8_t _deviceCount = 0;
 
 	public:
-		EdtDMX(const char *pattern) : MessageConsumer()
+		EdtDmx(const char *address) : MessageConsumer()
 		{
-			_pattern = pattern;
+			_address = address;
 		}
 
-		const char *pattern()
+		const char *address()
 		{
-			return _pattern;
+			return _address;
+		}
+
+		OSC::IMessage *message()
+		{
+			return &_message;
 		}
 
 		void initialize()
@@ -38,34 +48,34 @@ namespace Devices
 				delete[] _devices;
 			}
 
-			_deviceCount = Drivers::Dmx::DmxDriver::getDeviceConfig();
+			_deviceCount = Drivers::Dmx::DmxDriver::getDeviceCount();
 
 			if (_deviceCount > 0)
 			{
-				_devices = new Drivers::Dmx::DmxDriver*[_deviceCount];
+				_devices = new Drivers::Dmx::DmxDriver *[_deviceCount];
 				for (uint8_t i = 0; i < _deviceCount; ++i)
 				{
-					Drivers::Dmx::DeviceConfig config = Drivers::Dmx::DmxDriver::getDeviceConfig(i);
+					auto config = Drivers::Dmx::DmxDriver::getDeviceConfig(i);
 
 					switch (config.type)
 					{
-					case Drivers::Dmx::DeviceType::LedSpot:
-						_devices[i] = (Drivers::Dmx::Device *)new Drivers::Dmx::LedSpot();
+					case Drivers::Dmx::DmxDeviceType::LedSpot:
+						_devices[i] = (Drivers::Dmx::DmxDriver *)new Drivers::Dmx::LedSpotDriver();
 						break;
 
-					case Drivers::Dmx::DeviceType::ShowTecCompactPar:
-						_devices[i] = (Drivers::Dmx::Device *)new Drivers::Dmx::ShowTecCompactPar();
+					case Drivers::Dmx::DmxDeviceType::ShowTecCompactPar:
+						_devices[i] = (Drivers::Dmx::DmxDriver *)new Drivers::Dmx::ShowTecCompactParDriver();
 						break;
 
-					case Drivers::Dmx::DeviceType::ThreeChannelLed:
-						_devices[i] = (Drivers::Dmx::Device *)new Drivers::Dmx::ThreeChannelLed();
+					case Drivers::Dmx::DmxDeviceType::ThreeChannelLed:
+						_devices[i] = (Drivers::Dmx::DmxDriver *)new Drivers::Dmx::ThreeChannelLedDriver();
 						break;
 
-					case Drivers::Dmx::DeviceType::FixedSingleChannel:
-						_devices[i] = (Drivers::Dmx::Device *)new Drivers::Dmx::FixedSingleChannel();
+					case Drivers::Dmx::DmxDeviceType::FixedSingleChannel:
+						_devices[i] = (Drivers::Dmx::DmxDriver *)new Drivers::Dmx::FixedSingleChannelDriver();
 						break;
 
-					case Drivers::Dmx::DeviceType::Unknown:
+					case Drivers::Dmx::DmxDeviceType::Unknown:
 					default:
 						continue;
 					};
@@ -78,37 +88,37 @@ namespace Devices
 			}
 		}
 
-		void callbackMessage(OSC::StructMessage<OSC::EdtMessage, uint8_t> *message)
+		void callbackMessage()
 		{
 			// TODO: put loop in switch
-			for (uint8_t i = 0; i < _deviceCount; ++i)
+
+			// todo: remove these variables
+			auto command = _message.messageStruct.command;
+			auto dualColor = _message.messageStruct.commands.dualColor;
+			auto rainbow = _message.messageStruct.commands.rainbow;
+			auto singleColor = _message.messageStruct.commands.singleColor;
+			auto strobo = _message.messageStruct.commands.strobo;
+			auto twinkle = _message.messageStruct.commands.twinkle;
+			auto vuMeter = _message.messageStruct.commands.vuMeter;
+
+			switch (command)
 			{
-				// todo: remove these variables
-				auto command = message->messageStruct.command;
-				auto dualColor = message->messageStruct.commands.dualColor;
-				auto rainbow = message->messageStruct.commands.rainbow;
-				auto singleColor = message->messageStruct.commands.singleColor;
-				auto strobo = message->messageStruct.commands.strobo;
-				auto twinkle = message->messageStruct.commands.twinkle;
-				auto vuMeter = message->messageStruct.commands.vuMeter;
 
-				switch (command)
+			case Messages::ColorCommands::SinglePulse:
+			case Messages::ColorCommands::SingleSolid:
+			case Messages::ColorCommands::SingleSpark:
+				for (uint8_t i = 0; i < _deviceCount; ++i)
 				{
-
-				case OSC::ColorCommands::SinglePulse:
-				case OSC::ColorCommands::SingleSolid:
-				case OSC::ColorCommands::SingleSpark:
-
 					if (singleColor.value > 0)
 					{
 						_devices[i]->solid(singleColor.hue, singleColor.saturation, singleColor.value);
 					}
 
-					if (command == OSC::ColorCommands::SinglePulse || singleColor.value == 0)
+					if (command == Messages::ColorCommands::SinglePulse || singleColor.value == 0)
 					{
 						_devices[i]->fade(singleColor.duration, FadeMode::FadeToBlack);
 					}
-					else if (command == OSC::ColorCommands::SingleSpark)
+					else if (command == Messages::ColorCommands::SingleSpark)
 					{
 						_devices[i]->fade(singleColor.duration, FadeMode::FadeOneByOne);
 					}
@@ -116,20 +126,21 @@ namespace Devices
 					{
 						_devices[i]->disableFade();
 					}
+				}
+				break;
 
-					break;
-
-				case OSC::ColorCommands::DualPulse:
-				case OSC::ColorCommands::DualSolid:
-				case OSC::ColorCommands::DualSparkle:
-
+			case Messages::ColorCommands::DualPulse:
+			case Messages::ColorCommands::DualSolid:
+			case Messages::ColorCommands::DualSparkle:
+				for (uint8_t i = 0; i < _deviceCount; ++i)
+				{
 					_devices[i]->solid(dualColor.hue1, dualColor.hue2, 255, 254, dualColor.percentage);
 
-					if (command == OSC::ColorCommands::DualPulse)
+					if (command == Messages::ColorCommands::DualPulse)
 					{
 						_devices[i]->fade(dualColor.duration, FadeMode::FadeToBlack);
 					}
-					else if (command == OSC::ColorCommands::DualSparkle)
+					else if (command == Messages::ColorCommands::DualSparkle)
 					{
 						_devices[i]->fade(dualColor.duration, FadeMode::FadeOneByOne);
 					}
@@ -137,11 +148,12 @@ namespace Devices
 					{
 						_devices[i]->disableFade();
 					}
+				}
+				break;
 
-					break;
-
-				case OSC::ColorCommands::VuMeter:
-
+			case Messages::ColorCommands::VuMeter:
+				for (uint8_t i = 0; i < _deviceCount; ++i)
+				{
 					if (vuMeter.intensity > 0)
 					{
 						_devices[i]->intensity(vuMeter.intensity);
@@ -150,11 +162,12 @@ namespace Devices
 					{
 						_devices[i]->fade(127);
 					}
+				}
+				break;
 
-					break;
-
-				case OSC::ColorCommands::Twinkle:
-
+			case Messages::ColorCommands::Twinkle:
+				for (uint8_t i = 0; i < _deviceCount; ++i)
+				{
 					_devices[i]->disableFade();
 
 					if (twinkle.intensity > 0)
@@ -165,31 +178,31 @@ namespace Devices
 					{
 						_devices[i]->fade(127);
 					}
-
-					break;
-
-				case OSC::ColorCommands::Strobo:
-
-					_devices[i]->strobo(strobo.hue, strobo.intensity);
-
-					break;
-
-				case OSC::ColorCommands::Chase:
-				case OSC::ColorCommands::Bash:
-				case OSC::ColorCommands::RainbowPulse:
-				case OSC::ColorCommands::RainbowSolid:
-				case OSC::ColorCommands::RainbowSpark:
-
-					// No implementation
-
-					break;
 				}
+				break;
+
+			case Messages::ColorCommands::Strobo:
+				for (uint8_t i = 0; i < _deviceCount; ++i)
+				{
+					_devices[i]->strobo(strobo.hue, strobo.intensity);
+				}
+				break;
+
+			case Messages::ColorCommands::Chase:
+			case Messages::ColorCommands::Bash:
+			case Messages::ColorCommands::RainbowPulse:
+			case Messages::ColorCommands::RainbowSolid:
+			case Messages::ColorCommands::RainbowSpark:
+
+				// No implementation
+
+				break;
 			}
 
-			if (message->messageStruct.command == OSC::ColorCommands::DMXConfig)
+			if (_message.messageStruct.command == Messages::ColorCommands::DMXConfig)
 			{
 
-				auto dmxConfigCommand = message->messageStruct.commands.dmxConfig;
+				auto dmxConfigCommand = _message.messageStruct.commands.dmxConfig;
 
 				bool clear = dmxConfigCommand.config & 0x04;
 				bool reset = dmxConfigCommand.config & 0x02;
@@ -197,22 +210,22 @@ namespace Devices
 
 				if (clear)
 				{
-					Drivers::Dmx::Device::clearDeviceConfig();
+					Drivers::Dmx::DmxDriver::clearDeviceConfig();
 				}
 
 				if (dmxConfigCommand.deviceAddress > 0)
 				{
-					auto config = Drivers::Dmx::DeviceConfig();
+					auto config = Drivers::Dmx::DmxDriverConfig();
 					config.address = (uint16_t)dmxConfigCommand.deviceAddress;
 					if (address256)
 					{
 						config.address += (uint16_t)256U;
 					}
-					config.type = (Drivers::Dmx::DeviceType)dmxConfigCommand.deviceType;
+					config.type = (Drivers::Dmx::DmxDeviceType)dmxConfigCommand.deviceType;
 					config.maximumBrightness = dmxConfigCommand.maximumBrightness;
 					config.minimumBrightness = dmxConfigCommand.minimumBrightness;
 
-					Drivers::Dmx::Device::setDeviceConfig(config);
+					Drivers::Dmx::DmxDriver::setDeviceConfig(config);
 				}
 
 				if (reset)

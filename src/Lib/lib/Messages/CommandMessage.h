@@ -125,8 +125,8 @@ namespace Messages
 		// 0 - 255
 
 		uint32_t config;
-		uint32_t slaveAddress;
-		uint32_t slaveType;
+		uint32_t deviceAddress;
+		uint32_t deviceType;
 		uint32_t maximumBrightness;
 		uint32_t minimumBrightness;
 	};
