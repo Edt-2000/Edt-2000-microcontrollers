@@ -24,7 +24,11 @@ public:
 
     OSC::Arduino<sizeof(tasks) / sizeof(Messages::MessageQueue<Messages::CommandMessage>), 0> osc;
 
-    LedApp(const char *ledAppHostname, IPAddress localIp, IPAddress subnet, IPAddress broadcastIp, int broadcastPort)
+    LedApp(const char *ledAppHostname,
+           IPAddress localIp,
+           IPAddress subnet,
+           IPAddress broadcastIp,
+           int broadcastPort)
         : ledAppHostname(ledAppHostname),
           localIp(localIp),
           subnet(subnet),

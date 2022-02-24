@@ -7,64 +7,46 @@ class DmxApp : public App::CoreApp
 private:
 public:
 	const char *dmxAppHostname;
-	uint8_t *macAddress;
 	IPAddress localIp;
 	IPAddress subnet;
 	IPAddress broadcastIp;
 	int broadcastPort;
 
 	OSC::Arduino<1, 0> osc;
-	Devices::EdtDmx dmx;
-	EthernetUDP udp;
+	//Devices::EdtDmx dmx;
 
-	DmxApp(const char *dmxAppHostname, 
-		const char *oscAddress,
-		uint8_t* macAddress, 
-		IPAddress localIp, 
-		IPAddress subnet, 
-		IPAddress broadcastIp, 
-		int broadcastPort)
+	DmxApp(const char *dmxAppHostname,
+		   const char *oscAddress,
+		   IPAddress localIp,
+		   IPAddress subnet,
+		   IPAddress broadcastIp,
+		   int broadcastPort)
 		: dmxAppHostname(dmxAppHostname),
-		  macAddress(macAddress),
 		  localIp(localIp),
 		  subnet(subnet),
 		  broadcastIp(broadcastIp),
-		  broadcastPort(broadcastPort),
-		  dmx(Devices::EdtDmx(oscAddress)) {
-		  }
+		  broadcastPort(broadcastPort)//,
+		  //dmx(Devices::EdtDmx(oscAddress))
+	{
+	}
 
 	void startSetupNetwork()
 	{
-		
+		EthernetClient::setupEthernet(dmxAppHostname, localIp, subnet);
 	}
 
 	bool setupNetwork()
 	{
-#ifndef ETHERNET
-
-		Serial.begin(57600);
-
-#else
-		Ethernet.begin(macAddress, localIp);
-
-		udp.begin(broadcastPort);
-
-#endif
-
-		return true;
+		return EthernetClient::ethernetIsConnected();
 	}
 
 	void startSetupOsc()
 	{
-		DMXSerial.init(DMXController);
+		EthernetClient::setupUdp(broadcastPort);
 
-#ifndef ETHERNET
-		osc.bindStream(&Serial);
-#else
-		osc.bindUDP(&udp, broadcastIp, broadcastPort);
-#endif
-		// EthernetClient::setupUdp(broadcastPort);
-		osc.addConsumer(&dmx);
+		osc.bindUDP(&EthernetClient::udp, broadcastIp, broadcastPort);
+
+		//osc.addConsumer(&dmx);
 	}
 
 	bool setupOsc()
@@ -74,7 +56,7 @@ public:
 
 	void startApp()
 	{
-		dmx.initialize();
+		//dmx.start();
 	}
 
 	void appLoop()
@@ -83,18 +65,17 @@ public:
 
 		if (time.tVISUAL)
 		{
-			dmx.animationLoop();
+			//dmx.show();
 		}
 	}
 
 	// check for failure modes when the ESP must be reset
 	bool appRestartRequired()
 	{
-		return false;
-		//return !EthernetClient::ethernetIsConnected();
+		return !EthernetClient::ethernetIsConnected();
 	}
 
-	// check for queue exhaustion in the consumers of the OSC messages
+	// there is nothing to complain about
 	bool appWarningRequired()
 	{
 		return false;

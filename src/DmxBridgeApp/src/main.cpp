@@ -1,12 +1,12 @@
 #include "dmxApp.h"
 
-uint8_t macAddress[6] =  { 0x00, 0x00, 0x12, 0x34, 0x56, 0xA2 };
+// TODO: deploy to 2 ESP32s
+
 auto oscAddress = "/R3";
 
-DmxApp application = DmxApp(
-	"DmxApp",
+DmxApp dmxApp = DmxApp(
+	"DmxApp1",
 	oscAddress,
-	macAddress,
 	IPAddress(10, 0, 0, 30),
 	IPAddress(255, 0, 0, 0),
 	IPAddress(10, 0, 0, 255),
@@ -14,10 +14,11 @@ DmxApp application = DmxApp(
 
 void setup()
 {
-	application.setup(13, 0);
+	Serial.begin(115200);
+	dmxApp.setup(33, LOW);
 }
 
 void loop()
 {
-	application.loop();
+	dmxApp.loop();
 }

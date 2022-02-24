@@ -1,5 +1,7 @@
 #include "ledApp.h"
 
+// TODO: deploy to 3 ESP32s
+
 LedApp ledApp = LedApp(
     "LedApp1",
     IPAddress(10, 0, 0, 20),

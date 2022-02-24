@@ -12,7 +12,7 @@ namespace EthernetClient
   const char *_hostname;
   WiFiUDP udp;
 
-  void ethernetEventHandler(system_event_id_t event)
+  void ethernetEventHandler(WiFiEvent_t event)
   {
     switch (event)
     {
@@ -40,7 +40,7 @@ namespace EthernetClient
     _ethernetConnected = false;
     _hostname = hostname;
 
-    WiFi.onEvent(ethernetEventHandler, system_event_id_t::SYSTEM_EVENT_MAX);
+    WiFi.onEvent(ethernetEventHandler);
 
     ETH.begin();
     ETH.config(localIp, IPAddress(0, 0, 0, 0), subnet);
