@@ -6,6 +6,7 @@
 #include <OSCStructMessage.h>
 #include <FadeMode.h>
 
+#include "../Drivers/Dmx/DmxSerial.h"
 #include "../Drivers/Dmx/DmxDriver.h"
 #include "../Drivers/Dmx/DmxDriverConfig.h"
 #include "../Drivers/Dmx/FixedSingleChannelDriver.h"
@@ -90,8 +91,6 @@ namespace Devices
 
 		void callbackMessage()
 		{
-			// TODO: put loop in switch
-
 			// todo: remove these variables
 			auto command = _message.messageStruct.command;
 			auto dualColor = _message.messageStruct.commands.dualColor;

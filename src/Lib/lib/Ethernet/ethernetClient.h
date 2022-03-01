@@ -1,8 +1,5 @@
 #pragma once
 
-#define ETH_CLK_MODE ETH_CLOCK_GPIO17_OUT
-#define ETH_PHY_POWER 12
-
 #include <ETH.h>
 
 namespace EthernetClient
@@ -43,7 +40,7 @@ namespace EthernetClient
     WiFi.onEvent(ethernetEventHandler);
 
     ETH.begin();
-    ETH.config(localIp, IPAddress(0, 0, 0, 0), subnet);
+    ETH.config(localIp, IPAddress(10, 0, 0, 1), subnet);
   }
 
   bool ethernetIsConnected()

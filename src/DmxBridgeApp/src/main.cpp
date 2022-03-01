@@ -14,7 +14,9 @@ DmxApp dmxApp = DmxApp(
 
 void setup()
 {
+	EEPROM.begin(255);
 	Serial.begin(115200);
+	Drivers::Dmx::DmxSerial::Initialize(DmxDirection::output);
 	dmxApp.setup(33, LOW);
 }
 

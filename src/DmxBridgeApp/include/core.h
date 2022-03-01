@@ -7,4 +7,4 @@
 #include "OSCArduino.h"
 #include "CommandMessage.h"
 #include "MessageConsumer.h"
-// #include "EdtDmx.h"
+#include "EdtDmx.h"

@@ -13,7 +13,7 @@ public:
 	int broadcastPort;
 
 	OSC::Arduino<1, 0> osc;
-	//Devices::EdtDmx dmx;
+	Devices::EdtDmx dmx;
 
 	DmxApp(const char *dmxAppHostname,
 		   const char *oscAddress,
@@ -25,8 +25,8 @@ public:
 		  localIp(localIp),
 		  subnet(subnet),
 		  broadcastIp(broadcastIp),
-		  broadcastPort(broadcastPort)//,
-		  //dmx(Devices::EdtDmx(oscAddress))
+		  broadcastPort(broadcastPort),
+		  dmx(Devices::EdtDmx(oscAddress))
 	{
 	}
 
@@ -46,7 +46,7 @@ public:
 
 		osc.bindUDP(&EthernetClient::udp, broadcastIp, broadcastPort);
 
-		//osc.addConsumer(&dmx);
+		osc.addConsumer(&dmx);
 	}
 
 	bool setupOsc()
@@ -56,7 +56,7 @@ public:
 
 	void startApp()
 	{
-		//dmx.start();
+		dmx.start();
 	}
 
 	void appLoop()
@@ -65,7 +65,7 @@ public:
 
 		if (time.tVISUAL)
 		{
-			//dmx.show();
+			dmx.show();
 		}
 	}
 

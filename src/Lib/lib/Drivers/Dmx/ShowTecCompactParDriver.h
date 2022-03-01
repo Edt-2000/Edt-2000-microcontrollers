@@ -2,7 +2,7 @@
 
 #include "DmxDriver.h"
 #include "FadeMode.h"
-#include <esp_dmx.h>
+#include "DmxSerial.h"
 
 namespace Drivers
 {
@@ -37,15 +37,15 @@ namespace Drivers
                 if (mode == Mode::Color)
                 {
                     // switch to brightness control
-                    dmx_write_slot(_dmxPort, _address, 255);
-                    dmx_write_slot(_dmxPort, _address + 4, 0);
-                    dmx_write_slot(_dmxPort, _address + 7, 0);
+                    DmxSerial::Write(_address, 255);
+                    DmxSerial::Write(_address + 4, 0);
+                    DmxSerial::Write(_address + 7, 0);
                 }
                 else if (mode == Mode::Strobo)
                 {
                     // switch to off to allow for flash control
-                    dmx_write_slot(_dmxPort, _address, 255);
-                    dmx_write_slot(_dmxPort, _address + 7, 0);
+                    DmxSerial::Write(_address, 255);
+                    DmxSerial::Write(_address + 7, 0);
                 }
 
                 _mode = mode;
@@ -53,9 +53,9 @@ namespace Drivers
 
             inline void output()
             {
-                dmx_write_slot(_dmxPort, _address + 1, _color.r);
-                dmx_write_slot(_dmxPort, _address + 2, _color.g);
-                dmx_write_slot(_dmxPort, _address + 3, _color.b);
+                DmxSerial::Write(_address + 1, _color.r);
+                DmxSerial::Write(_address + 2, _color.g);
+                DmxSerial::Write(_address + 3, _color.b);
             }
 
         public:
@@ -161,7 +161,7 @@ namespace Drivers
                     // strobo is always FULL POWAH
                     _color.setHSV(h, 255, 255);
 
-                    dmx_write_slot(_dmxPort, _address + 4, stroboSpeed);
+                    DmxSerial::Write(_address + 4, stroboSpeed);
                 }
 
                 output();

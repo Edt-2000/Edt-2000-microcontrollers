@@ -2,7 +2,7 @@
 
 #include "DmxDriver.h"
 #include "FadeMode.h"
-#include <esp_dmx.h>
+#include "DmxSerial.h"
 
 namespace Drivers
 {
@@ -33,9 +33,9 @@ namespace Drivers
 
             inline void output()
             {
-                dmx_write_slot(_dmxPort, _address + 0, _color.r);
-                dmx_write_slot(_dmxPort, _address + 1, _color.g);
-                dmx_write_slot(_dmxPort, _address + 2, _color.b);
+                DmxSerial::Write(_address + 0, _color.r);
+                DmxSerial::Write(_address + 1, _color.g);
+                DmxSerial::Write(_address + 2, _color.b);
             }
 
         public:

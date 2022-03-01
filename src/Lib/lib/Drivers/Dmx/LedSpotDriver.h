@@ -2,7 +2,7 @@
 
 #include "DmxDriver.h"
 #include "FadeMode.h"
-#include <esp_dmx.h>
+#include "DmxSerial.h"
 
 namespace Drivers
 {
@@ -33,12 +33,12 @@ namespace Drivers
                 if (mode == Mode::Color)
                 {
                     // switch to brightness control
-                    dmx_write_slot(_dmxPort, _address, 255);
+                    DmxSerial::Write(_address, 255);
                 }
                 else if (mode == Mode::Strobo)
                 {
                     // switch to off to allow for flash control
-                    dmx_write_slot(_dmxPort, _address, 0);
+                    DmxSerial::Write(_address, 0);
                 }
 
                 _mode = mode;
@@ -46,12 +46,12 @@ namespace Drivers
 
             inline void output()
             {
-                dmx_write_slot(_dmxPort, _address + 1, _color[0].r);
-                dmx_write_slot(_dmxPort, _address + 2, _color[0].g);
-                dmx_write_slot(_dmxPort, _address + 3, _color[0].b);
+                DmxSerial::Write(_address + 1, _color[0].r);
+                DmxSerial::Write(_address + 2, _color[0].g);
+                DmxSerial::Write(_address + 3, _color[0].b);
 
                 // use second color's red channel for white channel
-                dmx_write_slot(_dmxPort, _address + 4, _color[1].r);
+                DmxSerial::Write(_address + 4, _color[1].r);
             }
 
         public:
@@ -61,7 +61,7 @@ namespace Drivers
                 _maximumBrightness = maximumBrightness;
                 _minimumBrightness = minimumBrightness;
 
-                dmx_write_slot(_dmxPort, _address, 0);
+                DmxSerial::Write(_address, 0);
             }
 
             void loop()
@@ -172,7 +172,7 @@ namespace Drivers
                     // cheat to get brighter flashes
                     _color[1].setHSV(0, 255, h);
 
-                    dmx_write_slot(_dmxPort, _address, stroboSpeed);
+                    DmxSerial::Write(_address, stroboSpeed);
                 }
 
                 output();

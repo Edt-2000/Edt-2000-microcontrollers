@@ -6,6 +6,7 @@
 #include <FastLED.h>
 
 #define COUNTLOCATION 0
+#define DEVICELOCATION 1
 
 namespace Drivers
 {
@@ -14,8 +15,6 @@ namespace Drivers
 		class DmxDriver
 		{
 		protected:
-			uint8_t _dmxPort = 2;
-
 			uint16_t _address;
 			uint8_t _minimumBrightness;
 			uint8_t _maximumBrightness;
@@ -53,13 +52,14 @@ namespace Drivers
 			static void setDeviceCount(uint8_t count)
 			{
 				EEPROM.put(COUNTLOCATION, count);
+				EEPROM.commit();
 			}
 
 			static DmxDriverConfig getDeviceConfig(uint8_t nr)
 			{
 				DmxDriverConfig config;
 
-				EEPROM.get(1 + (sizeof(DmxDriverConfig) * nr), config);
+				EEPROM.get(DEVICELOCATION + (sizeof(DmxDriverConfig) * nr), config);
 
 				return config;
 			}
@@ -68,8 +68,9 @@ namespace Drivers
 			{
 				uint8_t nr = getDeviceCount();
 
-				EEPROM.put(1 + (sizeof(DmxDriverConfig) * nr), config);
-
+				EEPROM.put(DEVICELOCATION + (sizeof(DmxDriverConfig) * nr), config);
+				EEPROM.commit();
+				
 				setDeviceCount(nr + 1);
 			}
 		};
