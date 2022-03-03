@@ -7,7 +7,7 @@
 #include <AnimationType.h>
 #include <FadeMode.h>
 #include <LedState.h>
-#include <RgbLedDriver.h>
+#include "../Drivers/Led/RgbLedDriver.h"
 
 using namespace Animations;
 
@@ -23,7 +23,7 @@ private:
     uint8_t _center;
     uint8_t _end;
 
-    Drivers::RgbLedDriver *_driver;
+    Drivers::Led::RgbLedDriver *_driver;
 
     void _output();
 
@@ -43,7 +43,7 @@ public:
     uint8_t nrOfLeds;
 
     RgbLedAnimator() {}
-    RgbLedAnimator(CRGB *leds, uint8_t nrOfLeds, Drivers::RgbLedDriver *driver)
+    RgbLedAnimator(CRGB *leds, uint8_t nrOfLeds, Drivers::Led::RgbLedDriver *driver)
     {
         _leds = leds;
         this->nrOfLeds = nrOfLeds;

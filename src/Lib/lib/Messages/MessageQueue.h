@@ -8,54 +8,54 @@
 
 namespace Messages
 {
-template <typename T>
-class MessageQueue : public OSC::MessageConsumer
-{
-private:
-    OSC::StructMessage<T, uint32_t> _message;
-
-public:
-    QueueHandle_t taskQueue;
-    bool queueExhausted = false;
-
-    const char *const oscAddress;
-    TaskFunction_t taskFunction;
-    const uint32_t taskStackDepth;
-
-    MessageQueue(const char *oscAddress, TaskFunction_t taskFunction, const uint32_t taskStackDepth, const UBaseType_t queueElements)
-        : oscAddress(oscAddress), taskFunction(taskFunction), taskStackDepth(taskStackDepth)
+    template <typename T>
+    class MessageQueue : public OSC::MessageConsumer
     {
-        taskQueue = xQueueCreate(queueElements, sizeof(T));
+    private:
+        OSC::StructMessage<T, uint32_t> _message;
 
-        if (taskQueue == NULL)
+    public:
+        QueueHandle_t taskQueue;
+        bool queueExhausted = false;
+
+        const char *const oscAddress;
+        TaskFunction_t taskFunction;
+        const uint32_t taskStackDepth;
+
+        MessageQueue(const char *oscAddress, TaskFunction_t taskFunction, const uint32_t taskStackDepth, const UBaseType_t queueElements)
+            : oscAddress(oscAddress), taskFunction(taskFunction), taskStackDepth(taskStackDepth)
         {
-            Serial.println("Queue failed to create.");
+            taskQueue = xQueueCreate(queueElements, sizeof(T));
+
+            if (taskQueue == NULL)
+            {
+                Serial.println("Queue failed to create.");
+            }
         }
-    }
 
-    void start()
-    {
-        xTaskCreate(taskFunction, oscAddress, 10240, taskQueue, 10, NULL);
-    }
-
-    const char *address()
-    {
-        return oscAddress;
-    }
-
-    OSC::IMessage *message()
-    {
-        return &_message;
-    }
-
-    void callbackMessage()
-    {
-        // failed to insert into queue, probably due to high traffic
-        // flagging this exhaustion occurance for debugging
-        if (xQueueSend(taskQueue, &_message.messageStruct, 0) == errQUEUE_FULL)
+        void start()
         {
-            queueExhausted = true;
+            xTaskCreate(taskFunction, oscAddress, 10240, taskQueue, 10, NULL);
         }
-    }
-};
+
+        const char *address()
+        {
+            return oscAddress;
+        }
+
+        OSC::IMessage *message()
+        {
+            return &_message;
+        }
+
+        void callbackMessage()
+        {
+            // failed to insert into queue, probably due to high traffic
+            // flagging this exhaustion occurance for debugging
+            if (xQueueSend(taskQueue, &_message.messageStruct, 0) == errQUEUE_FULL)
+            {
+                queueExhausted = true;
+            }
+        }
+    };
 } // namespace Messages
