@@ -49,12 +49,12 @@ namespace Edt_Kontrol.Terminal
 
             _timers = new[]
             {
-                new Timer((o) => TwinkeAsync(0, _kontrol.Channels[0]), default, 0, 40),
-                new Timer((o) => TwinkeAsync(1, _kontrol.Channels[1]), default, 5, 40),
+                new Timer((o) => TwinkePerIntensityAsync(0, _kontrol.Channels[0]), default, 0, 40),
+                new Timer((o) => TwinkePerIntensityAsync(1, _kontrol.Channels[1]), default, 5, 40),
                 new Timer((o) => PulseMuxAsync(2, _kontrol.Channels[2]), default, 10, 40),
                 new Timer((o) => ChaseAsync(3, _kontrol.Channels[3], 1), default, 15, 40),
                 new Timer((o) => ChaseAsync(4, _kontrol.Channels[4], 3), default, 20, 40),
-
+                new Timer((o) => TwinkeWithIntensityAsync(5, _kontrol.Channels[5]), default, 20, 40),
                 new Timer((o) => VuMeterAsync(6, _kontrol.Channels[6]), default, 30, 1),
                 new Timer((o) => SolidAsync(7, _kontrol.Channels[7]), default, 35, 1),
 
@@ -64,11 +64,20 @@ namespace Edt_Kontrol.Terminal
             await Task.Delay(-1);
         }
 
-        static async void TwinkeAsync(int channel, ChannelState state)
+        static async void TwinkePerIntensityAsync(int channel, ChannelState state)
         {
             if (PulseOncePer(channel, state.IntensityLog))
             {
                 var message = _commandFactory.CreateTwinkle((ColorPreset)((state.Select * 2) + 1), 160 - (state.Intensity / 2));
+                await SendAsync(message);
+            }
+        }
+
+        static async void TwinkeWithIntensityAsync(int channel, ChannelState state)
+        {
+            if (state.Intensity > 0)
+            {
+                var message = _commandFactory.CreateTwinkle((ColorPreset)((state.Select * 2) + 1), state.Intensity * 2);
                 await SendAsync(message);
             }
         }
