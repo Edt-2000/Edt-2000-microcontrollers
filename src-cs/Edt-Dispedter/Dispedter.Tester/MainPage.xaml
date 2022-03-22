@@ -17,7 +17,7 @@
         <TextBlock x:Name="OutCommandHistory" HorizontalAlignment="Left" Margin="280,10,0,20" Foreground="#00FF00" Text="Out" VerticalAlignment="Stretch" Width="400" />
         <TextBlock x:Name="InCommandHistory" HorizontalAlignment="Left" Margin="700,10,0,20" Foreground="#FF00FF" Text="{StaticResource InHistory}" VerticalAlignment="Stretch" Width="400" />
         <Grid Margin="1096,10,0,10">
-            <ListView x:Name="Slaves" Margin="10,0,0,97" ItemsSource="{x:Bind Path=_dmxSlaves}" HorizontalAlignment="Left" Width="530">
+            <ListView x:Name="Devices" Margin="10,0,0,97" ItemsSource="{x:Bind Path=_dmxDevices}" HorizontalAlignment="Left" Width="530">
                 <ListView.HeaderTemplate>
                     <DataTemplate>
                         <Grid>
@@ -45,7 +45,7 @@
                                 <ColumnDefinition Width="75"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="{Binding FullName}" Foreground="#00FF00" Grid.Column="0" Margin="0,5,0,0" Width="500" />
-                            <Button Content="Delete" Click="DeleteSlaveButton_Click" Grid.Column="1" Width="75" RequestedTheme="Dark" Tag="{Binding Address}" />
+                            <Button Content="Delete" Click="DeleteDeviceButton_Click" Grid.Column="1" Width="75" RequestedTheme="Dark" Tag="{Binding Address}" />
                         </Grid>
                     </DataTemplate>
                 </ListView.ItemTemplate>
@@ -59,8 +59,8 @@
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <Grid Grid.Column="0">
-                    <ComboBox x:Name="SlaveType" ItemsSource="{x:Bind _dmxTypes}" Width="100" SelectedValuePath="TypeNr" DisplayMemberPath="Name" />
-                    <ComboBox x:Name="SlaveAddress" ItemsSource="{x:Bind _dmxAddresses}" Margin="105,0,0,0" Width="100" SelectedValue="1" />
+                    <ComboBox x:Name="DeviceType" ItemsSource="{x:Bind _dmxTypes}" Width="100" SelectedValuePath="TypeNr" DisplayMemberPath="Name" />
+                    <ComboBox x:Name="DeviceAddress" ItemsSource="{x:Bind _dmxAddresses}" Margin="105,0,0,0" Width="100" SelectedValue="1" />
                 </Grid>
                 <Grid Grid.Column="1" >
                     <Slider x:Name="MinimumBrightness" Minimum="0" Maximum="1" TickFrequency="0.1" StepFrequency="0.05" Value="0" />
@@ -69,7 +69,7 @@
                     <Slider x:Name="MaximumBrightness" Minimum="0" Maximum="1" TickFrequency="0.1" StepFrequency="0.05" Value="1" />
                 </Grid>
                 <Grid Grid.Column="4">
-                    <Button Content="Add" Click="AddSlaveButton_Click" RequestedTheme="Dark" HorizontalAlignment="Left" Width="100" />
+                    <Button Content="Add" Click="AddDeviceButton_Click" RequestedTheme="Dark" HorizontalAlignment="Left" Width="100" />
 
                     <TextBlock x:Name="AddressError" Visibility="Collapsed" HorizontalAlignment="Left" TextAlignment="Right" Margin="-103,40,0,-47" Text="Address collision" TextWrapping="Wrap" VerticalAlignment="Top" Foreground="Red" Width="203" />
                 </Grid>

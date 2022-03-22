@@ -107,7 +107,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="DMX\DmxConfig.cs" />
-    <Compile Include="DMX\DmxSlave.cs" />
+    <Compile Include="DMX\DmxDevice.cs" />
     <Compile Include="DMX\DmxType.cs" />
     <Compile Include="Managers\ListenerManager.cs" />
     <Compile Include="Managers\SenderManager.cs" />

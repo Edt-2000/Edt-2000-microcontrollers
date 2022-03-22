@@ -2,7 +2,7 @@
 
 namespace Dispedter.Common.DMX
 {
-    public class DmxSlave
+    public class DmxDevice
     {
         public DmxType Type { get; set; }
         public int Address { get; set; }

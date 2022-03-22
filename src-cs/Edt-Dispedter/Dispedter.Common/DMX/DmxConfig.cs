@@ -9,11 +9,11 @@ namespace Dispedter.Common.DMX
 {
     public class DmxConfig
     {
-        public ICollection<DmxSlave> _dmxSlaves;
+        public ICollection<DmxDevice> DmxDevices;
 
-        public DmxConfig(ICollection<DmxSlave> collection)
+        public DmxConfig(ICollection<DmxDevice> collection)
         {
-            _dmxSlaves = collection;
+            DmxDevices = collection;
         }
 
         public ICollection<DmxType> Types { get; private set; } = new[]
@@ -27,16 +27,16 @@ namespace Dispedter.Common.DMX
 
         public void ReadConfig(string configString)
         {
-            var config = JsonConvert.DeserializeObject<List<DmxSlave>>(configString);
+            var config = JsonConvert.DeserializeObject<List<DmxDevice>>(configString);
 
-            RemoveAllSlaves();
+            RemoveAllDevices();
             
-            config?.OrderBy(s => s.Address).ToList().ForEach(slave => _dmxSlaves.Add(slave));
+            config?.OrderBy(s => s.Address).ToList().ForEach(DmxDevices.Add);
         }
 
         public string WriteConfig()
         {
-            var configString = JsonConvert.SerializeObject(_dmxSlaves);
+            var configString = JsonConvert.SerializeObject(DmxDevices);
             return configString;
         }
 
@@ -48,9 +48,9 @@ namespace Dispedter.Common.DMX
 
             commands.AddRange(commandFactory.ClearDMX());
 
-            foreach (var slave in _dmxSlaves)
+            foreach (var device in DmxDevices)
             {
-                commands.AddRange(commandFactory.ProgramDmxSlave(slave.Type.TypeNr, slave.Address, slave.MaximumBrightness, slave.MinimumBrightness));
+                commands.AddRange(commandFactory.ProgramDmxDevice(device.Type.TypeNr, device.Address, device.MaximumBrightness, device.MinimumBrightness));
             }
 
             commands.AddRange(commandFactory.RestartDMX());
@@ -58,18 +58,18 @@ namespace Dispedter.Common.DMX
             return commands;
         }
 
-        public void AddSlave(int typeNr, int address, double maximumBrightness, double minimumBrightness)
+        public void AddDevice(int typeNr, int address, double maximumBrightness, double minimumBrightness)
         {
             var newType = Types.First(t => t.TypeNr == typeNr);
 
             var requiredAddressSpace = Enumerable.Range(address, newType.Width);
 
-            if (_dmxSlaves.SelectMany(s => Enumerable.Range(s.Address, s.Type.Width)).Intersect(requiredAddressSpace).Any())
+            if (DmxDevices.SelectMany(s => Enumerable.Range(s.Address, s.Type.Width)).Intersect(requiredAddressSpace).Any())
             {
                 throw new DataMisalignedException();
             }
 
-            _dmxSlaves.Add(new DmxSlave
+            DmxDevices.Add(new DmxDevice
             {
                 Type = newType,
                 Address = address,
@@ -78,17 +78,17 @@ namespace Dispedter.Common.DMX
             });
         }
 
-        public void RemoveSlave(int address)
+        public void RemoveDevice(int address)
         {
-            if (_dmxSlaves.Any(s => s.Address == address))
+            if (DmxDevices.Any(s => s.Address == address))
             {
-                _dmxSlaves.Remove(_dmxSlaves.First(s => s.Address == address));
+                DmxDevices.Remove(DmxDevices.First(s => s.Address == address));
             }
         }
 
-        public void RemoveAllSlaves()
+        public void RemoveAllDevices()
         {
-            _dmxSlaves.Clear();
+            DmxDevices.Clear();
         }
     }
 }

@@ -15,15 +15,19 @@ namespace Edt_Kontrol.Terminal
     {
         private static Kontrol _kontrol = new Kontrol();
 
-        private static ISender _senderF = new UdpSender(IPAddress.Parse("10.0.0.20"), 12345);
-        private static ISender _senderR = new UdpSender(IPAddress.Parse("10.0.0.21"), 12345);
+        private static ISender[] _senderFs = new[] {
+            new UdpSender(IPAddress.Parse("10.0.0.20"), 12345),
+            new UdpSender(IPAddress.Parse("10.0.0.21"), 12345),
+            new UdpSender(IPAddress.Parse("10.0.0.22"), 12345)
+        };
+        private static ISender _senderR = new UdpSender(IPAddress.Parse("10.0.0.40"), 12345);
         private static ISender _senderDmx = new UdpSender(IPAddress.Parse("10.0.0.30"), 12345);
         //  ADD 10.0.0.30
 
         private static CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
 
-        private static int[] _count = new int[8];
-        private static int[] _value = new int[8];
+        private static readonly int[] Count = new int[8];
+        private static readonly int[] Value = new int[8];
         private static bool _strobo = false;
 
         private static Random _random = new Random();
@@ -32,7 +36,6 @@ namespace Edt_Kontrol.Terminal
 
         private static Dictionary<int, ColorPreset[]> _colorSets = new Dictionary<int, ColorPreset[]>()
         {
-            // TODO: chase lower intensity
             [0] = new[] { ColorPreset.Red, ColorPreset.White },
             [1] = new[] { ColorPreset.Red, ColorPreset.Blue },
             [2] = new[] { ColorPreset.Turquoise, ColorPreset.Pink },
@@ -160,9 +163,9 @@ namespace Edt_Kontrol.Terminal
                 return false;
             }
 
-            if (_count[channel]++ > Math.Abs(((127 - delay) / 127.0) * 20))
+            if (Count[channel]++ > Math.Abs(((127 - delay) / 127.0) * 20))
             {
-                _count[channel] = 0;
+                Count[channel] = 0;
                 return true;
             }
             return false;
@@ -170,9 +173,9 @@ namespace Edt_Kontrol.Terminal
 
         static bool Changed(int channel, int value)
         {
-            if (_value[channel] != value)
+            if (Value[channel] != value)
             {
-                _value[channel] = value;
+                Value[channel] = value;
                 return true;
             }
 
@@ -196,8 +199,8 @@ namespace Edt_Kontrol.Terminal
 
         private static async Task SendAsync(IEnumerable<OscMessage> messages)
             => await Task.WhenAll(
-                _senderF.SendAsync(messages.Where(x => x.Address.Contains("F"))),
-                _senderR.SendAsync(messages.Where(x => x.Address.Contains("R"))),
-                _senderDmx.SendAsync(messages.Where(x => x.Address.Contains("R"))));
+                _senderFs.Select(sender => sender.SendAsync(messages.Where(x => x.Address.Contains("F"))))
+                    .Append(_senderR.SendAsync(messages.Where(x => x.Address.Contains("R"))))
+                    .Append(_senderDmx.SendAsync(messages.Where(x => x.Address.Contains("R")))));
     }
 }

@@ -119,7 +119,7 @@ namespace Dispedter.Common.Factories
             return _addresses.Select((a, i) => DmxMessageStub(a, 0, 0, true, false)); // new OscMessage(a, 254, 0, 1, 0, 0));
         }
 
-        public IEnumerable<OscMessage> ProgramDmxSlave(int type, int address, double maximumBrightness, double minimumBrightness)
+        public IEnumerable<OscMessage> ProgramDmxDevice(int type, int address, double maximumBrightness, double minimumBrightness)
         {
             return _addresses.Select((a, i) =>
             {

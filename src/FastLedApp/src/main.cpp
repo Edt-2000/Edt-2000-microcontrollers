@@ -3,8 +3,8 @@
 // TODO: deploy to 3 ESP32s
 
 LedApp ledApp = LedApp(
-    "LedApp1",
-    IPAddress(10, 0, 0, 20),
+    "LedApp3",
+    IPAddress(10, 0, 0, 22),
     IPAddress(255, 0, 0, 0),
     IPAddress(10, 0, 0, 255),
     12345);

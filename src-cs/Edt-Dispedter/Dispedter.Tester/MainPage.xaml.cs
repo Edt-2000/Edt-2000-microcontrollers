@@ -28,12 +28,12 @@ namespace Dispedter.Tester
         private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
         private readonly CommandFactory _specialCommandFactory = new CommandFactory(new[] { "/?1", "/?2", "/?3", "/?4", "/?5", "/?6", "/?7", "/?8" });
         private readonly ListenerManager _listenerManager = new ListenerManager(detectUsb: false);
-        private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[] { IPAddress.Parse("10.0.0.20"), IPAddress.Parse("10.0.0.21"), IPAddress.Parse("10.0.0.30") });
+        private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[] { IPAddress.Parse("10.0.0.20"), IPAddress.Parse("10.0.0.21"), IPAddress.Parse("10.0.0.22"), IPAddress.Parse("10.0.0.30"), IPAddress.Parse("10.0.0.40") });
 
         private Dictionary<Mode, Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>> _commandMapping = new Dictionary<Mode, Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>>();
         private Dictionary<Mode, Dictionary<VirtualKey, Func<int, (int delay, IEnumerable<OscMessage> command)>>> _proceduralCommandMapping = new Dictionary<Mode, Dictionary<VirtualKey, Func<int, (int delay, IEnumerable<OscMessage> command)>>>();
 
-        private ObservableCollection<DmxSlave> _dmxSlaves;
+        private ObservableCollection<DmxDevice> _dmxDevices;
         private ObservableCollection<DmxType> _dmxTypes;
         private ObservableCollection<int> _dmxAddresses;
         private DmxConfig _dmxConfig;
@@ -63,8 +63,8 @@ namespace Dispedter.Tester
 
         public MainPage()
         {
-            _dmxSlaves = new ObservableCollection<DmxSlave>();
-            _dmxConfig = new DmxConfig(_dmxSlaves);
+            _dmxDevices = new ObservableCollection<DmxDevice>();
+            _dmxConfig = new DmxConfig(_dmxDevices);
             _dmxTypes = new ObservableCollection<DmxType>(_dmxConfig.Types);
             _dmxAddresses = new ObservableCollection<int>(Enumerable.Range(1, 512));
 
@@ -481,7 +481,7 @@ namespace Dispedter.Tester
             }
             catch
             {
-                _dmxConfig.RemoveAllSlaves();
+                _dmxConfig.RemoveAllDevices();
             }
         }
 
@@ -558,18 +558,18 @@ namespace Dispedter.Tester
             await FileIO.WriteTextAsync(fileHandle, fileContentString).AsTask();
         }
 
-        private void AddSlaveButton_Click(object sender, RoutedEventArgs e)
+        private void AddDeviceButton_Click(object sender, RoutedEventArgs e)
         {
-            var slaveType = SlaveType.SelectedValue as int?;
-            var slaveAddress = SlaveAddress.SelectedValue as int?;
+            var deviceType = DeviceType.SelectedValue as int?;
+            var deviceAddress = DeviceAddress.SelectedValue as int?;
             var minimumBrightness = MinimumBrightness.Value;
             var maximumBrightness = MaximumBrightness.Value;
 
-            if (slaveType.HasValue && slaveAddress.HasValue)
+            if (deviceType.HasValue && deviceAddress.HasValue)
             {
                 try
                 {
-                    _dmxConfig.AddSlave(slaveType.Value, slaveAddress.Value, maximumBrightness, minimumBrightness);
+                    _dmxConfig.AddDevice(deviceType.Value, deviceAddress.Value, maximumBrightness, minimumBrightness);
 
                     AddressError.Visibility = Visibility.Collapsed;
                 }
@@ -580,9 +580,9 @@ namespace Dispedter.Tester
             }
         }
 
-        private void DeleteSlaveButton_Click(object sender, RoutedEventArgs e)
+        private void DeleteDeviceButton_Click(object sender, RoutedEventArgs e)
         {
-            _dmxConfig.RemoveSlave(((sender as Button).Tag as int?) ?? -1);
+            _dmxConfig.RemoveDevice(((sender as Button).Tag as int?) ?? -1);
         }
 
         #endregion
