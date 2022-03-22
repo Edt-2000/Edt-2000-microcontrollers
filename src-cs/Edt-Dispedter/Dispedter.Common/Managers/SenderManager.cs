@@ -14,9 +14,9 @@ namespace Dispedter.Common.Managers
         private readonly bool _detectUsb;
         private readonly IEnumerable<IPAddress> _udpDestinations;
 
-        private const int _udpPort = 12345;
+        private const int UdpPort = 12345;
 
-        private List<ISender> _senders = new List<ISender>();
+        private readonly List<ISender> _senders = new List<ISender>();
 
         public SenderManager(bool detectUsb = false, IEnumerable<IPAddress> udpDestinations = null)
         {
@@ -52,9 +52,9 @@ namespace Dispedter.Common.Managers
                     {
                         foreach (var ip in _udpDestinations)
                         {
-                            if (!_senders.Exists(s => s.Id == UdpSender.CreateId(ip, _udpPort)))
+                            if (!_senders.Exists(s => s.Id == UdpSender.CreateId(ip, UdpPort)))
                             {
-                                var udpSender = new UdpSender(ip, _udpPort);
+                                var udpSender = new UdpSender(ip, UdpPort);
 
                                 _senders.Add(udpSender);
                             }

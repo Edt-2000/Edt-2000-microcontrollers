@@ -9,11 +9,11 @@ namespace Dispedter.Common.DMX
 {
     public class DmxConfig
     {
-        public ICollection<DmxDevice> DmxDevices;
+        private readonly ICollection<DmxDevice> _dmxDevices;
 
         public DmxConfig(ICollection<DmxDevice> collection)
         {
-            DmxDevices = collection;
+            _dmxDevices = collection;
         }
 
         public ICollection<DmxType> Types { get; private set; } = new[]
@@ -31,12 +31,12 @@ namespace Dispedter.Common.DMX
 
             RemoveAllDevices();
             
-            config?.OrderBy(s => s.Address).ToList().ForEach(DmxDevices.Add);
+            config?.OrderBy(s => s.Address).ToList().ForEach(_dmxDevices.Add);
         }
 
         public string WriteConfig()
         {
-            var configString = JsonConvert.SerializeObject(DmxDevices);
+            var configString = JsonConvert.SerializeObject(_dmxDevices);
             return configString;
         }
 
@@ -48,7 +48,7 @@ namespace Dispedter.Common.DMX
 
             commands.AddRange(commandFactory.ClearDMX());
 
-            foreach (var device in DmxDevices)
+            foreach (var device in _dmxDevices)
             {
                 commands.AddRange(commandFactory.ProgramDmxDevice(device.Type.TypeNr, device.Address, device.MaximumBrightness, device.MinimumBrightness));
             }
@@ -64,12 +64,12 @@ namespace Dispedter.Common.DMX
 
             var requiredAddressSpace = Enumerable.Range(address, newType.Width);
 
-            if (DmxDevices.SelectMany(s => Enumerable.Range(s.Address, s.Type.Width)).Intersect(requiredAddressSpace).Any())
+            if (_dmxDevices.SelectMany(s => Enumerable.Range(s.Address, s.Type.Width)).Intersect(requiredAddressSpace).Any())
             {
                 throw new DataMisalignedException();
             }
 
-            DmxDevices.Add(new DmxDevice
+            _dmxDevices.Add(new DmxDevice
             {
                 Type = newType,
                 Address = address,
@@ -80,15 +80,15 @@ namespace Dispedter.Common.DMX
 
         public void RemoveDevice(int address)
         {
-            if (DmxDevices.Any(s => s.Address == address))
+            if (_dmxDevices.Any(s => s.Address == address))
             {
-                DmxDevices.Remove(DmxDevices.First(s => s.Address == address));
+                _dmxDevices.Remove(_dmxDevices.First(s => s.Address == address));
             }
         }
 
         public void RemoveAllDevices()
         {
-            DmxDevices.Clear();
+            _dmxDevices.Clear();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace Dispedter.Common.Managers
 {
     public class ListenerManager
     {
-        private const int _udpPort = 12345;
+        private const int UdpPort = 12345;
         private readonly bool _detectUsb;
 
         private List<IListener> _listeners = new List<IListener>();
@@ -62,9 +62,9 @@ namespace Dispedter.Common.Managers
 
                     _listeners.RemoveAll(l => l.IsBroken());
 
-                    if (!_listeners.Exists(s => s.Id == _udpPort.ToString()))
+                    if (!_listeners.Exists(s => s.Id == UdpPort.ToString()))
                     {
-                        var udpListener = new UdpListener(_udpPort);
+                        var udpListener = new UdpListener(UdpPort);
 
                         foreach (var handler in _eventHandlers)
                         {
