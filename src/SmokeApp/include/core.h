@@ -1,0 +1,8 @@
+#include "CoreApp.h"
+#include "ESP8266WiFi.h"
+#include "WiFiUdp.h"
+#include "FastLED.h"
+#include "Arduino.h"
+#include "OSCArduino.h"
+#include "CommandMessage.h"
+#include "MessageConsumer.h"

@@ -14,6 +14,11 @@ namespace Dispedter.Common.Factories
             _addresses = addresses;
         }
 
+        public IEnumerable<OscMessage> CreateSmokeMessage(int i)
+        {
+            return new[] { new OscMessage("/SM", i) };
+        }
+
         public IEnumerable<OscMessage> CreateTestMessage(int i)
         {
             return new[] { new OscMessage("/TD", i, 0) };

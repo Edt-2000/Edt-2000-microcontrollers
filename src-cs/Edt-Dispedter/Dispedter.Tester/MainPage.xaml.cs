@@ -28,7 +28,7 @@ namespace Dispedter.Tester
         private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
         private readonly CommandFactory _specialCommandFactory = new CommandFactory(new[] { "/?1", "/?2", "/?3", "/?4", "/?5", "/?6", "/?7", "/?8" });
         private readonly ListenerManager _listenerManager = new ListenerManager(detectUsb: false);
-        private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[] { IPAddress.Parse("10.0.0.20"), IPAddress.Parse("10.0.0.21"), IPAddress.Parse("10.0.0.22"), IPAddress.Parse("10.0.0.30"), IPAddress.Parse("10.0.0.40") });
+        private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[] { IPAddress.Parse("10.0.0.20"), IPAddress.Parse("10.0.0.21"), IPAddress.Parse("10.0.0.22"), IPAddress.Parse("10.0.0.30"), IPAddress.Parse("10.0.0.40"), IPAddress.Parse("10.0.0.165") });
 
         private Dictionary<Mode, Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>> _commandMapping = new Dictionary<Mode, Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>>();
         private Dictionary<Mode, Dictionary<VirtualKey, Func<int, (int delay, IEnumerable<OscMessage> command)>>> _proceduralCommandMapping = new Dictionary<Mode, Dictionary<VirtualKey, Func<int, (int delay, IEnumerable<OscMessage> command)>>>();
@@ -213,6 +213,8 @@ namespace Dispedter.Tester
 
             _commandMapping.Add(Mode.Default, new Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>
             {
+                { VirtualKey.PageUp, () => _commandFactory.CreateSmokeMessage(1) },
+                { VirtualKey.PageDown, () => _commandFactory.CreateSmokeMessage(0) },
                 { VirtualKey.Back, () => _commandFactory.CreateTestMessage(++test) },
                 {
                     VirtualKey.Up, () =>
