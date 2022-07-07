@@ -1,7 +1,6 @@
 #pragma once
 
 #include "core.h"
-#include "smokeDevice.h"
 
 class SmokeApp : public App::CoreApp
 {
@@ -61,16 +60,15 @@ public:
 
     void startApp()
     {
-        digitalWrite(5, LOW);
     }
 
     void appLoop()
     {
         osc.loop(time.tOSC);
 
-        if (time.tVISUAL)
+        if (time.t1000ms)
         {
-            FastLED.show();
+            device.loop();
         }
     }
 

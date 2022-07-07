@@ -10,6 +10,12 @@ SmokeApp smokeApp = SmokeApp(
 
 void setup()
 {
+  pinMode(5, OUTPUT);
+  pinMode(12, OUTPUT);
+
+  digitalWrite(5, LOW);
+  digitalWrite(12, LOW);
+
   Serial.begin(115200);
   smokeApp.setup(5, HIGH);
 }

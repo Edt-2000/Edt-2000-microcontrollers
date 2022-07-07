@@ -11,8 +11,9 @@
     </Page.Resources>
 
     <Grid Background="Black">
-        <TextBlock x:Name="ColorIndex" HorizontalAlignment="Left"  Margin="214,214,0,0" Foreground="White" Text="" VerticalAlignment="Top"/>
-        <TextBlock x:Name="KeyCode" HorizontalAlignment="Left"  Margin="10,10,0,0" Foreground="DarkSlateGray" Text="123" VerticalAlignment="Top"/>
+        <TextBlock x:Name="ColorIndex" HorizontalAlignment="Left"  Margin="10,40,0,0" Foreground="DarkSlateGray" Text="2" VerticalAlignment="Top"/>
+        <TextBlock x:Name="SmokeTime" HorizontalAlignment="Left"  Margin="10,70,0,0" Foreground="DarkSlateGray" Text="3" VerticalAlignment="Top"/>
+        <TextBlock x:Name="KeyCode" HorizontalAlignment="Left"  Margin="10,10,0,0" Foreground="DarkSlateGray" Text="1" VerticalAlignment="Top"/>
         <TextBlock x:Name="CommandMode" HorizontalAlignment="Left"  Margin="10,40,0,0" Foreground="White" Text="" VerticalAlignment="Top"/>
         <TextBlock x:Name="OutCommandHistory" HorizontalAlignment="Left" Margin="280,10,0,20" Foreground="#00FF00" Text="Out" VerticalAlignment="Stretch" Width="400" />
         <TextBlock x:Name="InCommandHistory" HorizontalAlignment="Left" Margin="700,10,0,20" Foreground="#FF00FF" Text="{StaticResource InHistory}" VerticalAlignment="Stretch" Width="400" />

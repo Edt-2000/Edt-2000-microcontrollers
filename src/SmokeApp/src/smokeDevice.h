@@ -1,15 +1,6 @@
 #pragma once
 
-#include <Arduino.h>
-#include <OSCArduino.h>
-#include <CommandMessage.h>
-#include <IMessage.h>
-#include <OSCStructMessage.h>
-
-struct SmokeCommand
-{
-    uint32_t dutyCycle;
-};
+#include "core.h"
 
 class SmokeDevice : public OSC::MessageConsumer
 {
@@ -18,10 +9,12 @@ private:
 
 public:
     const char *const oscAddress;
+    uint32_t progress = 20;
 
     SmokeDevice(const char *oscAddress)
         : oscAddress(oscAddress)
     {
+        _message.messageStruct.dutyCycle = 120;
     }
 
     const char *address()
@@ -36,13 +29,19 @@ public:
 
     void callbackMessage()
     {
-        if (_message.messageStruct.dutyCycle > 0)
-        {
-            digitalWrite(5, HIGH);
+    }
+
+    void loop()
+    {
+        progress++;
+
+        if (progress > _message.messageStruct.dutyCycle) {
+            progress = 0;
         }
-        else
-        {
-            digitalWrite(5, LOW);
-        }
+
+        auto output = progress < 10 ? HIGH : LOW;
+
+        digitalWrite(5, output);
+        digitalWrite(12, output);
     }
 };

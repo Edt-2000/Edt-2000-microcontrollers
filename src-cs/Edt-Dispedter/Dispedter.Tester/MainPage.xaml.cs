@@ -28,7 +28,14 @@ namespace Dispedter.Tester
         private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
         private readonly CommandFactory _specialCommandFactory = new CommandFactory(new[] { "/?1", "/?2", "/?3", "/?4", "/?5", "/?6", "/?7", "/?8" });
         private readonly ListenerManager _listenerManager = new ListenerManager(detectUsb: false);
-        private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[] { IPAddress.Parse("10.0.0.20"), IPAddress.Parse("10.0.0.21"), IPAddress.Parse("10.0.0.22"), IPAddress.Parse("10.0.0.30"), IPAddress.Parse("10.0.0.40"), IPAddress.Parse("10.0.0.165") });
+        private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[] 
+        { 
+            /* OLD fastled: IPAddress.Parse("10.0.0.20"),*/ 
+            /* New fastled1: */ IPAddress.Parse("10.0.0.21"), 
+            /* New fastled2: */ IPAddress.Parse("10.0.0.22"), 
+            /* DMX unit */ IPAddress.Parse("10.0.0.30"), 
+            /* OLD RGB IPAddress.Parse("10.0.0.40"),*/
+            /* Smoke */ IPAddress.Parse("10.0.0.165") });
 
         private Dictionary<Mode, Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>> _commandMapping = new Dictionary<Mode, Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>>();
         private Dictionary<Mode, Dictionary<VirtualKey, Func<int, (int delay, IEnumerable<OscMessage> command)>>> _proceduralCommandMapping = new Dictionary<Mode, Dictionary<VirtualKey, Func<int, (int delay, IEnumerable<OscMessage> command)>>>();
@@ -206,36 +213,55 @@ namespace Dispedter.Tester
 
         private void InitializeDefaultCommandMapping()
         {
-            var i = (byte)0;
+            var color = (byte)0;
             var strobo = (byte)0;
+            var smoke = (byte)120;
 
             var test = 0;
 
             _commandMapping.Add(Mode.Default, new Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>
             {
-                { VirtualKey.PageUp, () => _commandFactory.CreateSmokeMessage(1) },
-                { VirtualKey.PageDown, () => _commandFactory.CreateSmokeMessage(0) },
+                {
+                    VirtualKey.PageUp, () =>
+                    {
+                        smoke -= 5;
+
+                        SmokeTime.Text = smoke.ToString();
+
+                        return _commandFactory.CreateSmokeMessage(smoke);
+                    }
+                },
+                {
+                    VirtualKey.PageDown, () =>
+                    {
+                        smoke += 5;
+
+                        SmokeTime.Text = smoke.ToString();
+
+                        return _commandFactory.CreateSmokeMessage(smoke);
+                    }
+                },
                 { VirtualKey.Back, () => _commandFactory.CreateTestMessage(++test) },
                 {
                     VirtualKey.Up, () =>
                     {
-                        i++;
+                        color++;
 
-                        ColorIndex.Text = i.ToString();
-                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(i, 1.0, 1.0));
+                        ColorIndex.Text = color.ToString();
+                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(color, 1.0, 1.0));
 
-                        return _commandFactory.CreateSingleSolid((ColorPreset)i, 255, 254);
+                        return _commandFactory.CreateSingleSolid((ColorPreset)color, 255, 254);
                     }
                 },
                 {
                     VirtualKey.Down, () =>
                     {
-                        i--;
+                        color--;
 
-                        ColorIndex.Text = i.ToString();
-                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(i, 1.0, 1.0));
+                        ColorIndex.Text = color.ToString();
+                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(color, 1.0, 1.0));
 
-                        return _commandFactory.CreateSingleSolid((ColorPreset)i, 255, 254);
+                        return _commandFactory.CreateSingleSolid((ColorPreset)color, 255, 254);
                     }
                 },
                 {
