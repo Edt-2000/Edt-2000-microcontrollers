@@ -11,7 +11,7 @@ SmokeApp smokeApp = SmokeApp(
 void setup()
 {
   pinMode(5, OUTPUT);
-  pinMode(12, OUTPUT);
+  pinMode(12, OUTPUT_OPEN_DRAIN);
 
   digitalWrite(5, LOW);
   digitalWrite(12, LOW);

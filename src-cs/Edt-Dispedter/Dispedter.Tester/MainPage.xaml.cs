@@ -25,11 +25,12 @@ namespace Dispedter.Tester
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
+        private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?" });
         private readonly CommandFactory _specialCommandFactory = new CommandFactory(new[] { "/?1", "/?2", "/?3", "/?4", "/?5", "/?6", "/?7", "/?8" });
         private readonly ListenerManager _listenerManager = new ListenerManager(detectUsb: false);
-        private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[] 
-        { 
+        private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[]
+        {
+            //IPAddress.Parse("127.0.0.1")});
             /* OLD fastled: IPAddress.Parse("10.0.0.20"),*/ 
             /* New fastled1: */ IPAddress.Parse("10.0.0.21"), 
             /* New fastled2: */ IPAddress.Parse("10.0.0.22"), 
