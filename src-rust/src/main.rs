@@ -1,4 +1,4 @@
-use std::net::UdpSocket;
+use std::{async_iter::FromIter, net::UdpSocket};
 
 fn main() {
     let listener = UdpSocket::bind("127.0.0.1:12346").expect("This should be good");
@@ -12,7 +12,11 @@ fn main() {
 
         let message = OscMessage::new(buffer);
 
-        let message_data = message.data.iter().map(|datum:&OscData| datum.read_int()).collect();
+        let message_data: FromIter<i32> = message
+            .data
+            .iter()
+            .map(|datum: &OscData| datum.read_int())
+            .collect();
 
         println!(
             "received {received} bytes from {port} for {} with {} items, data {:?}",
