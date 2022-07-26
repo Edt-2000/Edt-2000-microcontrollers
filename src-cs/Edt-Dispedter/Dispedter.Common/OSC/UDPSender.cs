@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -63,12 +64,9 @@ namespace Dispedter.Common.OSC
             return SendAsync(packet.GetBytes());
         }
 
-        public async Task SendAsync(IEnumerable<OscPacket> packets)
+        public Task SendAsync(IEnumerable<OscPacket> packets)
         {
-            foreach (var packet in packets)
-            {
-                await SendAsync(packet);
-            }
+            return Task.WhenAll(packets.Select(SendAsync));
         }
 
         public bool IsBroken()

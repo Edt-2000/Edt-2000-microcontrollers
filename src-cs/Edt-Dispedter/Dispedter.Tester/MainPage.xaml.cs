@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Dispedter.Common.DMX;
+using Dispedter.Common.Extensions;
 using Dispedter.Common.Factories;
 using Dispedter.Common.Managers;
 using Dispedter.Common.OSC;
@@ -28,7 +29,15 @@ namespace Dispedter.Tester
         private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
         private readonly CommandFactory _specialCommandFactory = new CommandFactory(new[] { "/?1", "/?2", "/?3", "/?4", "/?5", "/?6", "/?7", "/?8" });
         private readonly ListenerManager _listenerManager = new ListenerManager(detectUsb: false);
-        private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[] { IPAddress.Parse("10.0.0.20"), IPAddress.Parse("10.0.0.21"), IPAddress.Parse("10.0.0.22"), IPAddress.Parse("10.0.0.30"), IPAddress.Parse("10.0.0.40") });
+        private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[]
+        {
+            //IPAddress.Parse("127.0.0.1")});
+            /* OLD fastled: IPAddress.Parse("10.0.0.20"),*/ 
+            ///* New fastled1: */ IPAddress.Parse("10.0.0.21"), 
+            /* New fastled2: */ IPAddress.Parse("10.0.0.22") });
+        ///* DMX unit */ IPAddress.Parse("10.0.0.30"), 
+        /* OLD RGB IPAddress.Parse("10.0.0.40"),*/
+        ///* Smoke */ IPAddress.Parse("10.0.0.165") });
 
         private Dictionary<Mode, Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>> _commandMapping = new Dictionary<Mode, Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>>();
         private Dictionary<Mode, Dictionary<VirtualKey, Func<int, (int delay, IEnumerable<OscMessage> command)>>> _proceduralCommandMapping = new Dictionary<Mode, Dictionary<VirtualKey, Func<int, (int delay, IEnumerable<OscMessage> command)>>>();
@@ -118,14 +127,11 @@ namespace Dispedter.Tester
 
             if (_commandMapping[_mode].TryGetValue(key, out var commandGenerator))
             {
-                var command = commandGenerator();
+                var commands = commandGenerator();
 
-                foreach (var sender in _senderManager.Senders)
-                {
-                    await sender.SendAsync(command);
-                }
+                await Task.WhenAll(_senderManager.Senders.Select(sender => sender.SendAsync(commands.OptionallyBundle())));
 
-                await LogCommandAsync(CommandDirection.Out, command);
+                await LogCommandAsync(CommandDirection.Out, commands);
             }
             else if (_proceduralCommandMapping[_mode].TryGetValue(key, out var proceduralCommandGenerator))
             {
@@ -134,10 +140,7 @@ namespace Dispedter.Tester
                 {
                     var (delay, command) = proceduralCommandGenerator(i);
 
-                    foreach (var sender in _senderManager.Senders)
-                    {
-                        await sender.SendAsync(command);
-                    }
+                    await Task.WhenAll(_senderManager.Senders.Select(sender => sender.SendAsync(command.OptionallyBundle())));
 
                     await LogCommandAsync(CommandDirection.Out, command);
 
@@ -261,7 +264,7 @@ namespace Dispedter.Tester
                 { VirtualKey.T, () => _commandFactory.CreateRainbowSpark(PulseLength.Long) },
                 { VirtualKey.Y, () => _commandFactory.CreateRainbowSpark(PulseLength.Medium) },
 
-                { VirtualKey.Number1, () => _commandFactory.CreateSingleSolid(ColorPreset.Purple, 255, 254) },
+                { VirtualKey.Number1, () => _commandFactory.CreateSingleSolid(ColorPreset.White, 255, 254) },
                 { VirtualKey.Number2, () => _commandFactory.CreateSingleSolid(ColorPreset.Pink, 255, 254) },
                 { VirtualKey.Number3, () => _commandFactory.CreateSingleSolid(ColorPreset.Red, 255, 254) },
                 { VirtualKey.Number4, () => _commandFactory.CreateSingleSolid(ColorPreset.Amber, 255, 254) },
@@ -299,17 +302,17 @@ namespace Dispedter.Tester
 
                 { VirtualKey.U, () => _commandFactory.CreateSingleSpark(ColorPreset.Red, 255, 254, PulseLength.Medium) },
                 { VirtualKey.I, () => _commandFactory.CreateSingleSpark(ColorPreset.Blue, 255, 254, PulseLength.Medium) },
-                { VirtualKey.O, () => _commandFactory.CreateSingleSpark(ColorPreset.Purple, 255, 254, PulseLength.Medium) },
+                { VirtualKey.O, () => _commandFactory.CreateSingleSpark(ColorPreset.Pink, 255, 254, PulseLength.Medium) },
                 { VirtualKey.P, () => _commandFactory.CreateSingleSpark(ColorPreset.Green, 255, 254, PulseLength.Medium) },
 
                 { VirtualKey.H, () => _commandFactory.CreateSinglePulse(ColorPreset.Red, 255, 254, PulseLength.Medium) },
                 { VirtualKey.J, () => _commandFactory.CreateSinglePulse(ColorPreset.Blue, 255, 254, PulseLength.Medium) },
-                { VirtualKey.K, () => _commandFactory.CreateSinglePulse(ColorPreset.Purple, 255, 254, PulseLength.Medium) },
+                { VirtualKey.K, () => _commandFactory.CreateSinglePulse(ColorPreset.Pink, 255, 254, PulseLength.Medium) },
                 { VirtualKey.L, () => _commandFactory.CreateSinglePulse(ColorPreset.Green, 255, 254, PulseLength.Medium) },
 
                 { VirtualKey.B, () => _commandFactory.CreateSinglePulse(ColorPreset.Red, 255, 254, PulseLength.Long) },
                 { VirtualKey.N, () => _commandFactory.CreateSinglePulse(ColorPreset.Blue, 255, 254, PulseLength.Long) },
-                { VirtualKey.M, () => _commandFactory.CreateSinglePulse(ColorPreset.Purple, 255, 254, PulseLength.Long) },
+                { VirtualKey.M, () => _commandFactory.CreateSinglePulse(ColorPreset.Pink, 255, 254, PulseLength.Long) },
                 { (VirtualKey)188, () => _commandFactory.CreateSinglePulse(ColorPreset.Green, 255, 254, PulseLength.Long) }, // comma
 
                 { VirtualKey.Space, () => _commandFactory.CreateStrobo((ColorPreset)Random(), strobo) },
@@ -323,10 +326,10 @@ namespace Dispedter.Tester
                 { (VirtualKey)191, () => _commandFactory.CreateChaseStill((ColorPreset)Random(), 4) },
 
                 { VirtualKey.C, () => _commandFactory.CreateChase((ColorPreset)Random(), 1, 1) },
-                { VirtualKey.V, () => _commandFactory.CreateChase((ColorPreset)Random(), Math.Max(1, Random() / 16), 0) },
+                { VirtualKey.V, () => _commandFactory.CreateChase((ColorPreset)Random(), 2, 1) },
 
                 { (VirtualKey)187, () => _commandFactory.CreateChase((ColorPreset)Random(), 1, 3) },
-                { (VirtualKey)189, () => _commandFactory.CreateChase((ColorPreset)Random(), Math.Max(1, Random() / 16), 2) },
+                { (VirtualKey)189, () => _commandFactory.CreateChase((ColorPreset)Random(), 2, 3) },
 
 
                 { (VirtualKey)219, () => _commandFactory.CreateBash((ColorPreset)Random(), 16) },

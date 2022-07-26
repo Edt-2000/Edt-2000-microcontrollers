@@ -109,6 +109,7 @@
     <Compile Include="DMX\DmxConfig.cs" />
     <Compile Include="DMX\DmxDevice.cs" />
     <Compile Include="DMX\DmxType.cs" />
+    <Compile Include="Extensions\OscMessagesExtensions.cs" />
     <Compile Include="Managers\ListenerManager.cs" />
     <Compile Include="Managers\SenderManager.cs" />
     <Compile Include="OSCArduino\ColorPreset.cs" />
