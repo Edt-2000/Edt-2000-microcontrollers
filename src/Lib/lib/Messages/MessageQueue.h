@@ -7,8 +7,6 @@
 // #include <IMessage.h>
 // #include <OSCStructMessage.h>
 
-OSC::StructMessage<Messages::CommandMessage, uint32_t> Message;
-
 namespace Messages
 {
     // template <ESPIChipsets CHIPSET, uint8_t DATA_PIN, uint8_t CLOCK_PIN, EOrder RGB_ORDER, uint8_t NUMBER_OF_LEDS>
@@ -51,15 +49,11 @@ namespace Messages
             return oscAddress;
         }
 
-        OSC::IMessage *message()
+        void callbackMessage(OSC::IMessage * message)
         {
-            Serial.println("POEP");
-            return &Message;
-        }
+            auto structMessage = (OSC::StructMessage<Messages::CommandMessage, uint32_t>*)message;
 
-        void callbackMessage()
-        {
-            _device->handleMessage(Message.messageStruct);
+            _device->handleMessage(&(structMessage->messageStruct));
             // failed to insert into queue, probably due to high traffic
             // flagging this exhaustion occurance for debugging
             // if (xQueueSend(taskQueue, &_message.messageStruct, 0) == errQUEUE_FULL)
