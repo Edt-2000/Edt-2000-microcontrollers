@@ -42,6 +42,6 @@ public:
         auto output = progress < 10 ? HIGH : LOW;
 
         digitalWrite(5, output);
-        digitalWrite(12, output);
+        digitalWrite(0, output);
     }
 };
