@@ -58,7 +58,7 @@ public:
     void rainbow(uint8_t start, uint8_t center, uint8_t end, uint8_t h, uint8_t dh, uint8_t intensity);
     void twinkle(uint8_t start, uint8_t end, uint8_t h, uint8_t s, uint8_t v, uint8_t intensity, bool blackOut = true);
     void strobo(uint8_t h, uint8_t intensity);
-    void chase(uint8_t h, uint8_t speed, uint8_t style);
+    void chase(uint8_t h, uint8_t speed, uint8_t fadeSpeed, bool direction);
     void chase(uint8_t h, uint8_t length);
     void bash(uint8_t h, uint8_t intensity);
     void berserk();

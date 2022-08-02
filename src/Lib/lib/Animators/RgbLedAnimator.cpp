@@ -69,7 +69,7 @@ void Animators::RgbLedAnimator::strobo(uint8_t hue, uint8_t fps)
 	}
 	else
 	{
-		_animations.insertAnimation(Animation(AnimationType::Strobo, ColorHelper::CreateColor(hue, 255, 255), 255.0 / fps, 0));
+		_animations.insertAnimation(Animation(AnimationType::Strobo, ColorHelper::CreateColor(hue, 255, 255), 255.0 / fps, 0, 0));
 	}
 }
 
@@ -91,7 +91,7 @@ void Animators::RgbLedAnimator::chase(uint8_t hue, uint8_t length)
 	}
 	else
 	{
-		_animations.addAnimation(Animation(AnimationType::ChaseStill, ColorHelper::CreateColor(hue, 255, 255), length, 0));
+		_animations.addAnimation(Animation(AnimationType::ChaseStill, ColorHelper::CreateColor(hue, 255, 255), length, 0, 0));
 	}
 }
 

@@ -64,9 +64,12 @@ namespace Dispedter.Common.OSC
             return SendAsync(packet.GetBytes());
         }
 
-        public Task SendAsync(IEnumerable<OscPacket> packets)
+        public async Task SendAsync(IEnumerable<OscPacket> packets)
         {
-            return Task.WhenAll(packets.Select(SendAsync));
+            foreach (var packet in packets)
+            {
+                await SendAsync(packet.GetBytes());
+            }
         }
 
         public bool IsBroken()

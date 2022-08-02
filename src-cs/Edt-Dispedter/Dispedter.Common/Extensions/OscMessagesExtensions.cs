@@ -6,11 +6,33 @@ namespace Dispedter.Common.Extensions
 {
     public static class OscMessagesExtensions
     {
-        public static OscPacket OptionallyBundle(this IEnumerable<OscMessage> messages)
+
+        private static int _chunkSize = 30;
+
+        public static IEnumerable<OscPacket> OptionallyBundle(this IEnumerable<OscMessage> messages)
         {
-            return (messages.Skip(1).Any())
-                ? (OscPacket)new OscBundle(1, messages.ToArray())
-                : (OscPacket)messages.ElementAt(0);
+            var allMessages = messages.ToList();
+
+            if (allMessages.Count > 1)
+            {
+                do
+                {
+                    var chunk = allMessages.Take(_chunkSize);
+                    if (!chunk.Any())
+                    {
+                        break;
+                    }
+
+                    yield return (OscPacket)new OscBundle(1, chunk.ToArray());
+
+                    allMessages = allMessages.Skip(_chunkSize).ToList();
+                }
+                while (true);
+            }
+            else if (allMessages.Count == 1)
+            {
+                yield return allMessages[0];
+            }
         }
     }
 }

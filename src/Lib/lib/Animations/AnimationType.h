@@ -4,11 +4,8 @@ namespace Animations
 {
 enum AnimationType
 {
-    // chase types are bit flags!
     ChaseDefault = 0,
-    ChaseLongTail = 1,
-    ChaseDefaultReverse = 2,
-    ChaseLongTailReverse = 3,
+    ChaseDefaultReverse = 1,
 
     Bash = 10,
 

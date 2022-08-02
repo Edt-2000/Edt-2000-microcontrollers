@@ -86,17 +86,13 @@ namespace Messages
 		uint32_t intensity;
 	};
 
-	enum ChaseStyle
-	{
-		Default = 0,
-		LongTail = 1
-	};
 	struct ChaseCommand
 	{
 		// 0 - 255
 		uint32_t hue;
 		uint32_t speed;
-		ChaseStyle style : 8;
+		uint32_t fadeSpeed;
+		uint32_t direction;
 	};
 
 	struct ChaseStillCommand
