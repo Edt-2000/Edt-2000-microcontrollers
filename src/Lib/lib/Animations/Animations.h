@@ -8,7 +8,7 @@ namespace Animations
 class Animations
 {
 private:
-    static const uint8_t _maxAnimations = 12;
+    static const uint8_t _maxAnimations = 24;
 
 public:
     std::list<Animation> animations;

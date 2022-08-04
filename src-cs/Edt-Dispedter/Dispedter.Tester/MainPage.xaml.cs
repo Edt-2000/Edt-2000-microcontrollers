@@ -35,7 +35,7 @@ namespace Dispedter.Tester
 
             //IPAddress.Parse("127.0.0.1")});
             /* OLD fastled: IPAddress.Parse("10.0.0.20"),*/ 
-            ///* New fastled1: */ IPAddress.Parse("10.0.0.21"), 
+            /* New fastled1: */ IPAddress.Parse("10.0.0.21"), 
             /* New fastled2: */ IPAddress.Parse("10.0.0.22") });
         ///* DMX unit */ IPAddress.Parse("10.0.0.30"), 
         /* OLD RGB IPAddress.Parse("10.0.0.40"),*/
@@ -69,6 +69,7 @@ namespace Dispedter.Tester
             All = 4
         }
 
+        private static int _currentColor = 0;
         private static Dictionary<int, ColorPreset[]> _colorSets = new Dictionary<int, ColorPreset[]>()
         {
             [0] = new[] { ColorPreset.Red, ColorPreset.White },
@@ -94,7 +95,7 @@ namespace Dispedter.Tester
 
         public MainPage()
         {
-            _colorSets[4] = Enumerable.Range(0, 255).Cast<ColorPreset>().ToArray();
+            _colorSets[4] = Enumerable.Range(0, 255).Cast<ColorPreset>().OrderBy(x => Guid.NewGuid()).ToArray();
 
             _dmxDevices = new ObservableCollection<DmxDevice>();
             _dmxConfig = new DmxConfig(_dmxDevices);
@@ -246,7 +247,6 @@ namespace Dispedter.Tester
         {
             var i = (byte)0;
             var strobo = (byte)127;
-            var stroboColor = 0;
 
             var test = 0;
 
@@ -355,14 +355,7 @@ namespace Dispedter.Tester
                 { VirtualKey.M, () => _commandFactory.CreateSinglePulse(ColorPreset.Pink, 255, 254, PulseLength.Long) },
                 { (VirtualKey)188, () => _commandFactory.CreateSinglePulse(ColorPreset.Green, 255, 254, PulseLength.Long) }, // comma
 
-                { VirtualKey.Space, () =>
-                {
-                    var color = (_colorSetMode == ColorSetMode.All) ? RandomColor() : _colorSets[(int)_colorSetMode][stroboColor];
-
-                    stroboColor = (stroboColor + 1) % 2;
-
-                    return _commandFactory.CreateStrobo(color, strobo);
-                } },
+                { VirtualKey.Space, () => _commandFactory.CreateStrobo(RandomColor(), strobo)},
                 { VirtualKey.Escape, () => _commandFactory.CreateStrobo(0, 0) },
                 { VirtualKey.Enter, () => _commandFactory.CreateBerserk() },
 
@@ -378,9 +371,9 @@ namespace Dispedter.Tester
                 { (VirtualKey)187, () => _commandFactory.CreateChase(RandomColor(), 3, 32, true) },
                 { (VirtualKey)189, () => _commandFactory.CreateChase(RandomColor(), 3, 32, false) },
 
-                { (VirtualKey)220, () => _specialCommandFactory.CreateTwinkleUsingAddresses() },
-                { (VirtualKey)219, () => _specialCommandFactory.CreateChaseUsingSomeAddresses(RandomColor(), 2, 1, 1, true) },
-                { (VirtualKey)221, () => _specialCommandFactory.CreateChaseUsingSomeAddresses(RandomColor(), 2, 1, 1, false) },
+                //{ (VirtualKey)220, () => _specialCommandFactory.CreateTwinkleUsingAddresses(RandomColor) }, // \
+                { (VirtualKey)219, () => _specialCommandFactory.CreateChaseUsingSomeAddresses(RandomColor(), 2, 1, 1, true) }, // [
+                { (VirtualKey)221, () => _specialCommandFactory.CreateChaseUsingSomeAddresses(RandomColor(), 2, 1, 1, false) }, // ]
             });
         }
 
@@ -441,7 +434,8 @@ namespace Dispedter.Tester
                 { VirtualKey.A, (i) => (10, _commandFactory.CreateVuMeter(Wave(i))) },
                 { VirtualKey.S, (i) => (20, _commandFactory.CreateTwinkle(ColorPreset.Red, Wave(i))) },
                 { VirtualKey.D, (i) => (5, _commandFactory.CreateTwinkle(RandomColor(), Random())) },
-                { VirtualKey.F, (i) => (5, _commandFactory.CreateSingleSolid((ColorPreset)Clamp(i / 100.0), 255, 254)) }
+                { VirtualKey.F, (i) => (5, _commandFactory.CreateSingleSolid((ColorPreset)Clamp(i / 100.0), 255, 254)) },
+                { (VirtualKey)220, (i) => (5, _commandFactory.CreateRainbowSolid(i)) }
             });
         }
 
@@ -457,7 +451,16 @@ namespace Dispedter.Tester
         {
             return (int)(Math.Sin((i / 100.0) * Math.PI) * 255);
         }
-        private ColorPreset RandomColor() => _colorSets[(int)_colorSetMode][R.Next(0, _colorSets[(int)_colorSetMode].Count())];
+        private ColorPreset RandomColor()
+        {
+            var set = _colorSets[(int)_colorSetMode];
+            if (_currentColor >= set.Length)
+            {
+                _currentColor = 0;
+            }
+            return set[_currentColor++];
+        }
+
         private static int Random()
         {
             return Clamp(R.NextDouble());

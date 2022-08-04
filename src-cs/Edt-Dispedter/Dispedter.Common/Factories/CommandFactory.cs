@@ -60,6 +60,11 @@ namespace Dispedter.Common.Factories
             return _addresses.Select(a => new OscMessage(a, (int)Command.RainbowSolid, 0, 127, 0, 127));
         }
 
+        public IEnumerable<OscMessage> CreateRainbowSolid(int percentage)
+        {
+            return _addresses.Select(a => new OscMessage(a, (int)Command.RainbowSolid, 0, percentage, 0, 255));
+        }
+
         public IEnumerable<OscMessage> CreateRainbowPulse(PulseLength p)
         {
             return _addresses.Select(a => new OscMessage(a, (int)Command.RainbowPulse, 0, 127, 0, 127, (int)p));
@@ -167,13 +172,11 @@ namespace Dispedter.Common.Factories
                 });
         }
 
-        public IEnumerable<OscMessage> CreateTwinkleUsingAddresses()
+        public IEnumerable<OscMessage> CreateTwinkleUsingAddresses(Func<ColorPreset> h)
         {
             var parts = 4;
 
             var r = new Random();
-
-            ColorPreset h() => r.NextDouble() < 0.5 ? ColorPreset.White : ColorPreset.Red;
 
             return _addresses.SelectMany((a, i) =>
                 Enumerable.Range(0, parts)

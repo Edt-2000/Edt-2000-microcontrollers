@@ -245,12 +245,12 @@ void Animators::FastLedAnimator::loop()
 			if (chaseReverse)
 			{
 				solid(127 - to, 127 - from, animation.color);
-				fade(127 - to, 127 - from, chaseFadeSpeed, _fadeMode);
+				fade(127 - to, 127 - from, chaseFadeSpeed, FadeMode::FadeOneByOne);
 			}
 			else
 			{
 				solid(from, to, animation.color);
-				fade(from, to, chaseFadeSpeed, _fadeMode);
+				fade(from, to, chaseFadeSpeed, FadeMode::FadeOneByOne);
 			}
 
 			break;
