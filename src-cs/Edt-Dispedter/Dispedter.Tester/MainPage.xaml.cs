@@ -253,32 +253,54 @@ namespace Dispedter.Tester
         {
             var i = (byte)0;
             var strobo = (byte)127;
+            var color = (byte)0;
+            var smoke = (byte)120;
 
             var test = 0;
 
             _commandMapping.Add(Mode.Default, new Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>
             {
+                {
+                    VirtualKey.PageUp, () =>
+                    {
+                        smoke -= 5;
+
+                        SmokeTime.Text = smoke.ToString();
+
+                        return _commandFactory.CreateSmokeMessage(smoke);
+                    }
+                },
+                {
+                    VirtualKey.PageDown, () =>
+                    {
+                        smoke += 5;
+
+                        SmokeTime.Text = smoke.ToString();
+
+                        return _commandFactory.CreateSmokeMessage(smoke);
+                    }
+                },
                 { VirtualKey.Back, () => _commandFactory.CreateTestMessage(++test) },
                 {
                     VirtualKey.Up, () =>
                     {
-                        i++;
+                        color++;
 
-                        ColorIndex.Text = i.ToString();
-                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(i, 1.0, 1.0));
+                        ColorIndex.Text = color.ToString();
+                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(color, 1.0, 1.0));
 
-                        return _commandFactory.CreateSingleSolid((ColorPreset)i, 255, 254);
+                        return _commandFactory.CreateSingleSolid((ColorPreset)color, 255, 254);
                     }
                 },
                 {
                     VirtualKey.Down, () =>
                     {
-                        i--;
+                        color--;
 
-                        ColorIndex.Text = i.ToString();
-                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(i, 1.0, 1.0));
+                        ColorIndex.Text = color.ToString();
+                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(color, 1.0, 1.0));
 
-                        return _commandFactory.CreateSingleSolid((ColorPreset)i, 255, 254);
+                        return _commandFactory.CreateSingleSolid((ColorPreset)color, 255, 254);
                     }
                 },
                 {

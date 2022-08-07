@@ -11,8 +11,9 @@
     </Page.Resources>
 
     <Grid Background="Black">
-        <TextBlock x:Name="ColorIndex" HorizontalAlignment="Left"  Margin="214,214,0,0" Foreground="White" Text="" VerticalAlignment="Top"/>
-        <TextBlock x:Name="KeyCode" HorizontalAlignment="Left"  Margin="10,10,0,0" Foreground="DarkSlateGray" Text="123" VerticalAlignment="Top"/>
+        <TextBlock x:Name="ColorIndex" HorizontalAlignment="Left"  Margin="10,40,0,0" Foreground="DarkSlateGray" Text="2" VerticalAlignment="Top"/>
+        <TextBlock x:Name="SmokeTime" HorizontalAlignment="Left"  Margin="10,70,0,0" Foreground="DarkSlateGray" Text="3" VerticalAlignment="Top"/>
+        <TextBlock x:Name="KeyCode" HorizontalAlignment="Left"  Margin="10,10,0,0" Foreground="DarkSlateGray" Text="1" VerticalAlignment="Top"/>
         <TextBlock x:Name="CommandMode" HorizontalAlignment="Left"  Margin="10,40,0,0" Foreground="White" Text="" VerticalAlignment="Top"/>
         <TextBlock x:Name="ColorMode" HorizontalAlignment="Left"  Margin="10,70,0,0" Foreground="White" Text="" VerticalAlignment="Top"/>
         <TextBlock x:Name="StroboSpeed" HorizontalAlignment="Left"  Margin="10,100,0,0" Foreground="White" Text="" VerticalAlignment="Top"/>
