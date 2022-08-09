@@ -58,12 +58,42 @@ namespace Edt_Kontrol.OSC
         }
 
 
-
         public static T[] SubArray<T>(this T[] data, int index, int length)
         {
             var result = new T[length];
             Array.Copy(data, index, result, 0, length);
             return result;
         }
+
+        private static int _chunkSize = 30;
+
+        public static IEnumerable<OscPacket> OptionallyBundle(this IEnumerable<OscMessage> messages)
+        {
+            var allMessages = messages.ToList();
+
+            if (allMessages.Count > 1)
+            {
+                do
+                {
+                    var chunk = allMessages.Take(_chunkSize);
+                    if (!chunk.Any())
+                    {
+                        break;
+                    }
+
+                    yield return new OscBundle(1, chunk.ToArray());
+
+                    allMessages = allMessages.Skip(_chunkSize).ToList();
+                }
+                while (true);
+            }
+            else if (allMessages.Count == 1)
+            {
+                yield return allMessages[0];
+            }
+        }
+
+        public static IEnumerable<OscMessage> TakeRandom(this IEnumerable<OscMessage> messages, int count)
+            => messages.OrderBy(x => Guid.NewGuid()).Take(count);
     }
 }

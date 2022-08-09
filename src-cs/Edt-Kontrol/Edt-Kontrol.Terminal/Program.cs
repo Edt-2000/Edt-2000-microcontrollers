@@ -1,13 +1,13 @@
-﻿using Dispedter.Common.Factories;
-using Edt_Kontrol.Effects;
-using Edt_Kontrol.Midi;
-using Edt_Kontrol.OSC;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Dispedter.Common.Factories;
+using Edt_Kontrol.Effects;
+using Edt_Kontrol.Midi;
+using Edt_Kontrol.OSC;
 
 namespace Edt_Kontrol.Terminal
 {
@@ -16,44 +16,55 @@ namespace Edt_Kontrol.Terminal
         private static Kontrol _kontrol = new Kontrol();
 
         private static ISender[] _senderFs = new[] {
-            new UdpSender(IPAddress.Parse("10.0.0.20"), 12345),
+            //new UdpSender(IPAddress.Parse("10.0.0.20"), 12345),
             new UdpSender(IPAddress.Parse("10.0.0.21"), 12345),
             new UdpSender(IPAddress.Parse("10.0.0.22"), 12345)
         };
-        private static ISender _senderR = new UdpSender(IPAddress.Parse("10.0.0.40"), 12345);
-        private static ISender _senderDmx = new UdpSender(IPAddress.Parse("10.0.0.30"), 12345);
+        //private static ISender _senderR = new UdpSender(IPAddress.Parse("10.0.0.40"), 12345);
+        //private static ISender _senderDmx = new UdpSender(IPAddress.Parse("10.0.0.30"), 12345);
         //  ADD 10.0.0.30
 
-        private static CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/R?" });
+        private static CommandFactory _commandFactory = new CommandFactory(new[] { "/F?" });
+        private static CommandFactory _addressCommandFactory = new CommandFactory(new[] { "/?1", "/?2", "/?3", "/?4", "/?5", "/?6", "/?7", "/?8" });
 
         private static readonly int[] Count = new int[8];
         private static readonly int[] Value = new int[8];
+        private static readonly int[] CurrentVariant = new int[8];
         private static bool _strobo = false;
 
         private static Random _random = new Random();
 
         private static Timer[] _timers;
 
-        private static Dictionary<int, ColorPreset[]> _colorSets = new Dictionary<int, ColorPreset[]>()
+        private static int _currentColor = 0;
+        private static Dictionary<Mode, ColorPreset[]> _colorSets = new Dictionary<Mode, ColorPreset[]>()
         {
-            [0] = new[] { ColorPreset.Red, ColorPreset.White },
-            [1] = new[] { ColorPreset.Red, ColorPreset.Blue },
-            [2] = new[] { ColorPreset.Turquoise, ColorPreset.Pink },
-            [3] = new[] { ColorPreset.Green, ColorPreset.Amber }
+#pragma warning disable format
+            [0] =                       new[] { ColorPreset.Red, ColorPreset.White },
+            [Mode.One] =                new[] { ColorPreset.Red, ColorPreset.Blue },
+            [Mode.Two] =                new[] { ColorPreset.Turquoise, ColorPreset.Pink },
+            [Mode.One | Mode.Two] =     new[] { ColorPreset.Pink },
+            [Mode.Four] =               new[] { ColorPreset.Green, ColorPreset.Amber },
+            [Mode.One | Mode.Four] =    new[] { ColorPreset.Green, ColorPreset.White },
+            [Mode.Two | Mode.Four] =    new[] { ColorPreset.Red, ColorPreset.Amber }
+#pragma warning restore format
 
         };
 
+
         static async Task Main(string[] args)
         {
+            _colorSets[Mode.One | Mode.Two | Mode.Four] = Enumerable.Range(0, 255).Cast<ColorPreset>().ToArray();
+
             await _kontrol.InitAsync();
 
             _timers = new[]
             {
                 new Timer((o) => TwinkePerIntensityAsync(0, _kontrol.Channels[0]), default, 0, 40),
-                new Timer((o) => TwinkePerIntensityAsync(1, _kontrol.Channels[1]), default, 5, 40),
+                new Timer((o) => PulseAsync(1, _kontrol.Channels[1]), default, 5, 1),
                 new Timer((o) => PulseMuxAsync(2, _kontrol.Channels[2]), default, 10, 40),
-                new Timer((o) => ChaseAsync(3, _kontrol.Channels[3], 1), default, 15, 40),
-                new Timer((o) => ChaseAsync(4, _kontrol.Channels[4], 3), default, 20, 40),
+                new Timer((o) => ChaseAsync(3, _kontrol.Channels[3], true), default, 15, 40),
+                new Timer((o) => ChaseAsync(4, _kontrol.Channels[4], false), default, 20, 40),
                 new Timer((o) => TwinkeWithIntensityAsync(5, _kontrol.Channels[5]), default, 20, 40),
                 new Timer((o) => VuMeterAsync(6, _kontrol.Channels[6]), default, 30, 1),
                 new Timer((o) => SolidAsync(7, _kontrol.Channels[7]), default, 35, 1),
@@ -73,6 +84,30 @@ namespace Edt_Kontrol.Terminal
             }
         }
 
+        static async void PulseAsync(int channel, ChannelState state)
+        {
+            var variant = Variant(channel, state.Select, 8);
+
+            if (PulseOncePer(channel, state.Intensity))
+            {
+                var message = variant switch
+                {
+                    0 => _addressCommandFactory.CreatePartialTwinkle(() => RandomColor(state.Mode)),
+                    1 => _addressCommandFactory.CreateSingleSolid(RandomColor(state.Mode), 255, 255).TakeRandom(3),
+                    2 => _addressCommandFactory.CreateRainbowPulse(PulseLength.Long).TakeRandom(3),
+                    3 => _addressCommandFactory.CreateSinglePulse(RandomColor(state.Mode), 255, 255, PulseLength.Long).TakeRandom(3),
+                    4 => _addressCommandFactory.CreateDualPulse(RandomColor(state.Mode), RandomColor(state.Mode), 127 / 2, PulseLength.Long).TakeRandom(3),
+                    5 => _addressCommandFactory.CreateSinglePulse(RandomColor(state.Mode), 255, 255, PulseLength.Medium).TakeRandom(4),
+                    6 => _addressCommandFactory.CreateDualPulse(RandomColor(state.Mode), RandomColor(state.Mode), 127 / 2, PulseLength.Medium).TakeRandom(4),
+                    7 => _addressCommandFactory.CreateSinglePulse(RandomColor(state.Mode), 255, 255, PulseLength.Short).TakeRandom(5),
+                    8 => _addressCommandFactory.CreateDualPulse(RandomColor(state.Mode), RandomColor(state.Mode), 127 / 2, PulseLength.Short).TakeRandom(5),
+
+                    _ => Enumerable.Empty<OscMessage>()
+                };
+                await SendAsync(message);
+            }
+        }
+
         static async void TwinkeWithIntensityAsync(int channel, ChannelState state)
         {
             if (state.Intensity > 0)
@@ -84,31 +119,31 @@ namespace Edt_Kontrol.Terminal
 
         static async void PulseMuxAsync(int channel, ChannelState state)
         {
+            var variant = Variant(channel, state.Select, 5);
+
             if (PulseOncePer(channel, state.IntensityLog))
             {
-                var color1 = RandomColor(state.Mode);
-                var color2 = RandomColor(state.Mode);
-                var message = Variant(state.Select, 5) switch
+                var message = variant switch
                 {
-                    1 => _commandFactory.CreateSinglePulse(color1, 250, 250, Pulse(state.Intensity)),
-                    2 => _commandFactory.CreateSingleSpark(color1, 250, 250, PulseLength.Long),
-                    3 => _commandFactory.CreateDualPulse(color1, color2, 63, Pulse(state.Intensity)),
-                    4 => _commandFactory.CreateDualSpark(color1, color2, 63, PulseLength.Long),
+                    1 => _commandFactory.CreateSinglePulse(RandomColor(state.Mode), 250, 250, Pulse(state.Intensity)),
+                    2 => _commandFactory.CreateSingleSpark(RandomColor(state.Mode), 250, 250, PulseLength.Long),
+                    3 => _commandFactory.CreateDualPulse(RandomColor(state.Mode), RandomColor(state.Mode), 63, Pulse(state.Intensity)),
+                    4 => _commandFactory.CreateDualSpark(RandomColor(state.Mode), RandomColor(state.Mode), 63, PulseLength.Long),
                     _ => _commandFactory.CreateRainbowPulse(Pulse(state.Intensity))
                 };
                 await SendAsync(message);
             }
         }
 
-        static async void ChaseAsync(int channel, ChannelState state, int type)
+        static async void ChaseAsync(int channel, ChannelState state, bool up)
         {
             if (state.Select > 15)
             {
-                if (PulseOncePer(channel, state.Intensity / 2))
+                if (PulseOncePer(channel, state.Intensity))
                 {
                     var color = RandomColor(state.Mode);
 
-                    var message = _commandFactory.CreateChase(color, state.Select / 16, type);
+                    var message = _commandFactory.CreateChase(color, state.Select / 16, state.Select < 30 ? 1 : 4, up);
                     await SendAsync(message);
                 }
             }
@@ -198,18 +233,36 @@ namespace Edt_Kontrol.Terminal
             return (start, start + length);
         }
 
-        static int Variant(int input, int options) => (int)(input * (options / 127.0));
+        static int Variant(int channel, int input, int options)
+        {
+            var variant = (int)(input * (options / 127.0));
+
+            if (variant != CurrentVariant[channel])
+            {
+                CurrentVariant[channel] = variant;
+
+                _kontrol.Notify((byte)variant);
+            }
+
+            return variant;
+        }
 
         static PulseLength Pulse(int input) => input < 50 ? PulseLength.Long : PulseLength.Medium;
 
-        static ColorPreset RandomColor(Mode mode) => _colorSets[(int)mode][(int)(_random.NextDouble() * 2)];
+        static ColorPreset RandomColor(Mode mode)
+        {
+            var set = _colorSets[mode];
+            if (_currentColor >= set.Length)
+            {
+                _currentColor = 0;
+            }
+            return set[_currentColor++];
+        }
 
         static ColorPreset Rotate(ColorPreset color, ColorPreset degree) => (ColorPreset)(((int)color + (int)degree) % 255);
 
         private static async Task SendAsync(IEnumerable<OscMessage> messages)
             => await Task.WhenAll(
-                _senderFs.Select(sender => sender.SendAsync(messages.Where(x => x.Address.Contains("F"))))
-                    .Append(_senderR.SendAsync(messages.Where(x => x.Address.Contains("R"))))
-                    .Append(_senderDmx.SendAsync(messages.Where(x => x.Address.Contains("R")))));
+                _senderFs.Select(sender => sender.SendAsync(messages.OptionallyBundle())));
     }
 }

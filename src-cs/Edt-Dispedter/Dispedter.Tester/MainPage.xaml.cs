@@ -65,8 +65,11 @@ namespace Dispedter.Tester
             RedWhite = 0,
             RedBlue = 1,
             TurquoisePink = 2,
-            GreenAmber = 3,
-            All = 4
+            Pink = 3,
+            GreenAmber = 4,
+            GreenWhite = 5,
+            RedAmber = 6,
+            All = 7
         }
 
         private static int _currentColor = 0;
@@ -75,7 +78,10 @@ namespace Dispedter.Tester
             [0] = new[] { ColorPreset.Red, ColorPreset.White },
             [1] = new[] { ColorPreset.Red, ColorPreset.Blue },
             [2] = new[] { ColorPreset.Turquoise, ColorPreset.Pink },
-            [3] = new[] { ColorPreset.Green, ColorPreset.Amber }
+            [3] = new[] { ColorPreset.Pink },
+            [4] = new[] { ColorPreset.Green, ColorPreset.Amber },
+            [5] = new[] { ColorPreset.Green, ColorPreset.White },
+            [6] = new[] { ColorPreset.Red, ColorPreset.Amber },
         };
 
         private Task _senderTask;
@@ -95,7 +101,7 @@ namespace Dispedter.Tester
 
         public MainPage()
         {
-            _colorSets[4] = Enumerable.Range(0, 255).Cast<ColorPreset>().OrderBy(x => Guid.NewGuid()).ToArray();
+            _colorSets[7] = Enumerable.Range(0, 255).Cast<ColorPreset>().OrderBy(x => Guid.NewGuid()).ToArray();
 
             _dmxDevices = new ObservableCollection<DmxDevice>();
             _dmxConfig = new DmxConfig(_dmxDevices);
@@ -371,7 +377,7 @@ namespace Dispedter.Tester
                 { (VirtualKey)187, () => _commandFactory.CreateChase(RandomColor(), 3, 32, true) },
                 { (VirtualKey)189, () => _commandFactory.CreateChase(RandomColor(), 3, 32, false) },
 
-                //{ (VirtualKey)220, () => _specialCommandFactory.CreateTwinkleUsingAddresses(RandomColor) }, // \
+                { (VirtualKey)220, () => _specialCommandFactory.CreateTwinkleUsingAddresses(RandomColor) }, // \
                 { (VirtualKey)219, () => _specialCommandFactory.CreateChaseUsingSomeAddresses(RandomColor(), 2, 1, 1, true) }, // [
                 { (VirtualKey)221, () => _specialCommandFactory.CreateChaseUsingSomeAddresses(RandomColor(), 2, 1, 1, false) }, // ]
             });
@@ -434,8 +440,7 @@ namespace Dispedter.Tester
                 { VirtualKey.A, (i) => (10, _commandFactory.CreateVuMeter(Wave(i))) },
                 { VirtualKey.S, (i) => (20, _commandFactory.CreateTwinkle(ColorPreset.Red, Wave(i))) },
                 { VirtualKey.D, (i) => (5, _commandFactory.CreateTwinkle(RandomColor(), Random())) },
-                { VirtualKey.F, (i) => (5, _commandFactory.CreateSingleSolid((ColorPreset)Clamp(i / 100.0), 255, 254)) },
-                { (VirtualKey)220, (i) => (5, _commandFactory.CreateRainbowSolid(i)) }
+                { VirtualKey.F, (i) => (5, _commandFactory.CreateSingleSolid((ColorPreset)Clamp(i / 100.0), 255, 254)) }
             });
         }
 

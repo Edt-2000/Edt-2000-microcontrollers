@@ -1,5 +1,6 @@
 ﻿using Edt_Kontrol.Effects;
 using Edt_Kontrol.OSC;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,6 +9,7 @@ namespace Dispedter.Common.Factories
     public class CommandFactory
     {
         private readonly string[] _addresses;
+        private readonly Random _r = new Random();
 
         public CommandFactory(string[] addresses)
         {
@@ -89,29 +91,19 @@ namespace Dispedter.Common.Factories
             return _addresses.Select(a => new OscMessage(a, (int)Command.Strobo, (int)h, speed));
         }
 
-        public IEnumerable<OscMessage> CreateBerserk()
+        public IEnumerable<OscMessage> CreateChase(ColorPreset h, int speed, int fadeSpeed, bool up)
         {
-            return _addresses.Select(a => new OscMessage(a, (int)Command.Berserk));
+            return _addresses.Select(a => new OscMessage(a, (int)Command.Chase, (int)h, speed, fadeSpeed, up ? 1 : 0));
         }
 
-        public IEnumerable<OscMessage> CreateChase(ColorPreset h, int speed, int style)
+        public IEnumerable<OscMessage> CreatePartialTwinkle(Func<ColorPreset> h)
         {
-            return _addresses.Select(a => new OscMessage(a, (int)Command.Chase, (int)h, speed, style));
-        }
+            var parts = 4;
 
-        public IEnumerable<OscMessage> CreateChaseStill(ColorPreset h, int length)
-        {
-            return _addresses.Select(a => new OscMessage(a, (int)Command.ChaseStill, (int)h, length));
-        }
-
-        public IEnumerable<OscMessage> CreateBash(ColorPreset h, int intensity)
-        {
-            return _addresses.Select(a => new OscMessage(a, (int)Command.Bash, (int)h, intensity));
-        }
-
-        public IEnumerable<OscMessage> CreateRainbowUsingAddresses()
-        {
-            return _addresses.Select((a, i) => new OscMessage(a, (int)Command.SingleSolid, 0, 127, (int)(i * (255.0 / _addresses.Count())), 255, 254));
+            return _addresses.SelectMany((a, i) =>
+                Enumerable.Range(0, parts)
+                    .Select(x => _r.Next(0, 126))
+                    .Select(x => new OscMessage(a, (int)Command.SinglePulse, x, x + 1, (int)h(), 255, 255, (int)PulseLength.Long)));
         }
 
         public IEnumerable<OscMessage> ClearDMX()

@@ -23,7 +23,7 @@ namespace Dispedter.Common.Extensions
                         break;
                     }
 
-                    yield return (OscPacket)new OscBundle(1, chunk.ToArray());
+                    yield return new OscBundle(1, chunk.ToArray());
 
                     allMessages = allMessages.Skip(_chunkSize).ToList();
                 }
