@@ -30,7 +30,6 @@ namespace Edt_Kontrol.Terminal
         private static readonly int[] Count = new int[8];
         private static readonly int[] Value = new int[8];
         private static readonly int[] CurrentVariant = new int[8];
-        private static bool _strobo = false;
 
         private static Random _random = new Random();
 
@@ -54,7 +53,7 @@ namespace Edt_Kontrol.Terminal
 
         static async Task Main(string[] args)
         {
-            _colorSets[Mode.One | Mode.Two | Mode.Four] = Enumerable.Range(0, 255).Cast<ColorPreset>().ToArray();
+            _colorSets[Mode.One | Mode.Two | Mode.Four] = Enumerable.Range(0, 255).Cast<ColorPreset>().OrderBy(x => Guid.NewGuid()).ToArray();
 
             await _kontrol.InitAsync();
 
@@ -117,21 +116,37 @@ namespace Edt_Kontrol.Terminal
             }
         }
 
+        static int _address = 0;
+
         static async void PulseMuxAsync(int channel, ChannelState state)
         {
-            var variant = Variant(channel, state.Select, 5);
+            var variant = Variant(channel, state.Select, 6);
 
             if (PulseOncePer(channel, state.IntensityLog))
             {
                 var message = variant switch
                 {
-                    1 => _commandFactory.CreateSinglePulse(RandomColor(state.Mode), 250, 250, Pulse(state.Intensity)),
+                    0 => _commandFactory.CreateRainbowPulse(PulseLength.Long),
+                    1 => _commandFactory.CreateSinglePulse(RandomColor(state.Mode), 250, 250, PulseLength.Long),
                     2 => _commandFactory.CreateSingleSpark(RandomColor(state.Mode), 250, 250, PulseLength.Long),
-                    3 => _commandFactory.CreateDualPulse(RandomColor(state.Mode), RandomColor(state.Mode), 63, Pulse(state.Intensity)),
+                    3 => _commandFactory.CreateDualPulse(RandomColor(state.Mode), RandomColor(state.Mode), 63, PulseLength.Long),
                     4 => _commandFactory.CreateDualSpark(RandomColor(state.Mode), RandomColor(state.Mode), 63, PulseLength.Long),
-                    _ => _commandFactory.CreateRainbowPulse(Pulse(state.Intensity))
+                    5 => _addressCommandFactory.CreateSinglePulse(RandomColor(state.Mode), 250, 250, PulseLength.Long).Where((m, index) => (index + (_address % 2)) % 2 == 1),
+                    6 => _addressCommandFactory.CreateSinglePulse(RandomColor(state.Mode), 250, 250, PulseLength.Long).Skip(_address++).Take(1),
+
+                    _ => Enumerable.Empty<OscMessage>()
                 };
                 await SendAsync(message);
+
+                if (variant == 5)
+                {
+                    _address++;
+                }
+
+                if (_address >= 8)
+                {
+                    _address = 0;
+                }
             }
         }
 
@@ -173,30 +188,32 @@ namespace Edt_Kontrol.Terminal
 
         static async void TriggersAsync(object state)
         {
-            if (!_strobo && _kontrol.Play)
+            if (_kontrol.Play)
             {
-                _strobo = true;
-                await SendAsync(_commandFactory.CreateStrobo((ColorPreset)255, 130));
+                await SendAsync(_commandFactory.CreateStrobo(RandomColor(_kontrol.Channels[0].Mode), 130));
+                _kontrol.Play = false;
             }
-            else if (_strobo && _kontrol.Stop)
+            else if (_kontrol.Stop)
             {
-                _strobo = false;
                 await SendAsync(_commandFactory.CreateStrobo(0, 0));
+                _kontrol.Stop = false;
             }
 
             if (_kontrol.Rec)
             {
-                await SendAsync(_commandFactory.CreateSingleSpark((ColorPreset)((_kontrol.Channels[0].Select * 2) + 1), 255, 255, PulseLength.Medium));
+                await SendAsync(_commandFactory.CreateSingleSpark(RandomColor(_kontrol.Channels[0].Mode), 255, 255, PulseLength.Long));
             }
 
             if (_kontrol.Backward)
             {
-                await SendAsync(_commandFactory.CreateSinglePulse((ColorPreset)((_kontrol.Channels[0].Select * 2) + 1), 255, 255, PulseLength.Medium));
+                await SendAsync(_commandFactory.CreateSinglePulse(RandomColor(_kontrol.Channels[0].Mode), 255, 255, PulseLength.Long));
+                _kontrol.Backward = false;
             }
 
             if (_kontrol.Forward)
             {
-                await SendAsync(_commandFactory.CreateSinglePulse(Rotate((ColorPreset)((_kontrol.Channels[0].Select * 2) + 1), (ColorPreset)127), 255, 255, PulseLength.Medium));
+                await SendAsync(_commandFactory.CreateDualPulse(RandomColor(_kontrol.Channels[0].Mode), RandomColor(_kontrol.Channels[0].Mode), 127/2, PulseLength.Long));
+                _kontrol.Forward = false;
             }
         }
 
