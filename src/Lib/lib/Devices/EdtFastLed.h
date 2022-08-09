@@ -153,7 +153,7 @@ public:
 
 		case Messages::ColorCommands::Chase:
 
-			_animator.chase(message.commands.chase.hue, message.commands.chase.speed, (uint8_t)message.commands.chase.style);
+			_animator.chase(message.commands.chase.hue, message.commands.chase.speed, (uint8_t)message.commands.chase.fadeSpeed, (bool)message.commands.chase.direction);
 
 			break;
 

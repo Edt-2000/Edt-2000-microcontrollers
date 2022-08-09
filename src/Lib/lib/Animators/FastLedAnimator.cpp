@@ -125,24 +125,20 @@ void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t length)
 	}
 	else
 	{
-		_animations.addAnimation(Animation(AnimationType::ChaseStill, ColorHelper::CreateColor(hue), length, 0));
+		_animations.addAnimation(Animation(AnimationType::ChaseStill, ColorHelper::CreateColor(hue), length, 0, 0));
 	}
 }
 
-void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t speed, uint8_t style)
+void Animators::FastLedAnimator::chase(uint8_t hue, uint8_t speed, uint8_t fadeSpeed, bool direction)
 {
-	if (speed == 0 && style <= 3)
-	{
-		_animations.removeAnimation((AnimationType)style);
-	}
-	else if (speed == 0)
+	if (speed == 0)
 	{
 		_animations.resetAnimations();
 	}
 	else
 	{
-		_fadeMode = FadeMode::FadeOneByOne;
-		_animations.addAnimation(Animation((AnimationType)style, ColorHelper::CreateColor(hue), speed, 0));
+		_fadeMode = FadeMode::FadeToBlack;
+		_animations.addAnimation(Animation(direction ? AnimationType::ChaseDefault : AnimationType::ChaseDefaultReverse, ColorHelper::CreateColor(hue), speed, fadeSpeed, 0));
 	}
 }
 
@@ -154,7 +150,7 @@ void Animators::FastLedAnimator::bash(uint8_t hue, uint8_t intensity)
 	}
 	else
 	{
-		_animations.addAnimation(Animation(AnimationType::Bash, ColorHelper::CreateColor(hue), intensity, 0));
+		_animations.addAnimation(Animation(AnimationType::Bash, ColorHelper::CreateColor(hue), intensity, 0, 0));
 	}
 }
 
@@ -170,7 +166,7 @@ void Animators::FastLedAnimator::strobo(uint8_t hue, uint8_t fps)
 	}
 	else
 	{
-		_animations.insertAnimation(Animation(AnimationType::Strobo, ColorHelper::CreateColor(hue), 255.0 / fps, 0));
+		_animations.insertAnimation(Animation(AnimationType::Strobo, ColorHelper::CreateColor(hue), 255.0 / fps, 0, 0));
 	}
 }
 
@@ -179,7 +175,7 @@ void Animators::FastLedAnimator::berserk()
 	disableFade(0, 127);
 	_fadeMode = FadeMode::FadeOneByOne;
 
-	_animations.insertAnimation(Animation(AnimationType::Berserk, ColorHelper::CreateColor(0, 0, 0), 255.0, 0));
+	_animations.insertAnimation(Animation(AnimationType::Berserk, ColorHelper::CreateColor(0, 0, 0), 255.0, 0, 0));
 }
 
 void Animators::FastLedAnimator::loop()
@@ -225,10 +221,8 @@ void Animators::FastLedAnimator::loop()
 
 		case AnimationType::ChaseDefault:
 		case AnimationType::ChaseDefaultReverse:
-		case AnimationType::ChaseLongTail:
-		case AnimationType::ChaseLongTailReverse:
-
-			chaseFadeSpeed = ((animation.type & AnimationType::ChaseLongTail) > 0) ? 1 : 63;
+		
+			chaseFadeSpeed = animation.data2;
 			chaseReverse = (animation.type & AnimationType::ChaseDefaultReverse) > 0;
 
 			if (animation.state > 255 - animation.data)
@@ -251,12 +245,12 @@ void Animators::FastLedAnimator::loop()
 			if (chaseReverse)
 			{
 				solid(127 - to, 127 - from, animation.color);
-				fade(127 - to, 127 - from, chaseFadeSpeed, _fadeMode);
+				fade(127 - to, 127 - from, chaseFadeSpeed, FadeMode::FadeOneByOne);
 			}
 			else
 			{
 				solid(from, to, animation.color);
-				fade(from, to, chaseFadeSpeed, _fadeMode);
+				fade(from, to, chaseFadeSpeed, FadeMode::FadeOneByOne);
 			}
 
 			break;
@@ -312,13 +306,13 @@ void Animators::FastLedAnimator::loop()
 		{
 			if (_ledState[i].fade < 255)
 			{
-				if (_ledState[i].fade > 255 - 62)
+				if (_ledState[i].fade > 255 - 5)
 				{
 					_ledState[i].fade = 255;
 				}
 				else
 				{
-					_ledState[i].fade += ((_ledState[i].fade) / 4) + 1;
+					_ledState[i].fade += 1; // ((_ledState[i].fade) / 16) + 1;
 				}
 
 				fadeToBlackBy(_leds + i, 1, _ledState[i].fade);
@@ -330,7 +324,7 @@ void Animators::FastLedAnimator::loop()
 		{
 			if (_ledState[i].fade < 255)
 			{
-				if (_ledState[i].fade / 2 > random8())
+				if (_ledState[i].fade / 8 > random8())
 				{
 					_ledState[i].fade = 255;
 
@@ -338,7 +332,7 @@ void Animators::FastLedAnimator::loop()
 				}
 				else
 				{
-					fadeToBlackBy(_leds + i, 1, 8);
+					fadeToBlackBy(_leds + i, 1, 2);
 				}
 			}
 		}

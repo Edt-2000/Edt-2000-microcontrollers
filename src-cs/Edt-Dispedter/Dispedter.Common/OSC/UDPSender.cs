@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -67,7 +68,7 @@ namespace Dispedter.Common.OSC
         {
             foreach (var packet in packets)
             {
-                await SendAsync(packet);
+                await SendAsync(packet.GetBytes());
             }
         }
 

@@ -7,6 +7,7 @@ namespace Edt_Kontrol.Midi
     public class Kontrol
     {
         private IMidiInput _input;
+        private IMidiOutput _output;
 
         public async Task InitAsync()
         {
@@ -21,6 +22,26 @@ namespace Edt_Kontrol.Midi
                     _input.MessageReceived += Input_MessageReceived;
                 }
             }
+
+            var outputs = MidiAccessManager.Default.Outputs;
+
+            foreach (var outputDevice in outputs)
+            {
+                if (outputDevice.Name == "nanoKONTROL2")
+                {
+                    _output = await MidiAccessManager.Default.OpenOutputAsync(outputDevice.Id);
+
+                }
+            }
+        }
+
+        public void Notify(byte type)
+        {
+            _output.Send(new byte[] { 0x90, 0x5B, IsOn(type, 0x01) }, 0, 3, 0);
+            _output.Send(new byte[] { 0x90, 0x5C, IsOn(type, 0x02) }, 0, 3, 0);
+            _output.Send(new byte[] { 0x90, 0x5D, IsOn(type, 0x04) }, 0, 3, 0);
+            _output.Send(new byte[] { 0x90, 0x5E, IsOn(type, 0x08) }, 0, 3, 0);
+            _output.Send(new byte[] { 0x90, 0x5F, IsOn(type, 0x10) }, 0, 3, 0);
         }
 
         private void Input_MessageReceived(object sender, MidiReceivedEventArgs e)
@@ -38,14 +59,25 @@ namespace Edt_Kontrol.Midi
             {
                 if (y < 0x18)
                 {
-                    var channel = y & 0x07;
-                    var mode = (y & 0xFC) >> 3;
+                    var channel = (byte)(y & 0x07);
+                    var mode = (byte)((y & 0xFC) >> 3);
 
                     if (mode < 3 && z != 0)
                     {
-                        var value = (Mode)(mode + 1);
+                        var value = mode switch
+                        {
+                            2 => Mode.Two,
+                            1 => Mode.One,
+                            _ => Mode.Four
+                        };
 
-                        Channels[channel].Mode = (Channels[channel].Mode == value) ? 0 : value;
+                        Channels[channel].Mode = (Channels[channel].Mode & value) > 0 ?
+                            Channels[channel].Mode & ~value :
+                            Channels[channel].Mode | value;
+
+                        _output.Send(new byte[] { 0x90, (byte)(channel + 8), IsOn(Channels[channel].Mode, Mode.One) }, 0, 3, 0);
+                        _output.Send(new byte[] { 0x90, (byte)(channel + 16), IsOn(Channels[channel].Mode, Mode.Two) }, 0, 3, 0);
+                        _output.Send(new byte[] { 0x90, (byte)(channel + 0), IsOn(Channels[channel].Mode, Mode.Four) }, 0, 3, 0);
                     }
                     if (z == 0x7F)
                     {
@@ -121,5 +153,8 @@ namespace Edt_Kontrol.Midi
         public bool Stop { get; set; }
         public bool Play { get; set; }
         public bool Rec { get; set; }
+
+        private static byte IsOn(byte type, byte bitmask) => (type & bitmask) > 0 ? (byte)0x7F : (byte)0x00;
+        private static byte IsOn(Mode type, Mode bitmask) => (type & bitmask) > 0 ? (byte)0x7F : (byte)0x00;
     }
 }
