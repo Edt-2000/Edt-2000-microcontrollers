@@ -29,17 +29,19 @@ public:
 
     void callbackMessage()
     {
+        Serial.println("MESSAGE");
     }
 
-    void loop()
+    void loop(App::Time time)
     {
-        progress++;
-
-        digitalWrite(13, progress > 500);
-
-        if (progress > 1000)
+        if (time.t100ms) 
         {
-            progress = 0;
+            digitalWrite(13, progress > _message.messageStruct.mode);
+
+            if (++progress > 2 * _message.messageStruct.mode)
+            {
+                progress = 0;
+            }
         }
     }
 };

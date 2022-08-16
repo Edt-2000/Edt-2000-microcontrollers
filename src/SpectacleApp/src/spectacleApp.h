@@ -35,16 +35,8 @@ public:
 
     void startSetupNetwork()
     {
-      Serial.println("START NETWORK 1");
-      delay(1000);
         WiFi.begin("nEDTwerk", "ChillenInJeSjon");
-      delay(1000);
-      Serial.println("START NETWORK 2");
-      delay(1000);
         WiFi.config(localIp, INADDR_NONE, gateway, subnet);
-      delay(1000);
-      Serial.println("START NETWORK 3");
-      delay(1000);
     }
 
     bool setupNetwork()
@@ -74,7 +66,7 @@ public:
     {
         osc.loop(time.tOSC);
 
-        device.loop();
+        device.loop(time);
     }
 
     // check for failure modes when the ESP must be reset

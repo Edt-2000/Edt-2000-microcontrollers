@@ -2,7 +2,9 @@
 
 #include "CoreApp.h"
 #include <Arduino.h>
-#include <WiFiNINA_Generic.h>
+#include <SPI.h>
+#include <WiFiNINA.h>
+#include <WiFiUdp.h>
 #include "OSCArduino.h"
 #include "CommandMessage.h"
 #include "MessageConsumer.h"
