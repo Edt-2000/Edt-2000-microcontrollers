@@ -1,10 +1,11 @@
 #pragma once
 
-#include "CoreApp.h"
+#include "coreApp.h"
 #include <Arduino.h>
 #include <SPI.h>
 #include <WiFiNINA.h>
 #include <WiFiUdp.h>
+#include <FastLED.h>
 #include "OSCArduino.h"
 #include "CommandMessage.h"
 #include "MessageConsumer.h"

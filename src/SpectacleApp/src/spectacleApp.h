@@ -60,6 +60,7 @@ public:
 
     void startApp()
     {
+        device.init();
     }
 
     void appLoop()
