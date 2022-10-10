@@ -92,6 +92,36 @@ public:
         }
         // set to magenta
         break;
+
+        case 5:
+        {
+            
+            fill_solid(leds, NUM_LEDS, CRGB(0xff, 0x00, 0xff));
+            FastLED.show();
+        }
+        // set to magenta
+        break;
+
+        case 6:
+        {
+            
+            fill_solid(leds, NUM_LEDS, CRGB(0xff, 0x00, 0x00));
+            leds[2] = CRGB:: Blue;
+            leds[3] = CRGB:: Blue;
+            leds[4] = CRGB:: Blue;
+            leds[5] = CRGB:: Blue;
+            leds[6] = CRGB:: Blue;
+            leds[7] = CRGB:: Blue;
+            leds[12] = CRGB:: Blue;
+            leds[13] = CRGB:: Blue;
+            leds[14] = CRGB:: Blue;
+            leds[15] = CRGB:: Blue;
+            leds[16] = CRGB:: Blue;
+            leds[17] = CRGB:: Blue;
+            FastLED.show();
+        }
+        // set to red/blue cops
+        break;
         }
     }
 };
