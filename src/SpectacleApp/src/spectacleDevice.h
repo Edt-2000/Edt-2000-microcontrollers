@@ -13,11 +13,12 @@ private:
 public:
     const char *const oscAddress;
     uint32_t progress = 0;
+    bool processed = false;
 
     SpectacleDevice(const char *oscAddress)
         : oscAddress(oscAddress)
     {
-        _message.messageStruct.mode = 0;
+        _message.messageStruct.mode = (ColorCommands)-1;
     }
 
     void init()
@@ -38,14 +39,20 @@ public:
     void callbackMessage()
     {
         progress = 0;
+        processed = false;
         Serial.println("MESSAGE");
     }
 
     void loop(App::Time time)
     {
+        if (processed)
+        {
+            return;
+        }
+
         if (time.tVISUAL)
         {
-            progress += _message.messageStruct.speed;
+            progress += 1; //_message.messageStruct.speed;
             if (progress >= 256)
             {
                 progress = 0;
@@ -54,74 +61,78 @@ public:
 
         switch (_message.messageStruct.mode)
         {
-        case 0:
+        case ColorCommands::SingleSolid:
+        {
+            processed = true;
 
+            auto start = normalizeLedNrDown(_message.messageStruct.commands.singleColor.start);
+            auto end = normalizeLedNrUp(_message.messageStruct.commands.singleColor.end);
+
+            fill_solid(leds + start, end - start, _message.messageStruct.commands.singleColor.getColor());
+            FastLED.show();
+        }
+        break;
+        case ColorCommands::Twinkle:
+        {
+            processed = _message.messageStruct.commands.twinkle.intensity > 10;
+
+            auto start = normalizeLedNrDown(_message.messageStruct.commands.twinkle.start);
+            auto end = normalizeLedNrUp(_message.messageStruct.commands.twinkle.end);
+            auto color = _message.messageStruct.commands.twinkle.getColor();
+            for (int i = start; i < end; i++)
+            {
+                if (_message.messageStruct.commands.twinkle.intensity > random8())
+                {
+                    leds[i] = color;
+                }
+                else
+                {
+                    leds[i] = CRGB::Black;
+                }
+            }
+            FastLED.show();
+        }
+        break;
+        case ColorCommands::DualSolid:
+        case (ColorCommands)11:
+        {
+            processed = true;
+
+            auto start = normalizeLedNrDown(_message.messageStruct.commands.twinkle.start);
+            auto end = normalizeLedNrUp(_message.messageStruct.commands.twinkle.end);
+
+            auto color1 = _message.messageStruct.commands.dualColor.getColor1();
+            auto color2 = _message.messageStruct.commands.dualColor.getColor2();
+
+            for (int i = start; i < end; i++)
+            {
+                if (_message.messageStruct.commands.dualColor.percentage > random8())
+                {
+                    leds[i] = color1;
+                }
+                else
+                {
+                    leds[i] = color2;
+                }
+            }
+            FastLED.show();
+        }
+        break;
+        default:
             // set to off
             fill_solid(leds, NUM_LEDS, CRGB::Black);
             FastLED.show();
-
             break;
-
-        case 1:
-        {
-            // RGBLoop - no parameters
-            CHSV color = CHSV(progress, 0xff, 0xff);
-            fill_solid(leds, NUM_LEDS, CRGB(color));
-            FastLED.show();
         }
-        break;
+    }
 
-        case 2:
-            fill_rainbow(leds, NUM_LEDS, progress, 21);
-            FastLED.show();
-            break;
+    uint8_t normalizeLedNrDown(uint8_t percentage)
+    {
+        return floorf((percentage / 127.0) * NUM_LEDS);
+    }
 
-        case 3:
-
-            digitalWrite(13, progress < _message.messageStruct.speed);
-            break;
-
-        case 4:
-        {
-            CHSV color = CHSV(
-                _message.messageStruct.hue1,
-                _message.messageStruct.hue1 == 255 ? 0x00 : 0xff,
-                0xff);
-            fill_solid(leds, NUM_LEDS, CRGB(color));
-            FastLED.show();
-        }
-        // set to magenta
-        break;
-
-        case 5:
-        {
-            
-            fill_solid(leds, NUM_LEDS, CRGB(0xff, 0x00, 0xff));
-            FastLED.show();
-        }
-        // set to magenta
-        break;
-
-        case 6:
-        {
-            
-            fill_solid(leds, NUM_LEDS, CRGB(0xff, 0x00, 0x00));
-            leds[2] = CRGB:: Blue;
-            leds[3] = CRGB:: Blue;
-            leds[4] = CRGB:: Blue;
-            leds[5] = CRGB:: Blue;
-            leds[6] = CRGB:: Blue;
-            leds[7] = CRGB:: Blue;
-            leds[12] = CRGB:: Blue;
-            leds[13] = CRGB:: Blue;
-            leds[14] = CRGB:: Blue;
-            leds[15] = CRGB:: Blue;
-            leds[16] = CRGB:: Blue;
-            leds[17] = CRGB:: Blue;
-            FastLED.show();
-        }
-        // set to red/blue cops
-        break;
-        }
+    uint8_t normalizeLedNrUp(uint8_t percentage)
+    {
+        return ceilf((percentage / 127.0) * NUM_LEDS);
     }
 };
