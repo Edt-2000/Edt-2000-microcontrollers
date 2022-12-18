@@ -118,6 +118,48 @@ public:
             FastLED.show();
         }
         break;
+        case ColorCommands::Fire:
+        {
+            // bottom
+            fill_solid(leds + 5, 5, CRGB::Red);
+            fill_solid(leds + 15, 5, CRGB::Red);
+
+            // 0, 1, 2, 3, 4, 10, 11,
+            // 12, 13, 14, 20, 21, 22, 23
+
+            int fireLeds[][7] = {
+                {1, 0, 3, 11, 2, 10, 4},
+                {22, 23, 13, 21, 12, 20, 14}};
+            CRGB colors[] = {
+                CRGB::Black,
+                (CRGB)0xFF8500,
+                CRGB::Orange,
+                CRGB::OrangeRed,
+                CRGB::Orange,
+                (CRGB)0xFF8500,
+                CRGB::OrangeRed,
+            };
+
+            if (time.t100ms)
+            {
+                _message.messageStruct.commands.fire.progress = (_message.messageStruct.commands.fire.progress + 1) % 7;
+
+                for (int i = 0; i < 2; i++)
+                {
+                    for (int j = 0; j < 7; j++)
+                    {
+                        int c = (_message.messageStruct.commands.fire.progress + j + i) % 7;
+
+                        fill_solid(leds + fireLeds[i][j], 1, colors[c]);
+
+                        fadeToBlackBy(leds + fireLeds[i][j], 1, sin8(progress));
+                    }
+                }
+            }
+
+            FastLED.show();
+        }
+        break;
         default:
             // set to off
             fill_solid(leds, NUM_LEDS, CRGB::Black);
@@ -126,7 +168,8 @@ public:
         }
     }
 
-    uint8_t normalizeLedNrDown(uint8_t percentage)
+    uint8_t
+    normalizeLedNrDown(uint8_t percentage)
     {
         return floorf((percentage / 127.0) * NUM_LEDS);
     }

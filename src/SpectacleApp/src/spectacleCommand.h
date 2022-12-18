@@ -64,18 +64,47 @@ struct DualColorCommand
             0xff);
     }
 };
+
+struct TheatreChaseCommand
+{
+    uint32_t hue;
+    uint32_t speed;
+};
+
+struct MarqueeChaseCommand
+{
+    uint32_t speed;
+    uint32_t orientation;
+    uint32_t hue1;
+    uint32_t hue2;
+    uint32_t hue3;
+    uint32_t hue4;
+};
+
+struct FireCommand
+{
+    uint32_t speed;
+    uint32_t progress;
+};
+
 union Commands
 {
     SingleColorCommand singleColor;
     DualColorCommand dualColor;
     TwinkleCommand twinkle;
+    TheatreChaseCommand theatre;
+    MarqueeChaseCommand marquee;
+    FireCommand fire;
 };
 enum ColorCommands : uint32_t
 {
     SingleSolid = 0,
     DualSolid = 9,
-    Twinkle = 5
+    Twinkle = 5,
 
+    TheathreChase = 201,
+    MarqueeChase = 202,
+    Fire = 203
 };
 struct SpectacleCommand
 {
