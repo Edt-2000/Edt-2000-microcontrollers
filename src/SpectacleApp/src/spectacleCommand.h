@@ -67,8 +67,10 @@ struct DualColorCommand
 
 struct TheatreChaseCommand
 {
-    uint32_t hue;
+    uint32_t hue1;
+    uint32_t hue2;
     uint32_t speed;
+    uint32_t progress;
 };
 
 struct MarqueeChaseCommand
@@ -87,6 +89,12 @@ struct FireCommand
     uint32_t progress;
 };
 
+struct FillCommand
+{
+    uint32_t speed;
+    uint32_t hue;
+}
+
 union Commands
 {
     SingleColorCommand singleColor;
@@ -104,7 +112,10 @@ enum ColorCommands : uint32_t
 
     TheathreChase = 201,
     MarqueeChase = 202,
-    Fire = 203
+    Fire = 203,
+    FillSolid = 204,
+    FillDual = 205,
+
 };
 struct SpectacleCommand
 {

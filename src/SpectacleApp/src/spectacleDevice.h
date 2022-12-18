@@ -118,6 +118,35 @@ public:
             FastLED.show();
         }
         break;
+        case ColorCommands::TheathreChase:
+        {
+            if (time.t100ms)
+            {
+                _message.messageStruct.commands.theatre.progress++;
+                int offset = _message.messageStruct.commands.theatre.progress % 2;
+
+                fill_solid(leds, NUM_LEDS, CRGB::Black);
+
+                for (int i = offset; i < 12; i = i + 2)
+                {
+                    fill_solid(leds + i, 1, (CRGB)CHSV(_message.messageStruct.commands.theatre.hue1, 255, 255));
+                }
+                for (int i = offset + 12; i < 24; i = i + 2)
+                {
+                    fill_solid(leds + i, 1, (CRGB)CHSV(_message.messageStruct.commands.theatre.hue2, 255, 255));
+                }
+
+                FastLED.show();
+            }
+        }
+        break;
+        case ColorCommands::FillSolid:
+        {
+            if (time.t100ms)
+            {
+                        }
+        }
+        break;
         case ColorCommands::Fire:
         {
             // bottom
