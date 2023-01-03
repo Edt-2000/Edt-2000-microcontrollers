@@ -11,3 +11,5 @@
 #include "MessageConsumer.h"
 #include "spectacleCommand.h"
 #include "spectacleDevice.h"
+#include "baseAnimation.h"
+#include "animationContainer.h"

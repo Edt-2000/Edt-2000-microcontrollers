@@ -65,12 +65,72 @@ struct DualColorCommand
     }
 };
 
+struct RainbowCommand
+{
+    // 0 - 127
+    uint32_t start;
+    uint32_t end;
+
+    // 0 - 255
+    uint32_t hue;
+    uint32_t deltaHue;
+    uint32_t duration;
+};
+
+struct VuMeterCommand
+{
+    // 0 - 127
+    uint32_t start;
+    uint32_t end;
+    uint32_t center;
+
+    // 0 - 255
+    uint32_t hue;
+    uint32_t deltaHue;
+    uint32_t intensity;
+};
+
+struct ChaseCommand
+{
+    // 0 - 255
+    uint32_t hue;
+    uint32_t speed;
+    uint32_t fadeSpeed;
+    uint32_t direction;
+
+    CHSV getColor()
+    {
+        return CHSV(
+            hue,
+            // make color white when hue = 255
+            hue == 255 ? 0x00 : 0xff,
+            0xff);
+    }
+};
+
 struct TheatreChaseCommand
 {
     uint32_t hue1;
     uint32_t hue2;
     uint32_t speed;
-    uint32_t progress;
+
+    CHSV getColor1()
+    {
+        return CHSV(
+            hue1,
+            // make color white when hue = 255
+            hue1 == 255 ? 0x00 : 0xff,
+            0xff);
+    }
+
+    CHSV getColor2()
+    {
+        return CHSV(
+            hue2,
+            // make color white when hue = 255
+            hue2 == 255 ? 0x00 : 0xff,
+            0xff);
+    }
 };
 
 struct MarqueeChaseCommand
@@ -86,33 +146,60 @@ struct MarqueeChaseCommand
 struct FireCommand
 {
     uint32_t speed;
-    uint32_t progress;
 };
 
-struct FillCommand
+struct StroboCommand
 {
-    uint32_t speed;
+    // 0 - 255
     uint32_t hue;
-}
+    uint32_t intensity;
+
+    CHSV getColor()
+    {
+        return CHSV(
+            hue,
+            // make color white when hue = 255
+            hue == 255 ? 0x00 : 0xff,
+            0xff);
+    }
+};
 
 union Commands
 {
     SingleColorCommand singleColor;
     DualColorCommand dualColor;
+    RainbowCommand rainbow;
+    VuMeterCommand vuMeter;
     TwinkleCommand twinkle;
-    TheatreChaseCommand theatre;
+    ChaseCommand chase;
+    StroboCommand strobo;
+
+    TheatreChaseCommand theater;
     MarqueeChaseCommand marquee;
     FireCommand fire;
 };
 enum ColorCommands : uint32_t
 {
+    // DONE:
     SingleSolid = 0,
+    SinglePulse = 1,
+    SingleSpark = 7,
+    RainbowSolid = 2,
+    RainbowPulse = 3,
+    RainbowSpark = 8,
     DualSolid = 9,
+    DualPulse = 10,
+    DualSparkle = 11,
     Twinkle = 5,
-
-    TheathreChase = 201,
-    MarqueeChase = 202,
+    Strobo = 6,
+    TheaterChase = 201,
     Fire = 203,
+
+    // TODO:
+    Chase = 12,
+    VuMeter = 4,
+
+    MarqueeChase = 202,
     FillSolid = 204,
     FillDual = 205,
 
