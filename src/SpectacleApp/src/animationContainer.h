@@ -2,7 +2,6 @@
 
 #include "baseAnimation.h"
 #include "core.h"
-#include "spectacleDevice.h"
 #include <list>
 
 class AnimationContainer
@@ -33,11 +32,11 @@ public:
         animations.clear();
     }
 
-    void animate(SpectacleDevice *device)
+    void animate()
     {
         for (auto animation : animations)
         {
-            animation->animate(device);
+            animation->animate();
         }
 
         animations.remove_if([=](BaseAnimation *animation)

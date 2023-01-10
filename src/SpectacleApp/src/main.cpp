@@ -1,4 +1,7 @@
+#include "leds.h"
 #include "spectacleApp.h"
+
+Leds SpectacleLeds;
 
 SpectacleApp spectacleApp = SpectacleApp(
     "SpectacleApp1",

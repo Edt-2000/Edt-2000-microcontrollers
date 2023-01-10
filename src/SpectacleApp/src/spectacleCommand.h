@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core.h"
 #include <OSCArduino.h>
 
 struct SingleColorCommand
@@ -190,18 +191,15 @@ enum ColorCommands : uint32_t
     DualSolid = 9,
     DualPulse = 10,
     DualSparkle = 11,
+    VuMeter = 4,
     Twinkle = 5,
     Strobo = 6,
+    Chase = 12,
     TheaterChase = 201,
     Fire = 203,
 
     // TODO:
-    Chase = 12,
-    VuMeter = 4,
-
     MarqueeChase = 202,
-    FillSolid = 204,
-    FillDual = 205,
 
 };
 struct SpectacleCommand

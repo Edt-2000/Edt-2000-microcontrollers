@@ -95,11 +95,6 @@ namespace Dispedter.Common.Factories
             return _addresses.Select(a => new OscMessage(a, (int)Command.Strobo, (int)h, speed));
         }
 
-        public IEnumerable<OscMessage> CreateBerserk()
-        {
-            return _addresses.Select(a => new OscMessage(a, (int)Command.Berserk));
-        }
-
         public IEnumerable<OscMessage> CreateChase(ColorPreset h, int speed, int fadeSpeed, bool up)
         {
             return _addresses.Select(a => new OscMessage(a, (int)Command.Chase, (int)h, speed, fadeSpeed, up ? 1 : 0));
@@ -110,9 +105,14 @@ namespace Dispedter.Common.Factories
             return _addresses.Select(a => new OscMessage(a, (int)Command.ChaseStill, (int)h, length));
         }
 
-        public IEnumerable<OscMessage> CreateBash(ColorPreset h, int intensity)
+        public IEnumerable<OscMessage> CreateTheaterChase(ColorPreset h1, ColorPreset h2, int speed)
         {
-            return _addresses.Select(a => new OscMessage(a, (int)Command.Bash, (int)h, intensity));
+            return _addresses.Select(a => new OscMessage(a, (int)Command.TheaterChase, (int)h1, (int)h2, speed));
+        }
+
+        public IEnumerable<OscMessage> CreateFire(int speed)
+        {
+            return _addresses.Select(a => new OscMessage(a, (int)Command.Fire, speed));
         }
 
         public IEnumerable<OscMessage> CreateRainbowUsingAddresses()
@@ -191,12 +191,12 @@ namespace Dispedter.Common.Factories
 
         public IEnumerable<OscMessage> ClearDMX()
         {
-            return _addresses.Select((a, i) => DmxMessageStub(a, 0, 0, false, true)); // new OscMessage(a, 254, 1, 0, 0, 0));
+            return _addresses.Select((a, i) => DmxMessageStub(a, 0, 0, false, true));
         }
 
         public IEnumerable<OscMessage> RestartDMX()
         {
-            return _addresses.Select((a, i) => DmxMessageStub(a, 0, 0, true, false)); // new OscMessage(a, 254, 0, 1, 0, 0));
+            return _addresses.Select((a, i) => DmxMessageStub(a, 0, 0, true, false));
         }
 
         public IEnumerable<OscMessage> ProgramDmxDevice(int type, int address, double maximumBrightness, double minimumBrightness)

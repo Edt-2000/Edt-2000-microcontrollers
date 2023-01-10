@@ -1,8 +1,8 @@
 #pragma once
 
 #include "core.h"
-#include "spectacleDevice.h"
-#include "baseAnimation.h"
+
+extern Leds SpectacleLeds;
 
 class ChaseAnimation : public BaseAnimation
 {
@@ -12,23 +12,15 @@ private:
     uint8_t _fadeSpeed;
     CRGB _color;
 
-    uint8_t _progress;
+    uint8_t _progress = 0;
 
 public:
     ChaseAnimation(ChaseCommand command) : _direction(command.direction), _speed(command.speed), _fadeSpeed(command.fadeSpeed), _color(command.getColor())
     {
     }
 
-    void virtual animate(SpectacleDevice *device)
+    void virtual animate()
     {
-        if (_progress > 255 - _speed)
-        {
-            finished = true;
-            return;
-        }
-
-        _progress += _speed;
-
         uint8_t from = _progress / 2;
         uint8_t to = (_progress / 2) + 1;
 
@@ -39,19 +31,27 @@ public:
 
         if (_direction == 1)
         {
-            auto start = device->normalizeLedNrDown(127 - to);
-            auto end = device->normalizeLedNrUp(127 - from);
+            auto start = SpectacleLeds.normalizeLedNrDown(127 - to);
+            auto end = SpectacleLeds.normalizeLedNrUp(127 - from);
 
-            fill_solid(device->leds + start, end - start, _color);
-            device->fade(start, end, _fadeSpeed * 2, FadeMode::FadeOneByOne);
+            fill_solid(SpectacleLeds.leds + start, end - start, _color);
+            SpectacleLeds.fade(start, end, _fadeSpeed * 2, FadeMode::FadeOneByOne);
         }
         else
         {
-            auto start = device->normalizeLedNrDown(from);
-            auto end = device->normalizeLedNrUp(to);
+            auto start = SpectacleLeds.normalizeLedNrDown(from);
+            auto end = SpectacleLeds.normalizeLedNrUp(to);
 
-            fill_solid(device->leds + start, end - start, _color);
-            device->fade(start, end, _fadeSpeed * 2, FadeMode::FadeOneByOne);
+            fill_solid(SpectacleLeds.leds + start, end - start, _color);
+            SpectacleLeds.fade(start, end, _fadeSpeed * 2, FadeMode::FadeOneByOne);
         }
+        
+        if (_progress > 255 - _speed)
+        {
+            finished = true;
+            return;
+        }
+
+        _progress += _speed;
     }
 };

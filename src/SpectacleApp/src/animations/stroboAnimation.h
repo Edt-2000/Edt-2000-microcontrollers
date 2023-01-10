@@ -1,8 +1,8 @@
 #pragma once
 
 #include "core.h"
-#include "spectacleDevice.h"
-#include "baseAnimation.h"
+
+extern Leds SpectacleLeds;
 
 class StroboAnimation : public BaseAnimation
 {
@@ -17,15 +17,15 @@ public:
         _progress = _intensity;
     }
 
-    void virtual animate(SpectacleDevice *device)
+    void virtual animate()
     {
-        fill_solid(device->leds, device->nrOfLeds, CRGB::Black);
+        fill_solid(SpectacleLeds.leds, SpectacleLeds.nrOfLeds, CRGB::Black);
 
         if ((_progress++) > _intensity)
         {
             _progress = 0;
 
-            fill_solid(device->leds, device->nrOfLeds, _color);
+            fill_solid(SpectacleLeds.leds, SpectacleLeds.nrOfLeds, _color);
         }
     }
 };

@@ -386,19 +386,30 @@ namespace Dispedter.Tester
 
                 { VirtualKey.Space, () => _commandFactory.CreateStrobo(RandomColor(), strobo)},
                 { VirtualKey.Escape, () => _commandFactory.CreateStrobo(0, 0) },
-                { VirtualKey.Enter, () => _commandFactory.CreateBerserk() },
 
                 { VirtualKey.Z, () => _commandFactory.CreateTwinkle(RandomColor(), Random()) },
                 { VirtualKey.Shift, () => _commandFactory.CreateTwinkle(ColorPreset.White, Random()) },
                 { VirtualKey.X, () => _specialCommandFactory.CreateUTPPinout() },
                 { VirtualKey.CapitalLock, () => _specialCommandFactory.CreateRainbowUsingAddresses() },
-                { (VirtualKey)191, () => _commandFactory.CreateChaseStill(RandomColor(), 4) },
 
                 { VirtualKey.C, () => _commandFactory.CreateChase(RandomColor(), 1, 1, true) },
                 { VirtualKey.V, () => _commandFactory.CreateChase(RandomColor(), 1, 1, false) },
 
                 { (VirtualKey)187, () => _commandFactory.CreateChase(RandomColor(), 3, 32, true) },
                 { (VirtualKey)189, () => _commandFactory.CreateChase(RandomColor(), 3, 32, false) },
+
+                { (VirtualKey)186, () =>
+                {
+                    RandomColor();
+                    return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 3);
+                } }, // ;
+                { (VirtualKey)222, () => 
+                {
+                    RandomColor();
+                    return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 10); 
+                } }, // '
+
+                { (VirtualKey)191, () => _commandFactory.CreateFire(3) }, // /
 
                 { (VirtualKey)220, () => _specialCommandFactory.CreateTwinkleUsingAddresses(RandomColor) }, // \
                 { (VirtualKey)219, () => _specialCommandFactory.CreateChaseUsingSomeAddresses(RandomColor(), 2, 1, 1, true) }, // [

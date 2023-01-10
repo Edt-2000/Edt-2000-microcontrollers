@@ -9,6 +9,8 @@
 #include "OSCArduino.h"
 #include "CommandMessage.h"
 #include "MessageConsumer.h"
+#include "baseLeds.h"
+#include "leds.h"
 #include "spectacleCommand.h"
 #include "spectacleDevice.h"
 #include "baseAnimation.h"
