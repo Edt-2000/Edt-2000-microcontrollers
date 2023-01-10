@@ -1,6 +1,9 @@
 #pragma once
 
 #include "core.h"
+#include "spectacleDevice.h"
+#include "baseAnimation.h"
+#include "leds.h"
 
 extern Leds SpectacleLeds;
 
