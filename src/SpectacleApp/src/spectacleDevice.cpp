@@ -1,7 +1,5 @@
 #include "spectacleDevice.h"
 
-extern Leds SpectacleLeds;
-
 void SpectacleDevice::init()
 {
     SpectacleLeds.init();
@@ -170,6 +168,16 @@ void SpectacleDevice::callbackMessage()
 
         animations.insertAnimation(new TheaterChaseAnimation(
             message.commands.theater));
+    }
+    break;
+    case ColorCommands::Swipe:
+    {
+        SpectacleLeds.disableFade();
+
+        fill_solid(SpectacleLeds.leds, SpectacleLeds.nrOfLeds, CRGB::Black);
+
+        animations.insertAnimation(new SwipeAnimation(
+            message.commands.swipe));
     }
     break;
     default:

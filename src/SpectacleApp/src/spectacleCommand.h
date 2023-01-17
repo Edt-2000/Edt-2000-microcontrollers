@@ -149,6 +149,22 @@ struct FireCommand
     uint32_t speed;
 };
 
+struct SwipeCommand
+{
+    uint32_t hue;
+    uint32_t speed;
+    uint32_t angle;
+
+    CHSV getColor()
+    {
+        return CHSV(
+            hue,
+            // make color white when hue = 255
+            hue == 255 ? 0x00 : 0xff,
+            0xff);
+    }
+};
+
 struct StroboCommand
 {
     // 0 - 255
@@ -178,6 +194,7 @@ union Commands
     TheatreChaseCommand theater;
     MarqueeChaseCommand marquee;
     FireCommand fire;
+    SwipeCommand swipe;
 };
 enum ColorCommands : uint32_t
 {
@@ -197,6 +214,7 @@ enum ColorCommands : uint32_t
     Chase = 12,
     TheaterChase = 201,
     Fire = 203,
+    Swipe = 204,
 
     // TODO:
     MarqueeChase = 202,

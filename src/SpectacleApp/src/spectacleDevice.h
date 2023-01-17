@@ -1,9 +1,11 @@
 #pragma once
 
 #include "core.h"
+#include "animationContainer.h"
 #include "animations/chaseAnimation.h"
 #include "animations/fireAnimation.h"
 #include "animations/stroboAnimation.h"
+#include "animations/swipeAnimation.h"
 #include "animations/theaterChaseAnimation.h"
 
 class SpectacleDevice : public OSC::MessageConsumer

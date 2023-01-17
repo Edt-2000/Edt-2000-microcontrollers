@@ -409,6 +409,7 @@ namespace Dispedter.Tester
                     return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 10); 
                 } }, // '
 
+                { (VirtualKey)190, () => _commandFactory.CreateSwipe(RandomColor(), 5, 30) }, // .
                 { (VirtualKey)191, () => _commandFactory.CreateFire(3) }, // /
 
                 { (VirtualKey)220, () => _specialCommandFactory.CreateTwinkleUsingAddresses(RandomColor) }, // \

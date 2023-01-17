@@ -115,6 +115,11 @@ namespace Dispedter.Common.Factories
             return _addresses.Select(a => new OscMessage(a, (int)Command.Fire, speed));
         }
 
+        public IEnumerable<OscMessage> CreateSwipe(ColorPreset h, int speed, int direction)
+        {
+            return _addresses.Select(a => new OscMessage(a, (int)Command.Swipe, (int)h, speed, direction));
+        }
+
         public IEnumerable<OscMessage> CreateRainbowUsingAddresses()
         {
             return _addresses.Select((a, i) => new OscMessage(a, (int)Command.SingleSolid, 0, 127, (int)(i * (255.0 / _addresses.Count())), 255, 254));

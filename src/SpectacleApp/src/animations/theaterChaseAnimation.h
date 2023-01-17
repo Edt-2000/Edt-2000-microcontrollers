@@ -1,15 +1,13 @@
 #pragma once
 
 #include "core.h"
-#include "spectacleDevice.h"
-#include "baseAnimation.h"
 #include "leds.h"
 
 extern Leds SpectacleLeds;
 
 // share this chase progress between animations instances to make it more smooth
-uint8_t _chaseProgress = 0;
-uint8_t _progress = 0;
+static uint8_t _chaseProgress = 0;
+static uint8_t _progress = 0;
 
 class TheaterChaseAnimation : public BaseAnimation
 {
@@ -18,6 +16,7 @@ private:
     CRGB _color1;
     CRGB _color2;
 
+    
 public:
     TheaterChaseAnimation(TheatreChaseCommand command) : _speed(command.speed), _color1(command.getColor1()), _color2(command.getColor2())
     {

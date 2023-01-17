@@ -19,6 +19,7 @@
 
         TheaterChase = 201,
         Fire = 203,
+        Swipe = 204,
 
     }
 }

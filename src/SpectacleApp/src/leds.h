@@ -84,4 +84,52 @@ public:
             return levels[6];
         }
     }
+
+    uint8_t angleLeft(uint8_t angle)
+    {
+        if (angle < 11) {
+            return 0;
+        }
+        else if (angle < 33) {
+            return 1;
+        }
+        else if (angle < 54) {
+            return 2;
+        }
+        else if (angle < 75) {
+            return 3;
+        }
+        else if (angle < 97) {
+            return 4;
+        }
+        else if (angle < 118) {
+            return 5;
+        }
+        else if (angle < 139) {
+            return 6;
+        }
+        else if (angle < 161) {
+            return 7;
+        }
+        else if (angle < 182) {
+            return 8;
+        }
+        else if (angle < 203) {
+            return 9;
+        }
+        else if (angle < 225) {
+            return 10;
+        }
+        else if (angle < 246) {
+            return 11;
+        }
+        else {
+            return 0;
+        }
+    }
+
+    uint8_t angleRight(uint8_t angle)
+    {
+        return 12 + angleLeft(angle);
+    }
 };

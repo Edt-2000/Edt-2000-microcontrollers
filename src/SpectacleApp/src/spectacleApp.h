@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core.h"
+#include "spectacleDevice.h"
 
 class SpectacleApp : public App::CoreApp
 {
