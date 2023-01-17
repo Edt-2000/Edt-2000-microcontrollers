@@ -401,15 +401,15 @@ namespace Dispedter.Tester
                 { (VirtualKey)186, () =>
                 {
                     RandomColor();
-                    return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 3);
+                    return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 3, Random() / 42);
                 } }, // ;
                 { (VirtualKey)222, () => 
                 {
                     RandomColor();
-                    return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 10); 
+                    return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 10, Random() / 42); 
                 } }, // '
 
-                { (VirtualKey)190, () => _commandFactory.CreateSwipe(RandomColor(), 5, 30) }, // .
+                { (VirtualKey)190, () => _commandFactory.CreateSwipe(RandomColor(), 5, Random()) }, // .
                 { (VirtualKey)191, () => _commandFactory.CreateFire(3) }, // /
 
                 { (VirtualKey)220, () => _specialCommandFactory.CreateTwinkleUsingAddresses(RandomColor) }, // \

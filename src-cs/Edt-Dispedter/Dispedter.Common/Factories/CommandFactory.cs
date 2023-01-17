@@ -105,9 +105,9 @@ namespace Dispedter.Common.Factories
             return _addresses.Select(a => new OscMessage(a, (int)Command.ChaseStill, (int)h, length));
         }
 
-        public IEnumerable<OscMessage> CreateTheaterChase(ColorPreset h1, ColorPreset h2, int speed)
+        public IEnumerable<OscMessage> CreateTheaterChase(ColorPreset h1, ColorPreset h2, int speed, int nrOfSpokes)
         {
-            return _addresses.Select(a => new OscMessage(a, (int)Command.TheaterChase, (int)h1, (int)h2, speed));
+            return _addresses.Select(a => new OscMessage(a, (int)Command.TheaterChase, (int)h1, (int)h2, speed, nrOfSpokes));
         }
 
         public IEnumerable<OscMessage> CreateFire(int speed)

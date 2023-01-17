@@ -13,13 +13,18 @@ class TheaterChaseAnimation : public BaseAnimation
 {
 private:
     uint8_t _speed;
+    uint8_t _nrOfSpokes;
     CRGB _color1;
     CRGB _color2;
 
-    
 public:
-    TheaterChaseAnimation(TheatreChaseCommand command) : _speed(command.speed), _color1(command.getColor1()), _color2(command.getColor2())
+    TheaterChaseAnimation(TheatreChaseCommand command) : _speed(command.speed), _nrOfSpokes(command.nrOfSpokes), _color1(command.getColor1()), _color2(command.getColor2())
     {
+        if (_nrOfSpokes == 0)
+        {
+            _nrOfSpokes = 6;
+        }
+
         output();
     }
 
@@ -37,15 +42,17 @@ public:
 
     void output()
     {
-        int offset = _chaseProgress % 2;
+        uint8_t ledsSkipped = 12 / _nrOfSpokes;
+
+        uint8_t offset = _chaseProgress % ledsSkipped;
 
         fill_solid(SpectacleLeds.leds, SpectacleLeds.nrOfLeds, CRGB::Black);
 
-        for (int i = offset; i < 12; i = i + 2)
+        for (uint8_t i = offset; i < 12; i = i + ledsSkipped)
         {
             fill_solid(SpectacleLeds.leds + i, 1, _color1);
         }
-        for (int i = offset + 12; i < 24; i = i + 2)
+        for (uint8_t i = offset + 12; i < 24; i = i + ledsSkipped)
         {
             fill_solid(SpectacleLeds.leds + i, 1, _color2);
         }

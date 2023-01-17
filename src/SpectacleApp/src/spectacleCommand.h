@@ -114,6 +114,7 @@ struct TheatreChaseCommand
     uint32_t hue1;
     uint32_t hue2;
     uint32_t speed;
+    uint32_t nrOfSpokes;
 
     CHSV getColor1()
     {
