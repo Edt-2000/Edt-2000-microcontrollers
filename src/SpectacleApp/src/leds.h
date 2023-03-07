@@ -2,7 +2,6 @@
 
 #include "core.h"
 
-// this is not reusable
 struct Leds : public BaseLeds
 {
 private:

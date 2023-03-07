@@ -7,7 +7,6 @@
 #include <WiFiUdp.h>
 #include <FastLED.h>
 #include "OSCArduino.h"
-#include "CommandMessage.h"
 #include "MessageConsumer.h"
 #include "baseLeds.h"
 #include "leds.h"

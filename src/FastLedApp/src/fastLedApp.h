@@ -2,17 +2,17 @@
 
 #include "core.h"
 
-Messages::MessageQueue<Messages::CommandMessage> tasks[] = {
-    Messages::MessageQueue<Messages::CommandMessage>("/F1", &fastLedTask<APA102, 16, 32, BGR, 59>, 5120, 3),
-    Messages::MessageQueue<Messages::CommandMessage>("/F2", &fastLedTask<APA102, 13, 32, BGR, 59>, 5120, 3),
-    Messages::MessageQueue<Messages::CommandMessage>("/F3", &fastLedTask<APA102, 14, 32, BGR, 59>, 5120, 3), 
-    Messages::MessageQueue<Messages::CommandMessage>("/F4", &fastLedTask<APA102, 15, 32, BGR, 59>, 5120, 3),
-    Messages::MessageQueue<Messages::CommandMessage>("/F5", &fastLedTask<APA102, 5, 32, BGR, 59>, 5120, 3), 
-    Messages::MessageQueue<Messages::CommandMessage>("/F6", &fastLedTask<APA102, 4, 32, BGR, 59>, 5120, 3),
-    Messages::MessageQueue<Messages::CommandMessage>("/F7", &fastLedTask<APA102, 3, 32, BGR, 59>, 5120, 3),
-    Messages::MessageQueue<Messages::CommandMessage>("/F8", &fastLedTask<APA102, 2, 32, BGR, 59>, 5120, 3)};
+Messages::MessageQueue<FastLedCommand> tasks[] = {
+    Messages::MessageQueue<FastLedCommand>("/F1", &fastLedTask<16>, 5120, 3),
+    Messages::MessageQueue<FastLedCommand>("/F2", &fastLedTask<13>, 5120, 3),
+    Messages::MessageQueue<FastLedCommand>("/F3", &fastLedTask<14>, 5120, 3), 
+    Messages::MessageQueue<FastLedCommand>("/F4", &fastLedTask<15>, 5120, 3),
+    Messages::MessageQueue<FastLedCommand>("/F5", &fastLedTask<5>, 5120, 3), 
+    Messages::MessageQueue<FastLedCommand>("/F6", &fastLedTask<4>, 5120, 3),
+    Messages::MessageQueue<FastLedCommand>("/F7", &fastLedTask<3>, 5120, 3),
+    Messages::MessageQueue<FastLedCommand>("/F8", &fastLedTask<2>, 5120, 3)};
 
-class LedApp : public App::CoreApp
+class FastLedApp : public App::CoreApp
 {
 private:
 public:
@@ -22,9 +22,9 @@ public:
     IPAddress broadcastIp;
     int broadcastPort;
 
-    OSC::Arduino<sizeof(tasks) / sizeof(Messages::MessageQueue<Messages::CommandMessage>), 0> osc;
+    OSC::Arduino<sizeof(tasks) / sizeof(Messages::MessageQueue<FastLedCommand>), 0> osc;
 
-    LedApp(const char *ledAppHostname,
+    FastLedApp(const char *ledAppHostname,
            IPAddress localIp,
            IPAddress subnet,
            IPAddress broadcastIp,

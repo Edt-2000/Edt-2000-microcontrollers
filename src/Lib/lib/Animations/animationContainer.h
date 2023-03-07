@@ -1,7 +1,6 @@
 #pragma once
 
 #include "baseAnimation.h"
-#include "core.h"
 #include <list>
 
 class AnimationContainer

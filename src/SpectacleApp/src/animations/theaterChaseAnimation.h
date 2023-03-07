@@ -18,6 +18,7 @@ private:
     CRGB _color2;
 
 public:
+// TODO: accept BaseLeds*
     TheaterChaseAnimation(TheatreChaseCommand command) : _speed(command.speed), _nrOfSpokes(command.nrOfSpokes), _color1(command.getColor1()), _color2(command.getColor2())
     {
         if (_nrOfSpokes == 0)

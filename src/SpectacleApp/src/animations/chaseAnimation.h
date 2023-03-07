@@ -16,6 +16,7 @@ private:
     uint8_t _progress = 0;
 
 public:
+// TODO: accept BaseLeds*
     ChaseAnimation(ChaseCommand command) : _direction(command.direction), _speed(command.speed), _fadeSpeed(command.fadeSpeed), _color(command.getColor())
     {
     }

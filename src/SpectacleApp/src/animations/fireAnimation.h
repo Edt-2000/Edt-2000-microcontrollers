@@ -22,6 +22,7 @@ private:
     };
 
 public:
+// TODO: accept BaseLeds*
     FireAnimation(FireCommand command) : _speed(command.speed)
     {
         _progress = _speed;

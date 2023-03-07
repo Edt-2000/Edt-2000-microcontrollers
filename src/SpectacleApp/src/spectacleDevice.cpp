@@ -47,12 +47,13 @@ void SpectacleDevice::callbackMessage()
         }
     }
     break;
-    case Messages::ColorCommands::DualPulse:
-    case Messages::ColorCommands::DualSolid:
-    case Messages::ColorCommands::DualSparkle:
+
+    case ColorCommands::DualPulse:
+    case ColorCommands::DualSolid:
+    case ColorCommands::DualSparkle:
     {
-        auto start = SpectacleLeds.normalizeLedNrDown(message.commands.singleColor.start);
-        auto end = SpectacleLeds.normalizeLedNrUp(message.commands.singleColor.end);
+        auto start = SpectacleLeds.normalizeLedNrDown(message.commands.dualColor.start);
+        auto end = SpectacleLeds.normalizeLedNrUp(message.commands.dualColor.end);
 
         SpectacleLeds.randomize(start, end, message.commands.dualColor.percentage, message.commands.dualColor.getColor2(), message.commands.dualColor.getColor1());
 
@@ -70,6 +71,7 @@ void SpectacleDevice::callbackMessage()
         }
     }
     break;
+
     case ColorCommands::RainbowPulse:
     case ColorCommands::RainbowSolid:
     case ColorCommands::RainbowSpark:
@@ -96,6 +98,7 @@ void SpectacleDevice::callbackMessage()
         }
     }
     break;
+
     case ColorCommands::Twinkle:
     {
         auto start = SpectacleLeds.normalizeLedNrDown(message.commands.twinkle.start);
@@ -105,6 +108,7 @@ void SpectacleDevice::callbackMessage()
         SpectacleLeds.disableFade(start, end);
     }
     break;
+
     case ColorCommands::VuMeter:
     {
         auto intensity = (uint8_t)(message.commands.vuMeter.intensity == 0
@@ -125,6 +129,7 @@ void SpectacleDevice::callbackMessage()
         }
     }
     break;
+
     case ColorCommands::Strobo:
     {
         SpectacleLeds.disableFade();
@@ -135,11 +140,11 @@ void SpectacleDevice::callbackMessage()
 
         if (message.commands.strobo.intensity > 0)
         {
-            animations.insertAnimation(new StroboAnimation(
-                message.commands.strobo));
+            animations.insertAnimation(new StroboAnimation(message.commands.strobo));
         }
     }
     break;
+
     case ColorCommands::Chase:
     {
         animations.insertAnimation(new ChaseAnimation(
@@ -154,10 +159,10 @@ void SpectacleDevice::callbackMessage()
 
         animations.resetAnimations();
 
-        animations.insertAnimation(new FireAnimation(
-            message.commands.fire));
+        animations.insertAnimation(new FireAnimation(message.commands.fire));
     }
     break;
+
     case ColorCommands::TheaterChase:
     {
         SpectacleLeds.disableFade();
@@ -166,20 +171,20 @@ void SpectacleDevice::callbackMessage()
 
         animations.resetAnimations();
 
-        animations.insertAnimation(new TheaterChaseAnimation(
-            message.commands.theater));
+        animations.insertAnimation(new TheaterChaseAnimation(message.commands.theater));
     }
     break;
+
     case ColorCommands::Swipe:
     {
         SpectacleLeds.disableFade();
 
         fill_solid(SpectacleLeds.leds, SpectacleLeds.nrOfLeds, CRGB::Black);
 
-        animations.insertAnimation(new SwipeAnimation(
-            message.commands.swipe));
+        animations.insertAnimation(new SwipeAnimation(message.commands.swipe));
     }
     break;
+
     default:
         // set to off
         fill_solid(SpectacleLeds.leds, SpectacleLeds.nrOfLeds, CRGB::Black);

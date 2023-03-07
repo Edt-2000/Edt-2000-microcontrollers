@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include <OSCArduino.h>
+#include <CommandMessage.h>
 #include <IMessage.h>
 #include <OSCStructMessage.h>
 

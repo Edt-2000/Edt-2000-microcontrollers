@@ -69,6 +69,7 @@ private:
         127};
 
 public:
+// TODO: accept BaseLeds*
     SwipeAnimation(SwipeCommand command) : _angle(command.angle), _speed(command.speed), _color(command.getColor())
     {
     }
