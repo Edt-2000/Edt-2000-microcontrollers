@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core.h"
+#include "fastLedDevice.h"
 
 Messages::MessageQueue<FastLedCommand> tasks[] = {
     Messages::MessageQueue<FastLedCommand>("/F1", &fastLedTask<16>, 5120, 3),
