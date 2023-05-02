@@ -2,6 +2,7 @@
 
 #include "core.h"
 
+
 template <uint8_t DATA_PIN, bool PRIMARY>
 struct Leds : public BaseLeds
 {
@@ -22,9 +23,11 @@ public:
 
     void show()
     {
+        
+        
         if (PRIMARY)
         {
-            FastLED.show();
+            // FastLED.show();
         }
     }
 };

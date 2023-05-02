@@ -3,6 +3,8 @@
 #include "core.h"
 #include "leds.h"
 
+extern bool doFastLed;
+
 class StroboAnimation : public BaseAnimation
 {
 private:
@@ -10,25 +12,29 @@ private:
     uint8_t _progress;
     CRGB _color;
 
-    BaseLeds * _baseLeds;
+    BaseLeds *_baseLeds;
 
 public:
-    StroboAnimation(StroboCommand command, BaseLeds* baseLeds) : _intensity(command.intensity), _color(command.getColor()), _baseLeds(baseLeds)
+    StroboAnimation(StroboCommand command, BaseLeds *baseLeds) : _intensity(command.intensity), _color(command.getColor()), _baseLeds(baseLeds)
     {
         _progress = _intensity;
     }
 
     void virtual animate()
     {
-        fill_solid(_baseLeds->leds, _baseLeds->nrOfLeds, CRGB::Black);
+        if (_progress == 0)
+        {
+            fill_solid(_baseLeds->leds, _baseLeds->nrOfLeds, CRGB::Black);
+
+            doFastLed = true;
+        }
 
         if ((_progress++) > _intensity)
         {
             _progress = 0;
-
             fill_solid(_baseLeds->leds, _baseLeds->nrOfLeds, _color);
-        }
 
-        _baseLeds->show();
+            doFastLed = true;
+        }
     }
 };

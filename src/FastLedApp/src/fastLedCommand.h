@@ -18,7 +18,11 @@ enum ColorCommands : uint32_t
     DualPulse = 10,
     DualSparkle = 11,
     Chase = 12,
-    ChaseStill = 14,
+    
+    // TODO:
+    TheaterChase = 201,
+    Fire = 203,
+    Swipe = 204,
 
     DMXConfig = 254
 };

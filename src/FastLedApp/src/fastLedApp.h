@@ -6,12 +6,14 @@
 Messages::MessageQueue<FastLedCommand> tasks[] = {
     Messages::MessageQueue<FastLedCommand>("/F1", &fastLedTask<16, true>, 5120, 3),
     Messages::MessageQueue<FastLedCommand>("/F2", &fastLedTask<13, false>, 5120, 3),
-    Messages::MessageQueue<FastLedCommand>("/F3", &fastLedTask<14, false>, 5120, 3), 
+    Messages::MessageQueue<FastLedCommand>("/F3", &fastLedTask<14, false>, 5120, 3),
     Messages::MessageQueue<FastLedCommand>("/F4", &fastLedTask<15, false>, 5120, 3),
-    Messages::MessageQueue<FastLedCommand>("/F5", &fastLedTask<5, false>, 5120, 3), 
+    Messages::MessageQueue<FastLedCommand>("/F5", &fastLedTask<5, false>, 5120, 3),
     Messages::MessageQueue<FastLedCommand>("/F6", &fastLedTask<4, false>, 5120, 3),
     Messages::MessageQueue<FastLedCommand>("/F7", &fastLedTask<3, false>, 5120, 3),
     Messages::MessageQueue<FastLedCommand>("/F8", &fastLedTask<2, false>, 5120, 3)};
+
+bool doFastLed = false;
 
 class FastLedApp : public App::CoreApp
 {
@@ -26,10 +28,10 @@ public:
     OSC::Arduino<sizeof(tasks) / sizeof(Messages::MessageQueue<FastLedCommand>), 0> osc;
 
     FastLedApp(const char *ledAppHostname,
-           IPAddress localIp,
-           IPAddress subnet,
-           IPAddress broadcastIp,
-           int broadcastPort)
+               IPAddress localIp,
+               IPAddress subnet,
+               IPAddress broadcastIp,
+               int broadcastPort)
         : ledAppHostname(ledAppHostname),
           localIp(localIp),
           subnet(subnet),
@@ -75,10 +77,11 @@ public:
     {
         osc.loop(time.tOSC);
 
-        //if (time.tVISUAL)
-        //{
-            //FastLED.show();
-        //}
+        if (doFastLed || time.tVISUAL)
+        {
+            doFastLed = false;
+            FastLED.show();
+        }
     }
 
     // check for failure modes when the ESP must be reset
