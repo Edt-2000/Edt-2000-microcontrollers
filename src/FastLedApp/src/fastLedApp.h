@@ -4,14 +4,14 @@
 #include "fastLedDevice.h"
 
 Messages::MessageQueue<FastLedCommand> tasks[] = {
-    Messages::MessageQueue<FastLedCommand>("/F1", &fastLedTask<16>, 5120, 3),
-    Messages::MessageQueue<FastLedCommand>("/F2", &fastLedTask<13>, 5120, 3),
-    Messages::MessageQueue<FastLedCommand>("/F3", &fastLedTask<14>, 5120, 3), 
-    Messages::MessageQueue<FastLedCommand>("/F4", &fastLedTask<15>, 5120, 3),
-    Messages::MessageQueue<FastLedCommand>("/F5", &fastLedTask<5>, 5120, 3), 
-    Messages::MessageQueue<FastLedCommand>("/F6", &fastLedTask<4>, 5120, 3),
-    Messages::MessageQueue<FastLedCommand>("/F7", &fastLedTask<3>, 5120, 3),
-    Messages::MessageQueue<FastLedCommand>("/F8", &fastLedTask<2>, 5120, 3)};
+    Messages::MessageQueue<FastLedCommand>("/F1", &fastLedTask<16, true>, 5120, 3),
+    Messages::MessageQueue<FastLedCommand>("/F2", &fastLedTask<13, false>, 5120, 3),
+    Messages::MessageQueue<FastLedCommand>("/F3", &fastLedTask<14, false>, 5120, 3), 
+    Messages::MessageQueue<FastLedCommand>("/F4", &fastLedTask<15, false>, 5120, 3),
+    Messages::MessageQueue<FastLedCommand>("/F5", &fastLedTask<5, false>, 5120, 3), 
+    Messages::MessageQueue<FastLedCommand>("/F6", &fastLedTask<4, false>, 5120, 3),
+    Messages::MessageQueue<FastLedCommand>("/F7", &fastLedTask<3, false>, 5120, 3),
+    Messages::MessageQueue<FastLedCommand>("/F8", &fastLedTask<2, false>, 5120, 3)};
 
 class FastLedApp : public App::CoreApp
 {
@@ -75,10 +75,10 @@ public:
     {
         osc.loop(time.tOSC);
 
-        if (time.tVISUAL)
-        {
-            FastLED.show();
-        }
+        //if (time.tVISUAL)
+        //{
+            //FastLED.show();
+        //}
     }
 
     // check for failure modes when the ESP must be reset

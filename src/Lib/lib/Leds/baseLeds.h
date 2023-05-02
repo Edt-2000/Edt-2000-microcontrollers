@@ -24,8 +24,6 @@ protected:
         ledState = new LedState[numberOfLeds];
     }
 
-    virtual void show();
-
 public:
     uint8_t nrOfLeds;
     CRGB *leds;
@@ -33,6 +31,7 @@ public:
     FadeMode activeFadeMode;
 
     virtual void init();
+    virtual void show();
 
     uint8_t normalizeLedNrDown(uint8_t percentage)
     {

@@ -3,15 +3,16 @@
 #include "core.h"
 #include "animationContainer.h"
 #include "animations/stroboAnimation.h"
+#include "animations/chaseAnimation.h"
 
-template <uint8_t DATA_PIN>
+template <uint8_t DATA_PIN, bool PRIMARY>
 class FastLedDevice
 {
 private:
     OSC::StructMessage<FastLedCommand, uint32_t> _message;
 
 public:
-    Leds<DATA_PIN> fastLedLeds;
+    Leds<DATA_PIN, PRIMARY> fastLedLeds;
 
     AnimationContainer animations;
 
@@ -186,17 +187,11 @@ public:
         }
         break;
 
-            // case ColorCommands::Chase:
-
-            //     _animator.chase(message.commands.chase.hue, message.commands.chase.speed, (uint8_t)message.commands.chase.fadeSpeed, (bool)message.commands.chase.direction);
-
-            //     break;
-
-            // case ColorCommands::ChaseStill:
-
-            //     _animator.chase(message.commands.chaseStill.hue, message.commands.chaseStill.length);
-
-            //     break;
+        case ColorCommands::Chase:
+        {
+            animations.insertAnimation(new ChaseAnimation(message.commands.chase, &fastLedLeds));
+        }
+        break;
 
         default:
             // set to off
@@ -208,5 +203,6 @@ public:
     void animate()
     {
         animations.animate();
+        fastLedLeds.loop();
     }
 };

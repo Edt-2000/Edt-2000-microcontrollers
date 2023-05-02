@@ -28,5 +28,7 @@ public:
 
             fill_solid(_baseLeds->leds, _baseLeds->nrOfLeds, _color);
         }
+
+        _baseLeds->show();
     }
 };
