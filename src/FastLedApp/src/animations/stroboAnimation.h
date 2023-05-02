@@ -26,7 +26,11 @@ public:
         {
             _progress = 0;
 
+            FastLED.show();
+
             fill_solid(_baseLeds->leds, _baseLeds->nrOfLeds, _color);
+
+            FastLED.show();
         }
 
         _baseLeds->show();

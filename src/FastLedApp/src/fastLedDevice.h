@@ -5,29 +5,48 @@
 #include "animations/stroboAnimation.h"
 #include "animations/chaseAnimation.h"
 
-template <uint8_t DATA_PIN, bool PRIMARY>
-class FastLedDevice
+class FastLedBaseDevice : public OSC::MessageConsumer
+{
+    public:
+        virtual void init() = 0;
+        virtual void animate() = 0;
+};
+
+template <uint8_t DATA_PIN>
+class FastLedDevice : public FastLedBaseDevice
 {
 private:
     OSC::StructMessage<FastLedCommand, uint32_t> _message;
+    char const *_oscAddress;
 
 public:
-    Leds<DATA_PIN, PRIMARY> fastLedLeds;
+    Leds<DATA_PIN> fastLedLeds;
 
     AnimationContainer animations;
 
-    FastLedDevice()
+    FastLedDevice(const char *oscAddress) : _oscAddress(oscAddress)
     {
         _message.messageStruct.mode = (ColorCommands)-1;
     }
 
-    void init()
-    {
+    void init() {
         fastLedLeds.init();
     }
 
-    void handleMessage(FastLedCommand message)
+    const char *address()
     {
+        return _oscAddress;
+    }
+
+    OSC::IMessage *message()
+    {
+        return &_message;
+    }
+
+    void callbackMessage()
+    {
+        auto message = _message.messageStruct;
+
         switch (message.mode)
         {
 
