@@ -3,19 +3,26 @@
 #include "core.h"
 #include "fastLedDevice.h"
 
-// TODO: check how to schedule stuff for better predictability
+// Messages::MessageQueue<FastLedCommand> tasks[] = {
+//     Messages::MessageQueue<FastLedCommand>("/F1", &fastLedTask<16, true>, 5120, 3),
+//     Messages::MessageQueue<FastLedCommand>("/F2", &fastLedTask<13, false>, 5120, 3),
+//     Messages::MessageQueue<FastLedCommand>("/F3", &fastLedTask<14, false>, 5120, 3), 
+//     Messages::MessageQueue<FastLedCommand>("/F4", &fastLedTask<15, false>, 5120, 3),
+//     Messages::MessageQueue<FastLedCommand>("/F5", &fastLedTask<5, false>, 5120, 3), 
+//     Messages::MessageQueue<FastLedCommand>("/F6", &fastLedTask<4, false>, 5120, 3),
+//     Messages::MessageQueue<FastLedCommand>("/F7", &fastLedTask<3, false>, 5120, 3),
+//     Messages::MessageQueue<FastLedCommand>("/F8", &fastLedTask<2, false>, 5120, 3)};
 
-Messages::MessageQueue<FastLedCommand> tasks[] = {
-    Messages::MessageQueue<FastLedCommand>("/F1", &fastLedTask<16, true, 0>, 3, 1),
-    Messages::MessageQueue<FastLedCommand>("/F2", &fastLedTask<13, false, 1>, 3, 1),
-    Messages::MessageQueue<FastLedCommand>("/F3", &fastLedTask<14, false, 2>, 3, 1),
-    Messages::MessageQueue<FastLedCommand>("/F4", &fastLedTask<15, false, 3>, 3, 1),
-    Messages::MessageQueue<FastLedCommand>("/F5", &fastLedTask<5, false, 4>, 3, 1),
-    Messages::MessageQueue<FastLedCommand>("/F6", &fastLedTask<4, false, 5>, 3, 1),
-    Messages::MessageQueue<FastLedCommand>("/F7", &fastLedTask<3, false, 6>, 3, 1),
-    Messages::MessageQueue<FastLedCommand>("/F8", &fastLedTask<2, false, 7>, 3, 1)};
-
-volatile bool doFastLed = false;
+FastLedBaseDevice* devices[] = {
+    new FastLedDevice<16>("/F1"),
+    new FastLedDevice<13>("/F2"),
+    new FastLedDevice<14>("/F3"),
+    new FastLedDevice<15>("/F4"),
+    new FastLedDevice<5>("/F5"),
+    new FastLedDevice<4>("/F6"),
+    new FastLedDevice<3>("/F7"),
+    new FastLedDevice<2>("/F8")
+};
 
 class FastLedApp : public App::CoreApp
 {
@@ -27,13 +34,13 @@ public:
     IPAddress broadcastIp;
     int broadcastPort;
 
-    OSC::Arduino<sizeof(tasks) / sizeof(Messages::MessageQueue<FastLedCommand>), 0> osc;
+    OSC::Arduino<8, 0> osc;
 
     FastLedApp(const char *ledAppHostname,
-               IPAddress localIp,
-               IPAddress subnet,
-               IPAddress broadcastIp,
-               int broadcastPort)
+           IPAddress localIp,
+           IPAddress subnet,
+           IPAddress broadcastIp,
+           int broadcastPort)
         : ledAppHostname(ledAppHostname),
           localIp(localIp),
           subnet(subnet),
@@ -56,9 +63,9 @@ public:
 
         osc.bindUDP(&EthernetClient::udp, broadcastIp, broadcastPort);
 
-        for (auto &task : tasks)
+        for (auto &device : devices)
         {
-            osc.addConsumer(&task);
+            osc.addConsumer(device);
         }
     }
 
@@ -69,9 +76,9 @@ public:
 
     void startApp()
     {
-        for (auto &task : tasks)
+        for (auto &device : devices)
         {
-            task.start();
+            device->init();
         }
     }
 
@@ -79,9 +86,13 @@ public:
     {
         osc.loop(time.tOSC);
 
-        if (doFastLed || time.tVISUAL)
+        for (auto &device : devices)
         {
-            doFastLed = false;
+            device->animate();
+        }
+
+        if (time.tVISUAL)
+        {
             FastLED.show();
         }
     }
@@ -95,13 +106,13 @@ public:
     // check for queue exhaustion in the consumers of the OSC messages
     bool appWarningRequired()
     {
-        for (auto &task : tasks)
-        {
-            if (task.queueExhausted)
-            {
-                return true;
-            }
-        }
+        // for (auto &task : tasks)
+        // {
+        //     if (task.queueExhausted)
+        //     {
+        //         return true;
+        //     }
+        // }
 
         return false;
     }
