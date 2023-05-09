@@ -2,17 +2,20 @@
 
 #include "core.h"
 #include "animationContainer.h"
-#include "animations/stroboAnimation.h"
 #include "animations/chaseAnimation.h"
+#include "animations/fireAnimation.h"
+#include "animations/stroboAnimation.h"
+#include "animations/swipeAnimation.h"
+#include "animations/theaterChaseAnimation.h"
 
-template <uint8_t DATA_PIN, bool PRIMARY>
+template <uint8_t DATA_PIN, bool PRIMARY, uint8_t INDEX>
 class FastLedDevice
 {
 private:
     OSC::StructMessage<FastLedCommand, uint32_t> _message;
 
 public:
-    Leds<DATA_PIN, PRIMARY> fastLedLeds;
+    Leds<DATA_PIN, PRIMARY, INDEX> fastLedLeds;
 
     AnimationContainer animations;
 
@@ -190,6 +193,40 @@ public:
         case ColorCommands::Chase:
         {
             animations.insertAnimation(new ChaseAnimation(message.commands.chase, &fastLedLeds));
+        }
+        break;
+
+        case ColorCommands::Fire:
+        {
+            fastLedLeds.disableFade();
+
+            fill_solid(fastLedLeds.leds, fastLedLeds.nrOfLeds, CRGB::Black);
+
+            animations.resetAnimations();
+
+            animations.insertAnimation(new FireAnimation(message.commands.fire, &fastLedLeds));
+        }
+        break;
+
+        case ColorCommands::TheaterChase:
+        {
+            fastLedLeds.disableFade();
+
+            fill_solid(fastLedLeds.leds, fastLedLeds.nrOfLeds, CRGB::Black);
+
+            animations.resetAnimations();
+
+            animations.insertAnimation(new TheaterChaseAnimation(message.commands.theater, &fastLedLeds));
+        }
+        break;
+
+        case ColorCommands::Swipe:
+        {
+            fastLedLeds.disableFade();
+
+            fill_solid(fastLedLeds.leds, fastLedLeds.nrOfLeds, CRGB::Black);
+
+            animations.insertAnimation(new SwipeAnimation(message.commands.swipe, &fastLedLeds));
         }
         break;
 

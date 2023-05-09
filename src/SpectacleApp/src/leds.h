@@ -19,7 +19,7 @@ private:
 public:
     Leds()
     {
-        initLeds(24);
+        initLeds(24, 4);
     }
 
     void init()

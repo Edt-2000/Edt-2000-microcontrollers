@@ -3,8 +3,6 @@
 #include "core.h"
 #include "leds.h"
 
-extern Leds SpectacleLeds;
-
 class FireAnimation : public BaseAnimation
 {
 private:
@@ -16,27 +14,28 @@ private:
         CRGB::Orange,
         CRGB::OrangeRed,
         CRGB::Orange,
-        CRGB::Orange,
+        CRGB::Black,
         (CRGB)0xFF8500,
-        CRGB::OrangeRed
-    };
+        CRGB::OrangeRed};
+
+    BaseLeds *_baseLeds;
 
 public:
-// TODO: accept BaseLeds* + nrOfLedsInLevel
-    FireAnimation(FireCommand command) : _speed(command.speed)
+    FireAnimation(FireCommand command, BaseLeds *baseLeds) : _speed(command.speed), _baseLeds(baseLeds)
     {
         _progress = _speed;
+        _fireProgress = baseLeds->animationSeed;
     }
 
     void virtual animate()
     {
         for (uint8_t i = 0; i < 3; i++)
         {
-            auto level = SpectacleLeds.level(i);
+            auto level = _baseLeds->level(i);
 
-            for (uint8_t j = 0; j < 4; j++)
+            for (uint8_t j = 0; j < _baseLeds->nrOfLedsInLevel; j++)
             {
-                SpectacleLeds.leds[level[j]] = CRGB::Red;
+                _baseLeds->leds[level[j]] = CRGB::Red;
             }
         }
 
@@ -48,14 +47,14 @@ public:
 
             for (uint8_t i = 3; i < 7; i++)
             {
-                auto level = SpectacleLeds.level(i);
+                auto level = _baseLeds->level(i);
 
-                for (uint8_t j = 0; j < 4; j++)
+                for (uint8_t j = 0; j < _baseLeds->nrOfLedsInLevel; j++)
                 {
                     uint8_t c = (_fireProgress + j + i) % 7;
 
-                    fill_solid(SpectacleLeds.leds + level[j], 1, _colors[c]);
-                    fadeToBlackBy(SpectacleLeds.leds + level[j], 1, sin8(_fireProgress * 3));
+                    fill_solid(_baseLeds->leds + level[j], 1, _colors[c]);
+                    fadeToBlackBy(_baseLeds->leds + level[j], 1, sin8(_fireProgress * 3));
                 }
             }
         }

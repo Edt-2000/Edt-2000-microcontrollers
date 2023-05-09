@@ -19,11 +19,11 @@ enum ColorCommands : uint32_t
     DualSparkle = 11,
     Chase = 12,
     
-    // TODO:
     TheaterChase = 201,
     Fire = 203,
     Swipe = 204,
-
+    
+    // REBUILD:
     DMXConfig = 254
 };
 
@@ -142,11 +142,42 @@ struct ChaseCommand
     }
 };
 
-struct ChaseStillCommand
+struct TheatreChaseCommand
 {
-    // 0 - 255
+    uint32_t hue1;
+    uint32_t hue2;
+    uint32_t speed;
+    uint32_t nrOfSpokes;
+
+    CHSV getColor1()
+    {
+        return CHSV(
+            hue1,
+            // make color white when hue = 255
+            hue1 == 255 ? 0x00 : 0xff,
+            0xff);
+    }
+
+    CHSV getColor2()
+    {
+        return CHSV(
+            hue2,
+            // make color white when hue = 255
+            hue2 == 255 ? 0x00 : 0xff,
+            0xff);
+    }
+};
+
+struct FireCommand
+{
+    uint32_t speed;
+};
+
+struct SwipeCommand
+{
     uint32_t hue;
-    uint32_t length;
+    uint32_t speed;
+    uint32_t angle;
 
     CHSV getColor()
     {
@@ -193,8 +224,11 @@ union Commands
     VuMeterCommand vuMeter;
     TwinkleCommand twinkle;
     ChaseCommand chase;
-    ChaseStillCommand chaseStill;
     StroboCommand strobo;
+    
+    TheatreChaseCommand theater;
+    FireCommand fire;
+    SwipeCommand swipe;
 
     DMXConfigCommand dmxConfig;
 };

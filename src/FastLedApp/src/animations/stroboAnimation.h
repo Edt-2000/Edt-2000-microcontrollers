@@ -3,7 +3,7 @@
 #include "core.h"
 #include "leds.h"
 
-extern bool doFastLed;
+extern volatile bool doFastLed;
 
 class StroboAnimation : public BaseAnimation
 {

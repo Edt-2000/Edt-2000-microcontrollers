@@ -17,21 +17,32 @@ enum FadeMode
 struct BaseLeds
 {
 protected:
-    void initLeds(uint8_t numberOfLeds)
+    void initLeds(uint8_t numberOfLeds, uint8_t numberOfLedsInLevel, uint8_t ledIndex)
     {
+        animationSeed = random8();
+
         nrOfLeds = numberOfLeds;
+        index = ledIndex;
+        nrOfLedsInLevel = numberOfLedsInLevel;
         leds = new CRGB[numberOfLeds];
         ledState = new LedState[numberOfLeds];
     }
 
 public:
+    uint8_t animationSeed;
+    uint8_t index;
     uint8_t nrOfLeds;
+    uint8_t nrOfLedsInLevel;
     CRGB *leds;
     LedState *ledState;
     FadeMode activeFadeMode;
 
     virtual void init();
     virtual void show();
+
+    virtual uint8_t *level(uint8_t level);
+    virtual uint8_t angleLeft(uint8_t angle);
+    virtual uint8_t angleRight(uint8_t angle);
 
     uint8_t normalizeLedNrDown(uint8_t percentage)
     {
