@@ -93,7 +93,6 @@ namespace Dispedter.Tester
         private DateTime _previousIn = DateTime.UtcNow;
         private List<string> _inHistory = new List<string>();
 
-
         enum CommandDirection
         {
             In,
@@ -403,10 +402,10 @@ namespace Dispedter.Tester
                     RandomColor();
                     return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 3, Random() / 42);
                 } }, // ;
-                { (VirtualKey)222, () => 
+                { (VirtualKey)222, () =>
                 {
                     RandomColor();
-                    return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 10, Random() / 42); 
+                    return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 10, Random() / 42);
                 } }, // '
 
                 { (VirtualKey)190, () => _commandFactory.CreateSwipe(RandomColor(), 5, Random()) }, // .

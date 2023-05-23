@@ -181,7 +181,7 @@ void SpectacleDevice::callbackMessage()
 
         fill_solid(SpectacleLeds.leds, SpectacleLeds.nrOfLeds, CRGB::Black);
 
-        animations.insertAnimation(new SwipeAnimation(message.commands.swipe));
+        animations.addAnimation(new SwipeAnimation(message.commands.swipe));
     }
     break;
 

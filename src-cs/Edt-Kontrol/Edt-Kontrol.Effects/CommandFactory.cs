@@ -1,8 +1,8 @@
-﻿using Edt_Kontrol.Effects;
-using Edt_Kontrol.OSC;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Edt_Kontrol.Effects;
+using Edt_Kontrol.OSC;
 
 namespace Dispedter.Common.Factories
 {
@@ -94,6 +94,21 @@ namespace Dispedter.Common.Factories
         public IEnumerable<OscMessage> CreateChase(ColorPreset h, int speed, int fadeSpeed, bool up)
         {
             return _addresses.Select(a => new OscMessage(a, (int)Command.Chase, (int)h, speed, fadeSpeed, up ? 1 : 0));
+        }
+
+        public IEnumerable<OscMessage> CreateTheaterChase(ColorPreset h1, ColorPreset h2, int speed, int nrOfSpokes)
+        {
+            return _addresses.Select(a => new OscMessage(a, (int)Command.TheaterChase, (int)h1, (int)h2, speed, nrOfSpokes));
+        }
+
+        public IEnumerable<OscMessage> CreateFire(int speed)
+        {
+            return _addresses.Select(a => new OscMessage(a, (int)Command.Fire, speed));
+        }
+
+        public IEnumerable<OscMessage> CreateSwipe(ColorPreset h, int speed, int direction)
+        {
+            return _addresses.Select(a => new OscMessage(a, (int)Command.Swipe, (int)h, speed, direction));
         }
 
         public IEnumerable<OscMessage> CreatePartialTwinkle(Func<ColorPreset> h)

@@ -7,15 +7,15 @@ namespace Edt_Kontrol.OSC
 {
     public class UdpSender : ISender
     {
-        enum State
+        private enum State
         {
             Idle,
             Running,
             Broken
         }
 
-        private IPEndPoint _remoteIpEndPoint;
-        private Socket _socket;
+        private readonly IPEndPoint _remoteIpEndPoint;
+        private readonly Socket _socket;
 
         public int Port { get; }
         public IPAddress Address { get; }

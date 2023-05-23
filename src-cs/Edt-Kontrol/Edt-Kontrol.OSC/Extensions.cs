@@ -65,7 +65,7 @@ namespace Edt_Kontrol.OSC
             return result;
         }
 
-        private static int _chunkSize = 30;
+        private static readonly int _chunkSize = 30;
 
         public static IEnumerable<OscPacket> OptionallyBundle(this IEnumerable<OscMessage> messages)
         {

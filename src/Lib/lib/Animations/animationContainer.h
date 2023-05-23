@@ -39,6 +39,6 @@ public:
         }
 
         animations.remove_if([=](BaseAnimation *animation)
-                             { return animation->finished; });
+                             { if (animation->finished) { delete animation; return true; } return false; });
     }
 };
