@@ -1,27 +1,18 @@
-// #pragma once
+#pragma once
 
-// #include "fastLedCommand.h"
-// #include "fastLedDevice.h"
+#include <FastLED.h>
 
-// template <uint8_t DATA_PIN, bool PRIMARY>
-// void fastLedTask(void *parameters)
-// {
-//     auto queue = (QueueHandle_t)parameters;
+extern volatile bool doFastLed;
 
-//     FastLedCommand message;
-//     FastLedDevice<DATA_PIN, PRIMARY> device;
+void fastLedTask(void *parameters)
+{
+    while (true) 
+    {
+        if (doFastLed) {
+            FastLED.show();
 
-//     device.init();
-
-//     while (true)
-//     {
-//         if (xQueueReceive(queue, &message, 12 * portTICK_PERIOD_MS))
-//         {
-//             device.handleMessage(message);
-//         }
-//         else
-//         {
-//             device.animate();
-//         }
-//     }
-// }
+            doFastLed = false;
+        }
+        delay(1);
+    }
+}

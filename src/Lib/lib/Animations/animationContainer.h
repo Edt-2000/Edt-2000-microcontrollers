@@ -31,14 +31,19 @@ public:
         animations.clear();
     }
 
-    void animate()
+    bool animate(bool progressAnimation)
     {
+        bool shouldOutput = false;
+
         for (auto animation : animations)
         {
-            animation->animate();
+            bool output = animation->animate(progressAnimation);
+            shouldOutput = shouldOutput || output;
         }
 
         animations.remove_if([=](BaseAnimation *animation)
                              { if (animation->finished) { delete animation; return true; } return false; });
+
+        return shouldOutput;   
     }
 };

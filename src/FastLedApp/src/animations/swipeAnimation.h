@@ -65,39 +65,45 @@ private:
         124,
         125,
         127};
-        
+
     BaseLeds *_baseLeds;
 
 public:
-    SwipeAnimation(SwipeCommand command, BaseLeds* baseLeds) : _angle(command.angle), _speed(command.speed), _color(command.getColor()), _baseLeds(baseLeds)
+    SwipeAnimation(SwipeCommand command, BaseLeds *baseLeds) : _angle(command.angle), _speed(command.speed), _color(command.getColor()), _baseLeds(baseLeds)
     {
     }
 
-    void virtual animate()
+    bool virtual animate(bool progressAnimation)
     {
-        if (_progress == 255)
+        if (progressAnimation)
         {
-            finished = true;
+            if (_progress == 255)
+            {
+                finished = true;
+            }
+
+            uint8_t offset = map(_angle, 0, 255, 255 - (32 * _baseLeds->index), (32 * _baseLeds->index));
+
+            uint8_t fraction = (_progress + offset);
+
+            // uint8_t currentAngle = _progressToAngle[fraction] * 2;
+
+            uint8_t led1 = _baseLeds->angleLeft(fraction);
+
+            _baseLeds->leds[led1] = _color;
+            _baseLeds->fade(led1, 80, FadeMode::FadeToBlack);
+
+            if (_progress > 255 - _speed)
+            {
+                _progress = 255;
+            }
+            else
+            {
+                _progress += _speed;
+            }
+
+            return true;
         }
-
-        uint8_t offset = map(_angle, 0, 255, 255 - (32 * _baseLeds->index), (32 * _baseLeds->index));
-
-        uint8_t fraction = (_progress + offset);
-
-        // uint8_t currentAngle = _progressToAngle[fraction] * 2;
-
-        uint8_t led1 = _baseLeds->angleLeft(fraction);
-        
-        _baseLeds->leds[led1] = _color;
-        _baseLeds->fade(led1, 80, FadeMode::FadeToBlack);
-        
-        if (_progress > 255 - _speed)
-        {
-            _progress = 255;
-        }
-        else
-        {
-            _progress += _speed;
-        }
+        return false;
     }
 };

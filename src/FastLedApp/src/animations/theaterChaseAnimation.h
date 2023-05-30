@@ -3,8 +3,6 @@
 #include "core.h"
 #include "leds.h"
 
-extern volatile bool doFastLed;
-
 // share this chase progress between animations instances to make it more smooth
 static uint8_t _chaseProgress = 0;
 static uint8_t _progress = 0;
@@ -30,18 +28,23 @@ public:
         output();
     }
 
-    void virtual animate()
+    bool virtual animate(bool progressAnimation)
     {
-        if (_progress++ > _speed)
+        if (progressAnimation)
         {
-            _progress = 0;
+            if (_progress++ > _speed)
+            {
+                _progress = 0;
 
-            _chaseProgress++;
+                _chaseProgress++;
 
-            output();
+                output();
 
-            doFastLed = true;
+                return true;
+            }
         }
+
+        return false;
     }
 
     void output()

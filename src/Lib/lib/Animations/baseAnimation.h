@@ -6,5 +6,5 @@ class BaseAnimation
 {
 public:
     bool finished = false;
-    void virtual animate() = 0;
+    bool virtual animate(bool progressAnimation) = 0;
 };

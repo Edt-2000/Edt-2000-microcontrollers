@@ -2,17 +2,22 @@
 
 #include "core.h"
 #include "animationContainer.h"
-#include "animations/stroboAnimation.h"
 #include "animations/chaseAnimation.h"
+#include "animations/fireAnimation.h"
+#include "animations/stroboAnimation.h"
+#include "animations/swipeAnimation.h"
+#include "animations/theaterChaseAnimation.h"
+
+extern volatile bool doFastLed;
 
 class FastLedBaseDevice : public OSC::MessageConsumer
 {
-    public:
-        virtual void init() = 0;
-        virtual void animate() = 0;
+public:
+    virtual void init() = 0;
+    virtual bool animate(bool progressAnimation) = 0;
 };
 
-template <uint8_t DATA_PIN>
+template <uint8_t DATA_PIN, uint8_t INDEX>
 class FastLedDevice : public FastLedBaseDevice
 {
 private:
@@ -20,7 +25,7 @@ private:
     char const *_oscAddress;
 
 public:
-    Leds<DATA_PIN> fastLedLeds;
+    Leds<DATA_PIN, INDEX> fastLedLeds;
 
     AnimationContainer animations;
 
@@ -29,7 +34,8 @@ public:
         _message.messageStruct.mode = (ColorCommands)-1;
     }
 
-    void init() {
+    void init()
+    {
         fastLedLeds.init();
     }
 
@@ -212,16 +218,59 @@ public:
         }
         break;
 
+        case ColorCommands::Fire:
+        {
+            fastLedLeds.disableFade();
+
+            fill_solid(fastLedLeds.leds, fastLedLeds.nrOfLeds, CRGB::Black);
+
+            animations.resetAnimations();
+
+            animations.insertAnimation(new FireAnimation(message.commands.fire, &fastLedLeds));
+        }
+        break;
+
+        case ColorCommands::TheaterChase:
+        {
+            fastLedLeds.disableFade();
+
+            fill_solid(fastLedLeds.leds, fastLedLeds.nrOfLeds, CRGB::Black);
+
+            animations.resetAnimations();
+
+            animations.insertAnimation(new TheaterChaseAnimation(message.commands.theater, &fastLedLeds));
+        }
+        break;
+
+        case ColorCommands::Swipe:
+        {
+            fastLedLeds.disableFade();
+
+            fill_solid(fastLedLeds.leds, fastLedLeds.nrOfLeds, CRGB::Black);
+
+            animations.insertAnimation(new SwipeAnimation(message.commands.swipe, &fastLedLeds));
+        }
+        break;
+
         default:
             // set to off
             fill_solid(fastLedLeds.leds, fastLedLeds.nrOfLeds, CRGB::Black);
             break;
         }
+
+        doFastLed = true;
     }
 
-    void animate()
+    bool animate(bool progressAnimation)
     {
-        animations.animate();
-        fastLedLeds.loop();
+        bool shouldOutput = animations.animate(progressAnimation);
+
+        if (progressAnimation)
+        {
+            fastLedLeds.loop();
+            return true;
+        }
+
+        return shouldOutput;
     }
 };

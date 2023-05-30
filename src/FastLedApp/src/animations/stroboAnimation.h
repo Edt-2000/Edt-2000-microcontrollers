@@ -20,21 +20,23 @@ public:
         _progress = _intensity;
     }
 
-    void virtual animate()
+    bool virtual animate(bool progressAnimation)
     {
         if (_progress == 0)
         {
             fill_solid(_baseLeds->leds, _baseLeds->nrOfLeds, CRGB::Black);
 
-            doFastLed = true;
+            return true;
         }
 
-        if ((_progress++) > _intensity)
+        if (progressAnimation && (_progress++) > _intensity)
         {
             _progress = 0;
             fill_solid(_baseLeds->leds, _baseLeds->nrOfLeds, _color);
 
-            doFastLed = true;
+            return true;
         }
+
+        return false;
     }
 };
