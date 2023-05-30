@@ -90,10 +90,6 @@ public:
     {
         osc.loop(time.tOSC);
 
-        if (doFastLed) {
-            return;
-        }
-
         bool shouldOutput = time.tOSC;
 
         for (auto &device : devices)
