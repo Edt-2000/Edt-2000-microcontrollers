@@ -19,11 +19,10 @@ namespace Messages
 
         const char *const oscAddress;
         TaskFunction_t taskFunction;
-        const uint32_t taskStackDepth;
         const BaseType_t core;
 
-        MessageQueue(const char *oscAddress, TaskFunction_t taskFunction, const uint32_t taskStackDepth, const UBaseType_t queueElements, const BaseType_t core)
-            : oscAddress(oscAddress), taskFunction(taskFunction), taskStackDepth(taskStackDepth), core(core)
+        MessageQueue(const char *oscAddress, TaskFunction_t taskFunction, const UBaseType_t queueElements, const BaseType_t core)
+            : oscAddress(oscAddress), taskFunction(taskFunction), core(core)
         {
             taskQueue = xQueueCreate(queueElements, sizeof(T));
 
@@ -35,7 +34,7 @@ namespace Messages
 
         void start()
         {
-            xTaskCreatePinnedToCore(taskFunction, oscAddress, 10240, taskQueue, 10, NULL, 1);
+            xTaskCreatePinnedToCore(taskFunction, oscAddress, 10240, taskQueue, 10, NULL, core);
         }
 
         const char *address()

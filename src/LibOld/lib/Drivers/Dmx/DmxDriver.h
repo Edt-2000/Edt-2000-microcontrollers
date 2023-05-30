@@ -21,7 +21,7 @@ namespace Drivers
 
 			inline uint8_t clampValue(uint8_t value)
 			{
-				return _minimumBrightness + ((value / 255.0) * ((double)(_maximumBrightness - _minimumBrightness)));
+				return _minimumBrightness + ((value / 255.0) * ((float)(_maximumBrightness - _minimumBrightness)));
 			}
 
 		public:

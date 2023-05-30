@@ -6,14 +6,14 @@
 // TODO: check how to schedule stuff for better predictability
 
 Messages::MessageQueue<FastLedCommand> tasks[] = {
-    Messages::MessageQueue<FastLedCommand>("/F1", &fastLedTask<16, true, 0>, 5120, 3, 0),
-    Messages::MessageQueue<FastLedCommand>("/F2", &fastLedTask<13, false, 1>, 5120, 3, 1),
-    Messages::MessageQueue<FastLedCommand>("/F3", &fastLedTask<14, false, 2>, 5120, 3, 0),
-    Messages::MessageQueue<FastLedCommand>("/F4", &fastLedTask<15, false, 3>, 5120, 3, 1),
-    Messages::MessageQueue<FastLedCommand>("/F5", &fastLedTask<5, false, 4>, 5120, 3, 0),
-    Messages::MessageQueue<FastLedCommand>("/F6", &fastLedTask<4, false, 5>, 5120, 3, 1),
-    Messages::MessageQueue<FastLedCommand>("/F7", &fastLedTask<3, false, 6>, 5120, 3, 0),
-    Messages::MessageQueue<FastLedCommand>("/F8", &fastLedTask<2, false, 7>, 5120, 3, 1)};
+    Messages::MessageQueue<FastLedCommand>("/F1", &fastLedTask<16, true, 0>, 3, 1),
+    Messages::MessageQueue<FastLedCommand>("/F2", &fastLedTask<13, false, 1>, 3, 1),
+    Messages::MessageQueue<FastLedCommand>("/F3", &fastLedTask<14, false, 2>, 3, 1),
+    Messages::MessageQueue<FastLedCommand>("/F4", &fastLedTask<15, false, 3>, 3, 1),
+    Messages::MessageQueue<FastLedCommand>("/F5", &fastLedTask<5, false, 4>, 3, 1),
+    Messages::MessageQueue<FastLedCommand>("/F6", &fastLedTask<4, false, 5>, 3, 1),
+    Messages::MessageQueue<FastLedCommand>("/F7", &fastLedTask<3, false, 6>, 3, 1),
+    Messages::MessageQueue<FastLedCommand>("/F8", &fastLedTask<2, false, 7>, 3, 1)};
 
 volatile bool doFastLed = false;
 
