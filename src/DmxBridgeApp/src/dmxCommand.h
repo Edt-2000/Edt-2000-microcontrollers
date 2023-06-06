@@ -1,8 +1,5 @@
 #pragma once
 
-#include "core.h"
-#include <OSCArduino.h>
-
 enum ColorCommands : uint32_t
 {
     SingleSolid = 0,
@@ -21,7 +18,9 @@ enum ColorCommands : uint32_t
     
     TheaterChase = 201,
     Fire = 203,
-    Swipe = 204
+    Swipe = 204,
+    
+    DMXConfig = 254
 };
 
 struct SingleColorCommand
@@ -202,6 +201,17 @@ struct StroboCommand
     }
 };
 
+struct DMXConfigCommand
+{
+    // 0 - 255
+
+    uint32_t config;
+    uint32_t deviceAddress;
+    uint32_t deviceType;
+    uint32_t maximumBrightness;
+    uint32_t minimumBrightness;
+};
+
 union Commands
 {
     SingleColorCommand singleColor;
@@ -215,9 +225,11 @@ union Commands
     TheatreChaseCommand theater;
     FireCommand fire;
     SwipeCommand swipe;
+
+    DMXConfigCommand dmxConfig;
 };
 
-struct FastLedCommand
+struct DmxCommand
 {
     ColorCommands mode;
 

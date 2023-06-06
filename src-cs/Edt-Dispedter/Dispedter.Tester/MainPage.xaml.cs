@@ -26,7 +26,7 @@ namespace Dispedter.Tester
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/SP" });
+        private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/SP", "/R?" });
         private readonly CommandFactory _specialCommandFactory = new CommandFactory(new[] { "/?1", "/?2", "/?3", "/?4", "/?5", "/?6", "/?7", "/?8" });
         private readonly ListenerManager _listenerManager = new ListenerManager(detectUsb: false);
         private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[]
@@ -37,8 +37,8 @@ namespace Dispedter.Tester
             /* OLD fastled: IPAddress.Parse("10.0.0.20"),*/ 
             /* New fastled1: */ IPAddress.Parse("10.0.0.21"), 
             /* New fastled2: */ IPAddress.Parse("10.0.0.22"), 
-            /* New fastled2: */ IPAddress.Parse("10.0.0.99") });
-        ///* DMX unit */ IPAddress.Parse("10.0.0.30"), 
+            /* New DMX unit: */ IPAddress.Parse("10.0.0.30"), 
+            /* New Spectacle: */ IPAddress.Parse("10.0.0.99") });
         /* OLD RGB IPAddress.Parse("10.0.0.40"),*/
         ///* Smoke */ IPAddress.Parse("10.0.0.165") });
 
@@ -50,7 +50,7 @@ namespace Dispedter.Tester
         private ObservableCollection<int> _dmxAddresses;
         private DmxConfig _dmxConfig;
 
-        private readonly static Random R = new Random();
+        private static readonly Random R = new Random();
 
         private Mode _mode;
         private enum Mode
@@ -488,7 +488,7 @@ namespace Dispedter.Tester
 
         private static int Wave(int i)
         {
-            return (int)(Math.Sin((i / 100.0) * Math.PI) * 255);
+            return (int)(Math.Sin(i / 100.0 * Math.PI) * 255);
         }
         private ColorPreset RandomColor()
         {
@@ -514,13 +514,13 @@ namespace Dispedter.Tester
             var baseValue = 60 * (255.0 / 360.0);
 
             var hi = Convert.ToInt32(Math.Floor(hue / baseValue)) % 6;
-            var f = hue / baseValue - Math.Floor(hue / baseValue);
+            var f = (hue / baseValue) - Math.Floor(hue / baseValue);
 
             value = value * 255;
             var v = Convert.ToByte(value);
             var p = Convert.ToByte(value * (1 - saturation));
-            var q = Convert.ToByte(value * (1 - f * saturation));
-            var t = Convert.ToByte(value * (1 - (1 - f) * saturation));
+            var q = Convert.ToByte(value * (1 - (f * saturation)));
+            var t = Convert.ToByte(value * (1 - ((1 - f) * saturation)));
 
             if (hi == 0)
             {
