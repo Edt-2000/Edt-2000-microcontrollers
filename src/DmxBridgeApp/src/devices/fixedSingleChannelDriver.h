@@ -27,12 +27,12 @@ public:
 		output();
 	}
 
-	void solid(uint8_t h, uint8_t s, uint8_t v)
+	void solid(CHSV color)
 	{
 		// do nothing
 	}
 
-	void solid(uint8_t h1, uint8_t h2, uint8_t s, uint8_t v, uint8_t percentage)
+	void solid(CHSV color1, CHSV color2, uint8_t percentage)
 	{
 		// do nothing
 	}
@@ -52,7 +52,7 @@ public:
 		// do nothing
 	}
 
-	void strobo(uint8_t h, uint8_t intensity)
+	void strobo(CHSV color, uint8_t intensity)
 	{
 		// do nothing
 	}

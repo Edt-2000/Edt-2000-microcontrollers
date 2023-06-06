@@ -23,6 +23,7 @@ namespace Dispedter.Common.DMX
             new DmxType { Name = "LED Par - Show Tec Compact Par 8 channel", TypeNr = 3, Width = 8 },
             new DmxType { Name = "LED Par - Show Tec Compact Par 4 channel", TypeNr = 5, Width = 4 },
             new DmxType { Name = "LED Par - Show Tec Compact Par 3 channel", TypeNr = 6, Width = 3 },
+            new DmxType { Name = "LED Par - JB Systems Par 56", TypeNr = 7, Width = 4 },
             new DmxType { Name = "Fixed - Single channel", TypeNr = 4, Width = 1 }
         };
 

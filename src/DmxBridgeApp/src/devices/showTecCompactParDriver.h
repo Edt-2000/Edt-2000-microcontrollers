@@ -6,10 +6,6 @@
 class ShowTecCompactParDriver : public DmxDriver
 {
 private:
-    int _address;
-    int _minimumBrightness;
-    int _maximumBrightness;
-
     enum Mode
     {
         Uninitialized = 0,
@@ -19,8 +15,13 @@ private:
 
     CRGB _color;
     CRGB _fadeBackup;
+    CRGB _colorBackup;
+
+    uint8_t _stroboIntensity = 0;
+    bool _stroboOn = false;
 
     uint8_t _fade;
+    uint8_t _channels;
 
     inline void switchMode(Mode mode)
     {
@@ -29,18 +30,32 @@ private:
             return;
         }
 
-        if (mode == Mode::Color)
+        if (_channels == 8)
+        {
+            if (mode == Mode::Color)
+            {
+                // switch to brightness control
+                DmxSerial::Write(_address + 0, 255);
+                DmxSerial::Write(_address + 4, 0);
+                DmxSerial::Write(_address + 5, 0);
+                DmxSerial::Write(_address + 6, 0);
+                DmxSerial::Write(_address + 7, 0);
+            }
+            else if (mode == Mode::Strobo)
+            {
+                // switch to off to allow for flash control
+                DmxSerial::Write(_address, 255);
+                DmxSerial::Write(_address + 7, 0);
+            }
+        }
+        else if (_channels == 4)
         {
             // switch to brightness control
-            DmxSerial::Write(_address, 255);
-            DmxSerial::Write(_address + 4, 0);
-            DmxSerial::Write(_address + 7, 0);
+            DmxSerial::Write(_address + 0, 255);
         }
-        else if (mode == Mode::Strobo)
+        else if (_channels == 3)
         {
-            // switch to off to allow for flash control
-            DmxSerial::Write(_address, 255);
-            DmxSerial::Write(_address + 7, 0);
+            // 3 is simple
         }
 
         _mode = mode;
@@ -48,12 +63,31 @@ private:
 
     inline void output()
     {
-        DmxSerial::Write(_address + 1, _color.r);
-        DmxSerial::Write(_address + 2, _color.g);
-        DmxSerial::Write(_address + 3, _color.b);
+        if (_channels == 8)
+        {
+            DmxSerial::Write(_address + 1, _color.r);
+            DmxSerial::Write(_address + 2, _color.g);
+            DmxSerial::Write(_address + 3, _color.b);
+        }
+        else if (_channels == 4)
+        {
+            DmxSerial::Write(_address + 1, _color.r);
+            DmxSerial::Write(_address + 2, _color.g);
+            DmxSerial::Write(_address + 3, _color.b);
+        }
+        else if (_channels == 3)
+        {
+            DmxSerial::Write(_address + 0, _color.r);
+            DmxSerial::Write(_address + 1, _color.g);
+            DmxSerial::Write(_address + 2, _color.b);
+        }
     }
 
 public:
+    ShowTecCompactParDriver(uint8_t channels) : _channels(channels)
+    {
+    }
+
     void initialize(uint16_t address, uint8_t maximumBrightness, uint8_t minimumBrightness)
     {
         _address = address;
@@ -62,12 +96,31 @@ public:
 
         _color = CRGB::HTMLColorCode::Black;
 
+        switchMode(Mode::Color);
         output();
     }
 
     void loop()
     {
-        if (_mode == Mode::Color)
+        if (_mode == Mode::Strobo)
+        {
+            if (_stroboOn)
+            {
+                _color = CRGB::HTMLColorCode::Black;
+                _stroboOn = false;
+            }
+            else
+            {
+                if (_stroboIntensity / 8 > random8())
+                {
+                    _stroboOn = true;
+                    _color = _colorBackup;
+                }
+            }
+
+            output();
+        }
+        else if (_mode == Mode::Color)
         {
             if (_fade < 255)
             {
@@ -87,26 +140,26 @@ public:
         }
     }
 
-    void solid(uint8_t h, uint8_t s, uint8_t v)
+    void solid(CHSV color)
     {
         switchMode(Mode::Color);
 
-        _color.setHSV(h, s, clampValue(v));
+        _color = clampValue(color);
 
         output();
     }
 
-    void solid(uint8_t h1, uint8_t h2, uint8_t s, uint8_t v, uint8_t percentage)
+    void solid(CHSV color1, CHSV color2, uint8_t percentage)
     {
         switchMode(Mode::Color);
 
         if (percentage > random8())
         {
-            _color.setHSV(h2, s, clampValue(v));
+            _color = clampValue(color2);
         }
         else
         {
-            _color.setHSV(h1, s, clampValue(v));
+            _color = clampValue(color1);
         }
 
         output();
@@ -122,7 +175,7 @@ public:
         }
         else
         {
-            _color.setHSV(85 - (intensity / 2.5), 255, clampValue(intensity));
+            _color.setHSV(85 - (intensity / 2.5), 255, intensity);
         }
 
         output();
@@ -138,7 +191,7 @@ public:
         _fade = 255;
     }
 
-    void strobo(uint8_t h, uint8_t intensity)
+    void strobo(CHSV color, uint8_t intensity)
     {
         if (intensity == 0)
         {
@@ -150,13 +203,8 @@ public:
         {
             switchMode(Mode::Strobo);
 
-            // strobo range is 10 - 255
-            uint8_t stroboSpeed = ((255 - 10) * ((double)intensity) / 255.0) + 10;
-
-            // strobo is always FULL POWAH
-            _color.setHSV(h, 255, 255);
-
-            DmxSerial::Write(_address + 4, stroboSpeed);
+            _colorBackup = color;
+            _stroboIntensity = 255 - intensity;
         }
 
         output();

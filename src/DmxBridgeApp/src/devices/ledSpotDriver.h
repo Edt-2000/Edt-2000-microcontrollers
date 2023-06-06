@@ -15,6 +15,10 @@ private:
     } _mode;
 
     CRGB _color[2];
+
+    uint8_t _stroboIntensity = 0;
+    bool _stroboOn = false;
+
     CRGB _fadeBackup[2];
 
     uint8_t _fade;
@@ -33,8 +37,8 @@ private:
         }
         else if (mode == Mode::Strobo)
         {
-            // switch to off to allow for flash control
-            DmxSerial::Write(_address, 0);
+            // switch to brightness control
+            DmxSerial::Write(_address, 255);
         }
 
         _mode = mode;
@@ -62,7 +66,27 @@ public:
 
     void loop()
     {
-        if (_mode == Mode::Color)
+        if (_mode == Mode::Strobo)
+        {
+            if (_stroboOn)
+            {
+                _color[0] = CRGB::HTMLColorCode::Black;
+                _color[1] = CRGB::HTMLColorCode::Black;
+                _stroboOn = false;
+            }
+            else
+            {
+                if (_stroboIntensity / 8 > random8())
+                {
+                    _stroboOn = true;
+                    _color[0] = CRGB::HTMLColorCode::White;
+                    _color[1] = CRGB::HTMLColorCode::White;
+                }
+            }
+
+            output();
+        }
+        else if (_mode == Mode::Color)
         {
             if (_fade < 255)
             {
@@ -82,37 +106,37 @@ public:
         }
     }
 
-    void solid(CRGB color)
+    void solid(CHSV color)
     {
         switchMode(Mode::Color);
 
         // use white led when h & s are zero (grey scale)
-        if (h == 0 && s == 0)
+        if (color.h == 255)
         {
             _color[0] = CRGB::HTMLColorCode::Black;
-            _color[1].r = clampValue(v);
+            _color[1].r = clampValue(color).v;
         }
         else
         {
-            _color[0].setHSV(h, s, clampValue(v));
+            _color[0] = clampValue(color);
             _color[1] = CRGB::HTMLColorCode::Black;
         }
 
         output();
     }
 
-    void solid(uint8_t h1, uint8_t h2, uint8_t s, uint8_t v, uint8_t percentage)
+    void solid(CHSV color1, CHSV color2, uint8_t percentage)
     {
         switchMode(Mode::Color);
 
         if (percentage > random8())
         {
-            _color[0].setHSV(h2, s, clampValue(v));
+            _color[0] = clampValue(color2);
             _color[1] = CRGB::HTMLColorCode::Black;
         }
         else
         {
-            _color[0].setHSV(h1, s, clampValue(v));
+            _color[0] = clampValue(color1);
             _color[1] = CRGB::HTMLColorCode::Black;
         }
 
@@ -129,7 +153,7 @@ public:
         }
         else
         {
-            _color[0].setHSV(85 - (intensity / 2.5), 255, clampValue(intensity));
+            _color[0].setHSV(85 - (intensity / 2.5), 255, intensity);
         }
 
         _color[1] = CRGB::HTMLColorCode::Black;
@@ -147,7 +171,7 @@ public:
         _fade = 255;
     }
 
-    void strobo(uint8_t h, uint8_t intensity)
+    void strobo(CHSV color, uint8_t intensity)
     {
         if (intensity == 0)
         {
@@ -160,15 +184,10 @@ public:
         {
             switchMode(Mode::Strobo);
 
-            // strobo range is 135 - 239
-            uint8_t stroboSpeed = ((239 - 135) * ((float)intensity) / 255.0) + 135;
+            _stroboIntensity = 255 - intensity;
 
-            // no value clamping since strobo should be FULL POWAH
-            _color[0].setHSV(h, 255, 255);
-            // cheat to get brighter flashes
-            _color[1].setHSV(0, 255, h);
-
-            DmxSerial::Write(_address, stroboSpeed);
+            _color[0] = CRGB::HTMLColorCode::White;
+            _color[1] = CRGB::HTMLColorCode::White;
         }
 
         output();

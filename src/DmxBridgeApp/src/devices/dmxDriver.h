@@ -1,6 +1,5 @@
 #pragma once
 
-#include "dmxCommand.h"
 #include "dmxDriverConfig.h"
 
 #include <EEPROM.h>
@@ -15,21 +14,21 @@ protected:
 	uint8_t _minimumBrightness;
 	uint8_t _maximumBrightness;
 
-	inline uint8_t clampValue(uint8_t value)
+	inline CHSV clampValue(CHSV color)
 	{
-		return _minimumBrightness + ((value / 255.0) * ((float)(_maximumBrightness - _minimumBrightness)));
+		return CHSV(color.h, color.s, _minimumBrightness + ((color.v / 255.0) * ((float)(_maximumBrightness - _minimumBrightness))));
 	}
 
 public:
 	void virtual initialize(uint16_t address, uint8_t maximumBrightness, uint8_t minimumBrightness) = 0;
 	void virtual loop() = 0;
 
-	void virtual solid(uint8_t h, uint8_t s, uint8_t v) = 0;
-	void virtual solid(uint8_t h1, uint8_t h2, uint8_t s, uint8_t v, uint8_t percentage) = 0;
+	void virtual solid(CHSV color) = 0;
+	void virtual solid(CHSV color1, CHSV color2, uint8_t percentage) = 0;
 	void virtual intensity(uint8_t intensity) = 0;
 	void virtual fade(uint8_t duration, FadeMode mode = FadeMode::FadeToBlack) = 0;
 	void virtual disableFade() = 0;
-	void virtual strobo(uint8_t h, uint8_t intesity) = 0;
+	void virtual strobo(CHSV color, uint8_t intesity) = 0;
 
 	static void clearDeviceConfig()
 	{
@@ -38,7 +37,7 @@ public:
 
 	static uint8_t getDeviceCount()
 	{
-		uint8_t count;
+		uint8_t count = 0;
 
 		EEPROM.get(COUNTLOCATION, count);
 

@@ -7,6 +7,7 @@
 #include "devices/ledSpotDriver.h"
 #include "devices/showTecCompactParDriver.h"
 #include "devices/threeChannelLedDriver.h"
+#include "devices/jbSystemLedPar56.h"
 
 class DmxDevice : public OSC::MessageConsumer
 {
@@ -55,17 +56,15 @@ public:
 					break;
 
 				case DmxDeviceType::ShowTecCompactPar8channel:
-					_devices[i] = (DmxDriver *)new ShowTecCompactParDriver();
+					_devices[i] = (DmxDriver *)new ShowTecCompactParDriver(8);
 					break;
 				
-				// TODO
 				case DmxDeviceType::ShowTecCompactPar4channel:
-					_devices[i] = (DmxDriver *)new ShowTecCompactParDriver();
+					_devices[i] = (DmxDriver *)new ShowTecCompactParDriver(4);
 					break;
 
-				// TODO
 				case DmxDeviceType::ShowTecCompactPar3channel:
-					_devices[i] = (DmxDriver *)new ShowTecCompactParDriver();
+					_devices[i] = (DmxDriver *)new ShowTecCompactParDriver(3);
 					break;
 
 				case DmxDeviceType::ThreeChannelLed:
@@ -76,6 +75,10 @@ public:
 					_devices[i] = (DmxDriver *)new FixedSingleChannelDriver();
 					break;
 
+				case DmxDeviceType::JbSystemLedPar56:
+					_devices[i] = (DmxDriver *)new JbSystemLedPar56Driver();
+					break;
+
 				case DmxDeviceType::Unknown:
 				default:
 					continue;
@@ -83,7 +86,7 @@ public:
 
 				_devices[i]->initialize(config.address, config.maximumBrightness, config.minimumBrightness);
 
-				_devices[i]->solid(120, 255, 255);
+				_devices[i]->solid(CHSV(80, 255, 255));
 				_devices[i]->fade(2);
 			}
 		}
@@ -103,16 +106,16 @@ public:
 			{
 				if (message.commands.singleColor.value > 0)
 				{
-					_devices[i]->solid(message.commands.singleColor.hue, message.commands.singleColor.saturation, message.commands.singleColor.value);
+					_devices[i]->solid(message.commands.singleColor.getColor());
 				}
 
-				if (command == ColorCommands::SinglePulse || singleColor.value == 0)
+				if (message.mode == ColorCommands::SinglePulse || message.commands.singleColor.value == 0)
 				{
-					_devices[i]->fade(singleColor.duration, FadeMode::FadeToBlack);
+					_devices[i]->fade(message.commands.singleColor.duration, FadeMode::FadeToBlack);
 				}
-				else if (command == ColorCommands::SingleSpark)
+				else if (message.mode == ColorCommands::SingleSpark)
 				{
-					_devices[i]->fade(singleColor.duration, FadeMode::FadeOneByOne);
+					_devices[i]->fade(message.commands.singleColor.duration, FadeMode::FadeOneByOne);
 				}
 				else
 				{
@@ -126,15 +129,15 @@ public:
 		case ColorCommands::DualSparkle:
 			for (uint8_t i = 0; i < _deviceCount; ++i)
 			{
-				_devices[i]->solid(dualColor.hue1, dualColor.hue2, 255, 254, dualColor.percentage);
+				_devices[i]->solid(message.commands.dualColor.getColor1(), message.commands.dualColor.getColor2(), message.commands.dualColor.percentage);
 
-				if (command == ColorCommands::DualPulse)
+				if (message.mode == ColorCommands::DualPulse)
 				{
-					_devices[i]->fade(dualColor.duration, FadeMode::FadeToBlack);
+					_devices[i]->fade(message.commands.dualColor.duration, FadeMode::FadeToBlack);
 				}
-				else if (command == ColorCommands::DualSparkle)
+				else if (message.mode == ColorCommands::DualSparkle)
 				{
-					_devices[i]->fade(dualColor.duration, FadeMode::FadeOneByOne);
+					_devices[i]->fade(message.commands.dualColor.duration, FadeMode::FadeOneByOne);
 				}
 				else
 				{
@@ -146,9 +149,9 @@ public:
 		case ColorCommands::VuMeter:
 			for (uint8_t i = 0; i < _deviceCount; ++i)
 			{
-				if (vuMeter.intensity > 0)
+				if (message.commands.vuMeter.intensity > 0)
 				{
-					_devices[i]->intensity(vuMeter.intensity);
+					_devices[i]->intensity(message.commands.vuMeter.intensity);
 				}
 				else
 				{
@@ -162,9 +165,9 @@ public:
 			{
 				_devices[i]->disableFade();
 
-				if (twinkle.intensity > 0)
+				if (message.commands.twinkle.intensity > 0)
 				{
-					_devices[i]->solid(twinkle.hue, 255, twinkle.intensity - 1);
+					_devices[i]->solid(message.commands.twinkle.getColor());
 				}
 				else
 				{
@@ -176,12 +179,11 @@ public:
 		case ColorCommands::Strobo:
 			for (uint8_t i = 0; i < _deviceCount; ++i)
 			{
-				_devices[i]->strobo(strobo.hue, strobo.intensity);
+				_devices[i]->strobo(message.commands.strobo.getColor(), message.commands.strobo.intensity);
 			}
 			break;
 
 		case ColorCommands::Chase:
-		case ColorCommands::Bash:
 		case ColorCommands::RainbowPulse:
 		case ColorCommands::RainbowSolid:
 		case ColorCommands::RainbowSpark:
@@ -191,7 +193,7 @@ public:
 			break;
 		}
 
-		if (_message.messageStruct.command == ColorCommands::DMXConfig)
+		if (message.mode == ColorCommands::DMXConfig)
 		{
 
 			auto dmxConfigCommand = _message.messageStruct.commands.dmxConfig;

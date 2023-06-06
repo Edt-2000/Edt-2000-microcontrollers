@@ -10,7 +10,8 @@ enum class DmxDeviceType : uint8_t
     ShowTecCompactPar8channel = 3,
     FixedSingleChannel = 4,
     ShowTecCompactPar4channel = 5,
-    ShowTecCompactPar3channel = 6
+    ShowTecCompactPar3channel = 6,
+    JbSystemLedPar56 = 7
 };
 
 struct DmxDriverConfig

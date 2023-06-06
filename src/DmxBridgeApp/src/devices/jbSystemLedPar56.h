@@ -3,7 +3,7 @@
 #include "dmxDriver.h"
 #include "dmxSerial.h"
 
-class ThreeChannelLedDriver : public DmxDriver
+class JbSystemLedPar56Driver : public DmxDriver
 {
 private:
     enum Mode
@@ -23,6 +23,22 @@ private:
 
     inline void switchMode(Mode mode)
     {
+        if (mode == _mode)
+        {
+            return;
+        }
+
+        if (mode == Mode::Color)
+        {
+            // switch to brightness control
+            DmxSerial::Write(_address + 3, 255);
+        }
+        else if (mode == Mode::Strobo)
+        {
+            // switch to brightness control
+            DmxSerial::Write(_address + 3, 255);
+        }
+
         _mode = mode;
     }
 

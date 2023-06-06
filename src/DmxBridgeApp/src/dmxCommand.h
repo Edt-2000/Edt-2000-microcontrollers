@@ -1,5 +1,11 @@
 #pragma once
 
+enum FadeMode
+{
+    FadeToBlack = 0,
+    FadeOneByOne = 1
+};
+
 enum ColorCommands : uint32_t
 {
     SingleSolid = 0,
@@ -116,7 +122,7 @@ struct TwinkleCommand
             hue,
             // make color white when hue = 255
             hue == 255 ? 0x00 : 0xff,
-            0xff);
+            intensity - 1);
     }
 };
 
