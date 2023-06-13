@@ -24,11 +24,15 @@ namespace Edt_Kontrol.Terminal
             new UdpSender(IPAddress.Parse("10.0.0.21"), 12345),
             new UdpSender(IPAddress.Parse("10.0.0.22"), 12345)
         };
+
+        private static readonly ISender[] SenderDmx = new[] {
+            new UdpSender(IPAddress.Parse("10.0.0.30"), 12345)
+        };
+
         //private static ISender _senderR = new UdpSender(IPAddress.Parse("10.0.0.40"), 12345);
         //private static ISender _senderDmx = new UdpSender(IPAddress.Parse("10.0.0.30"), 12345);
-        //  ADD 10.0.0.30
 
-        private static readonly CommandFactory CommandFactory = new CommandFactory(new[] { "/F?", "/SP" });
+        private static readonly CommandFactory CommandFactory = new CommandFactory(new[] { "/F?", "/SP", "/R?" });
         private static readonly CommandFactory AddressCommandFactory = new CommandFactory(new[] { "/?1", "/?2", "/?3", "/?4", "/?5", "/?6", "/?7", "/?8" });
 
         private static readonly int[] Count = new int[8];
@@ -65,7 +69,7 @@ namespace Edt_Kontrol.Terminal
                 new Timer((o) => PulseMuxAsync(2, Kontrol.Channels[2]), default, 10, 40),
                 new Timer((o) => ChaseAsync(3, Kontrol.Channels[3], true), default, 15, 40),
                 new Timer((o) => ChaseAsync(4, Kontrol.Channels[4], false), default, 20, 40),
-                new Timer((o) => TwinkeWithIntensityAsync(5, Kontrol.Channels[5]), default, 20, 40),
+                new Timer((o) => TwinkleWithIntensityAsync(5, Kontrol.Channels[5]), default, 20, 40),
                 new Timer((o) => VuMeterAsync(6, Kontrol.Channels[6]), default, 30, 1),
                 new Timer((o) => SolidAsync(7, Kontrol.Channels[7]), default, 35, 1),
 
@@ -108,7 +112,7 @@ namespace Edt_Kontrol.Terminal
             }
         }
 
-        private static async void TwinkeWithIntensityAsync(int channel, ChannelState state)
+        private static async void TwinkleWithIntensityAsync(int channel, ChannelState state)
         {
             if (state.Intensity > 0)
             {
@@ -307,10 +311,19 @@ namespace Edt_Kontrol.Terminal
 
         private static async Task SendAsync(IEnumerable<OscMessage> messages)
         {
-            var senderFsTasks = SenderFs.Select(sender => sender.SendAsync(messages.Where(x => x.Address != "/SP").OptionallyBundle()));
-            var senderSPTasks = SenderSP.Select(sender => sender.SendAsync(messages.Where(x => x.Address == "/SP").OptionallyBundle()));
+            var senderFsTasks = Kontrol.DeviceMode == Kontrol.Device.All || Kontrol.DeviceMode == Kontrol.Device.FastLed
+                ? SenderFs.Select(sender => sender.SendAsync(messages.Where(x => x.Address != "/SP").OptionallyBundle()))
+                : Enumerable.Empty<Task>();
 
-            await Task.WhenAll(senderFsTasks.Union(senderSPTasks));
+            var senderSPTasks = Kontrol.DeviceMode == Kontrol.Device.All || Kontrol.DeviceMode == Kontrol.Device.Spectacle
+                ? SenderSP.Select(sender => sender.SendAsync(messages.Where(x => x.Address == "/SP").OptionallyBundle()))
+                : Enumerable.Empty<Task>();
+
+            var senderDmxTasks = Kontrol.DeviceMode == Kontrol.Device.All || Kontrol.DeviceMode == Kontrol.Device.DMX
+                ? SenderDmx.Select(sender => sender.SendAsync(messages.Where(x => x.Address != "/SP").OptionallyBundle()))
+                : Enumerable.Empty<Task>();
+
+            await Task.WhenAll(senderFsTasks.Union(senderSPTasks).Union(senderDmxTasks));
         }
     }
 }

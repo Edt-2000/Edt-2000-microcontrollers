@@ -42,7 +42,7 @@ uint16_t DmxSerial::current_rx_addr = 0;
 
 long DmxSerial::last_dmx_packet = 0;
 
-uint8_t DmxSerial::dmx_data[513];
+uint8_t DmxSerial::dmx_data[513] = {0};
 
 DmxSerial::DmxSerial()
 {

@@ -23,15 +23,20 @@ private:
 
     inline void switchMode(Mode mode)
     {
-        if (mode == _mode)
-        {
-            return;
-        }
-
         if (mode == Mode::Color)
         {
             // switch to brightness control
             DmxSerial::Write(_address + 3, 255);
+        }
+        else if (mode == Mode::Strobo && _stroboIntensity >= 254)
+        {
+            _color = _colorBackup;
+
+            // switch to fixed strobo
+            DmxSerial::Write(_address + 0, _color.r);
+            DmxSerial::Write(_address + 1, _color.g);
+            DmxSerial::Write(_address + 2, _color.b);
+            DmxSerial::Write(_address + 3, 247);
         }
         else if (mode == Mode::Strobo)
         {
@@ -64,7 +69,7 @@ public:
     void loop()
     {
         // this is an random strobo since each dmx device is somewhere and could be different
-        if (_mode == Mode::Strobo)
+        if (_mode == Mode::Strobo && _stroboIntensity < 254)
         {
             if (_stroboOn)
             {
@@ -163,10 +168,10 @@ public:
         }
         else
         {
-            switchMode(Mode::Strobo);
-
             _colorBackup = color;
             _stroboIntensity = 255 - intensity;
+
+            switchMode(Mode::Strobo);
         }
 
         output();

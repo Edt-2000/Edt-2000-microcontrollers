@@ -1,6 +1,6 @@
-﻿using Commons.Music.Midi;
-using System;
+﻿using System;
 using System.Threading.Tasks;
+using Commons.Music.Midi;
 
 namespace Edt_Kontrol.Midi
 {
@@ -84,6 +84,10 @@ namespace Edt_Kontrol.Midi
                         Channels[channel].ButtonPresses++;
                     }
                 }
+                else if (y == 0x2e && z == 0x7F)
+                {
+                    DeviceMode = (Device)(((int)DeviceMode + 1) % 4);
+                }
 
                 Backward = (y == 0x5B && z == 0x7F);
                 Forward = (y == 0x5C && z == 0x7F);
@@ -124,6 +128,8 @@ namespace Edt_Kontrol.Midi
 
             Console.WriteLine($"{x:X2} {y:X2} {z:X2}.");
             Console.WriteLine();
+            Console.WriteLine($"DeviceMode: {DeviceMode}       ");
+            Console.WriteLine();
 
             Console.WriteLine("  M   | I   IL  | S   SL  | ");
 
@@ -148,6 +154,7 @@ namespace Edt_Kontrol.Midi
 
         public ChannelState[] Channels { get; set; } = new ChannelState[8];
 
+        public Device DeviceMode { get; set; }
         public bool Backward { get; set; }
         public bool Forward { get; set; }
         public bool Stop { get; set; }
@@ -156,5 +163,13 @@ namespace Edt_Kontrol.Midi
 
         private static byte IsOn(byte type, byte bitmask) => (type & bitmask) > 0 ? (byte)0x7F : (byte)0x00;
         private static byte IsOn(Mode type, Mode bitmask) => (type & bitmask) > 0 ? (byte)0x7F : (byte)0x00;
+
+        public enum Device
+        {
+            All,
+            FastLed,
+            Spectacle,
+            DMX
+        }
     }
 }

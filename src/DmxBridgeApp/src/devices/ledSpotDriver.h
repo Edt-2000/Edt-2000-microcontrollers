@@ -76,7 +76,13 @@ public:
             }
             else
             {
-                if (_stroboIntensity / 8 > random8())
+                if (_stroboIntensity >= 254)
+                {
+                    _stroboOn = true;
+                    _color[0] = CRGB::HTMLColorCode::White;
+                    _color[1] = CRGB::HTMLColorCode::White;
+                }
+                else if (_stroboIntensity / 8 > random8())
                 {
                     _stroboOn = true;
                     _color[0] = CRGB::HTMLColorCode::White;

@@ -25,11 +25,6 @@ private:
 
     inline void switchMode(Mode mode)
     {
-        if (mode == _mode)
-        {
-            return;
-        }
-
         if (_channels == 8)
         {
             if (mode == Mode::Color)
@@ -37,14 +32,26 @@ private:
                 // switch to brightness control
                 DmxSerial::Write(_address + 0, 255);
                 DmxSerial::Write(_address + 4, 0);
-                DmxSerial::Write(_address + 5, 0);
                 DmxSerial::Write(_address + 6, 0);
+                DmxSerial::Write(_address + 7, 0);
+            }
+            else if (mode == Mode::Strobo && _stroboIntensity >= 254)
+            {
+                // set flash to max
+                _color = _colorBackup;
+
+                DmxSerial::Write(_address + 0, 255);
+                DmxSerial::Write(_address + 1, _color.r);
+                DmxSerial::Write(_address + 2, _color.g);
+                DmxSerial::Write(_address + 3, _color.b);
+                DmxSerial::Write(_address + 4, 255);
                 DmxSerial::Write(_address + 7, 0);
             }
             else if (mode == Mode::Strobo)
             {
-                // switch to off to allow for flash control
-                DmxSerial::Write(_address, 255);
+                // sswitch to brightness control
+                DmxSerial::Write(_address + 0, 255);
+                DmxSerial::Write(_address + 4, 0);
                 DmxSerial::Write(_address + 7, 0);
             }
         }
@@ -102,7 +109,7 @@ public:
 
     void loop()
     {
-        if (_mode == Mode::Strobo)
+        if (_mode == Mode::Strobo && _stroboIntensity < 254)
         {
             if (_stroboOn)
             {
@@ -201,10 +208,10 @@ public:
         }
         else
         {
-            switchMode(Mode::Strobo);
-
             _colorBackup = color;
             _stroboIntensity = 255 - intensity;
+
+            switchMode(Mode::Strobo);
         }
 
         output();

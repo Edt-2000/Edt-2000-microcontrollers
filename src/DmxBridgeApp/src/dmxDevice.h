@@ -168,6 +168,7 @@ public:
 				if (message.commands.twinkle.intensity > 0)
 				{
 					_devices[i]->solid(message.commands.twinkle.getColor());
+					_devices[i]->fade(1);
 				}
 				else
 				{

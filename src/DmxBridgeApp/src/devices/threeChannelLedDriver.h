@@ -57,7 +57,12 @@ public:
             }
             else
             {
-                if (_stroboIntensity / 8 > random8())
+                if (_stroboIntensity >= 254)
+                {
+                    _stroboOn = true;
+                    _color = _colorBackup;
+                }
+                else if (_stroboIntensity / 8 > random8())
                 {
                     _stroboOn = true;
                     _color = _colorBackup;
