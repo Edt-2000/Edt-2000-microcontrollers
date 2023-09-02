@@ -39,20 +39,20 @@ namespace App
             t1000ms = false;
             t100ms = false;
 
-            tVISUAL = (_now - _previous >= 12UL);
             tOSC = (_now - _previous >= 12UL);
+            tVISUAL = tOSC;
 
             if (tOSC)
             {
                 _diff100ms += _now - _previous;
 
                 // use 97 ms to counter bit of delay
-                if (_diff100ms >= 197)
+                if (_diff100ms >= 97)
                 {
                     _diff100ms = 0;
                     t100ms = true;
 
-                    if (++_t1000ms >= 5)
+                    if (++_t1000ms >= 10)
                     {
                         _t1000ms = 0;
                         t1000ms = true;

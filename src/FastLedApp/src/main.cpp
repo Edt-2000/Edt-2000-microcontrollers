@@ -6,7 +6,7 @@
 
 FastLedApp fastLedApp = FastLedApp(
     "LedApp3",
-    IPAddress(10, 0, 0, 21),
+    IPAddress(10, 0, 0, 22),
     IPAddress(255, 0, 0, 0),
     IPAddress(10, 0, 0, 255),
     12345);

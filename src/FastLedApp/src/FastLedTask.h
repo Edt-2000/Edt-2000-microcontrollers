@@ -6,13 +6,14 @@ extern volatile bool doFastLed;
 
 void fastLedTask(void *parameters)
 {
-    while (true) 
+    while (true)
     {
-        if (doFastLed) {
+        if (doFastLed)
+        {
             FastLED.show();
 
             doFastLed = false;
         }
-        delay(1);
+        delayMicroseconds(1);
     }
 }

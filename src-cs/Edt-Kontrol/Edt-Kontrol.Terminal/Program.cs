@@ -41,6 +41,7 @@ namespace Edt_Kontrol.Terminal
 
         private static Timer[] _timers;
 
+        private static object _currentColorLock = new object();
         private static int _currentColor = 0;
         private static readonly Dictionary<Mode, ColorPreset[]> ColorSets = new Dictionary<Mode, ColorPreset[]>()
         {
@@ -221,7 +222,7 @@ namespace Edt_Kontrol.Terminal
         {
             if (Kontrol.Play)
             {
-                await SendAsync(CommandFactory.CreateStrobo(RandomColor(Kontrol.Channels[0].Mode), 130));
+                await SendAsync(CommandFactory.CreateStrobo(RandomColor(Kontrol.Channels[0].Mode), 3));
                 Kontrol.Play = false;
             }
             else if (Kontrol.Stop)
@@ -300,11 +301,15 @@ namespace Edt_Kontrol.Terminal
         private static ColorPreset RandomColor(Mode mode)
         {
             var set = ColorSets[mode];
-            if (_currentColor >= set.Length)
+
+            lock (_currentColorLock)
             {
-                _currentColor = 0;
+                if (_currentColor >= set.Length)
+                {
+                    _currentColor = 0;
+                }
+                return set[_currentColor++];
             }
-            return set[_currentColor++];
         }
 
         private static ColorPreset Rotate(ColorPreset color, ColorPreset degree) => (ColorPreset)(((int)color + (int)degree) % 255);

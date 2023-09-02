@@ -28,7 +28,12 @@ public:
 
     void resetAnimations()
     {
-        animations.clear();
+        animations.remove_if(
+            [=](BaseAnimation *animation)
+            {
+                delete animation;
+                return true;
+            });
     }
 
     bool animate(bool progressAnimation)
@@ -41,9 +46,17 @@ public:
             shouldOutput = shouldOutput || output;
         }
 
-        animations.remove_if([=](BaseAnimation *animation)
-                             { if (animation->finished) { delete animation; return true; } return false; });
+        animations.remove_if(
+            [=](BaseAnimation *animation)
+            {
+                if (animation->finished)
+                {
+                    delete animation;
+                    return true;
+                }
+                return false;
+            });
 
-        return shouldOutput;   
+        return shouldOutput;
     }
 };
