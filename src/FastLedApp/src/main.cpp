@@ -1,10 +1,12 @@
-#include "ledApp.h"
+#include "fastLedApp.h"
+
+#define FASTLED_FORCE_SOFTWARE_SPI
 
 // TODO: deploy to 3 ESP32s
 
-LedApp ledApp = LedApp(
-    "LedApp3",
-    IPAddress(10, 0, 0, 22),
+FastLedApp fastLedApp = FastLedApp(
+    "LedApp1",
+    IPAddress(10, 0, 0, 21),
     IPAddress(255, 0, 0, 0),
     IPAddress(10, 0, 0, 255),
     12345);
@@ -12,10 +14,10 @@ LedApp ledApp = LedApp(
 void setup()
 {
   Serial.begin(115200);
-  ledApp.setup(33, LOW);
+  fastLedApp.setup(33, LOW);
 }
 
 void loop()
 {
-  ledApp.loop();
+  fastLedApp.loop();
 }

@@ -26,7 +26,7 @@ namespace Dispedter.Tester
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?" });
+        private readonly CommandFactory _commandFactory = new CommandFactory(new[] { "/F?", "/SP", "/R?" });
         private readonly CommandFactory _specialCommandFactory = new CommandFactory(new[] { "/?1", "/?2", "/?3", "/?4", "/?5", "/?6", "/?7", "/?8" });
         private readonly ListenerManager _listenerManager = new ListenerManager(detectUsb: false);
         private readonly SenderManager _senderManager = new SenderManager(detectUsb: false, udpDestinations: new[]
@@ -36,8 +36,9 @@ namespace Dispedter.Tester
             //IPAddress.Parse("127.0.0.1")});
             /* OLD fastled: IPAddress.Parse("10.0.0.20"),*/ 
             /* New fastled1: */ IPAddress.Parse("10.0.0.21"), 
-            /* New fastled2: */ IPAddress.Parse("10.0.0.22") });
-        ///* DMX unit */ IPAddress.Parse("10.0.0.30"), 
+            /* New fastled2: */ IPAddress.Parse("10.0.0.22"), 
+            /* New DMX unit: */ IPAddress.Parse("10.0.0.30"), 
+            /* New Spectacle: */ IPAddress.Parse("10.0.0.99") });
         /* OLD RGB IPAddress.Parse("10.0.0.40"),*/
         ///* Smoke */ IPAddress.Parse("10.0.0.165") });
 
@@ -49,7 +50,7 @@ namespace Dispedter.Tester
         private ObservableCollection<int> _dmxAddresses;
         private DmxConfig _dmxConfig;
 
-        private readonly static Random R = new Random();
+        private static readonly Random R = new Random();
 
         private Mode _mode;
         private enum Mode
@@ -91,7 +92,6 @@ namespace Dispedter.Tester
         private List<string> _outHistory = new List<string>();
         private DateTime _previousIn = DateTime.UtcNow;
         private List<string> _inHistory = new List<string>();
-
 
         enum CommandDirection
         {
@@ -253,32 +253,54 @@ namespace Dispedter.Tester
         {
             var i = (byte)0;
             var strobo = (byte)127;
+            var color = (byte)0;
+            var smoke = (byte)120;
 
             var test = 0;
 
             _commandMapping.Add(Mode.Default, new Dictionary<VirtualKey, Func<IEnumerable<OscMessage>>>
             {
+                {
+                    VirtualKey.PageUp, () =>
+                    {
+                        smoke -= 5;
+
+                        SmokeTime.Text = smoke.ToString();
+
+                        return _commandFactory.CreateSmokeMessage(smoke);
+                    }
+                },
+                {
+                    VirtualKey.PageDown, () =>
+                    {
+                        smoke += 5;
+
+                        SmokeTime.Text = smoke.ToString();
+
+                        return _commandFactory.CreateSmokeMessage(smoke);
+                    }
+                },
                 { VirtualKey.Back, () => _commandFactory.CreateTestMessage(++test) },
                 {
                     VirtualKey.Up, () =>
                     {
-                        i++;
+                        color++;
 
-                        ColorIndex.Text = i.ToString();
-                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(i, 1.0, 1.0));
+                        ColorIndex.Text = color.ToString();
+                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(color, 1.0, 1.0));
 
-                        return _commandFactory.CreateSingleSolid((ColorPreset)i, 255, 254);
+                        return _commandFactory.CreateSingleSolid((ColorPreset)color, 255, 254);
                     }
                 },
                 {
                     VirtualKey.Down, () =>
                     {
-                        i--;
+                        color--;
 
-                        ColorIndex.Text = i.ToString();
-                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(i, 1.0, 1.0));
+                        ColorIndex.Text = color.ToString();
+                        ColorIndex.Foreground = new SolidColorBrush(ColorFromHSV(color, 1.0, 1.0));
 
-                        return _commandFactory.CreateSingleSolid((ColorPreset)i, 255, 254);
+                        return _commandFactory.CreateSingleSolid((ColorPreset)color, 255, 254);
                     }
                 },
                 {
@@ -363,19 +385,31 @@ namespace Dispedter.Tester
 
                 { VirtualKey.Space, () => _commandFactory.CreateStrobo(RandomColor(), strobo)},
                 { VirtualKey.Escape, () => _commandFactory.CreateStrobo(0, 0) },
-                { VirtualKey.Enter, () => _commandFactory.CreateBerserk() },
 
                 { VirtualKey.Z, () => _commandFactory.CreateTwinkle(RandomColor(), Random()) },
                 { VirtualKey.Shift, () => _commandFactory.CreateTwinkle(ColorPreset.White, Random()) },
                 { VirtualKey.X, () => _specialCommandFactory.CreateUTPPinout() },
                 { VirtualKey.CapitalLock, () => _specialCommandFactory.CreateRainbowUsingAddresses() },
-                { (VirtualKey)191, () => _commandFactory.CreateChaseStill(RandomColor(), 4) },
 
                 { VirtualKey.C, () => _commandFactory.CreateChase(RandomColor(), 1, 1, true) },
                 { VirtualKey.V, () => _commandFactory.CreateChase(RandomColor(), 1, 1, false) },
 
                 { (VirtualKey)187, () => _commandFactory.CreateChase(RandomColor(), 3, 32, true) },
                 { (VirtualKey)189, () => _commandFactory.CreateChase(RandomColor(), 3, 32, false) },
+
+                { (VirtualKey)186, () =>
+                {
+                    RandomColor();
+                    return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 3, Random() / 42);
+                } }, // ;
+                { (VirtualKey)222, () =>
+                {
+                    RandomColor();
+                    return _commandFactory.CreateTheaterChase(RandomColor(), RandomColor(), 10, Random() / 42);
+                } }, // '
+
+                { (VirtualKey)190, () => _commandFactory.CreateSwipe(RandomColor(), 5, Random()) }, // .
+                { (VirtualKey)191, () => _commandFactory.CreateFire(3) }, // /
 
                 { (VirtualKey)220, () => _specialCommandFactory.CreateTwinkleUsingAddresses(RandomColor) }, // \
                 { (VirtualKey)219, () => _specialCommandFactory.CreateChaseUsingSomeAddresses(RandomColor(), 2, 1, 1, true) }, // [
@@ -454,7 +488,7 @@ namespace Dispedter.Tester
 
         private static int Wave(int i)
         {
-            return (int)(Math.Sin((i / 100.0) * Math.PI) * 255);
+            return (int)(Math.Sin(i / 100.0 * Math.PI) * 255);
         }
         private ColorPreset RandomColor()
         {
@@ -480,13 +514,13 @@ namespace Dispedter.Tester
             var baseValue = 60 * (255.0 / 360.0);
 
             var hi = Convert.ToInt32(Math.Floor(hue / baseValue)) % 6;
-            var f = hue / baseValue - Math.Floor(hue / baseValue);
+            var f = (hue / baseValue) - Math.Floor(hue / baseValue);
 
             value = value * 255;
             var v = Convert.ToByte(value);
             var p = Convert.ToByte(value * (1 - saturation));
-            var q = Convert.ToByte(value * (1 - f * saturation));
-            var t = Convert.ToByte(value * (1 - (1 - f) * saturation));
+            var q = Convert.ToByte(value * (1 - (f * saturation)));
+            var t = Convert.ToByte(value * (1 - ((1 - f) * saturation)));
 
             if (hi == 0)
             {

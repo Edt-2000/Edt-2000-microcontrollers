@@ -165,7 +165,7 @@ namespace Drivers
                     switchMode(Mode::Strobo);
 
                     // strobo range is 135 - 239
-                    uint8_t stroboSpeed = ((239 - 135) * ((double)intensity) / 255.0) + 135;
+                    uint8_t stroboSpeed = ((239 - 135) * ((float)intensity) / 255.0) + 135;
 
                     // no value clamping since strobo should be FULL POWAH
                     _color[0].setHSV(h, 255, 255);

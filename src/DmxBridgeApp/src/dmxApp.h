@@ -13,7 +13,7 @@ public:
 	int broadcastPort;
 
 	OSC::Arduino<1, 0> osc;
-	Devices::EdtDmx dmx;
+	DmxDevice dmx;
 
 	DmxApp(const char *dmxAppHostname,
 		   const char *oscAddress,
@@ -26,7 +26,7 @@ public:
 		  subnet(subnet),
 		  broadcastIp(broadcastIp),
 		  broadcastPort(broadcastPort),
-		  dmx(Devices::EdtDmx(oscAddress))
+		  dmx(DmxDevice(oscAddress))
 	{
 	}
 

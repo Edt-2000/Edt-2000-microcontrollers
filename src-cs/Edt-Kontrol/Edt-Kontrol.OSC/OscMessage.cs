@@ -60,7 +60,7 @@ namespace Edt_Kontrol.OSC
                         break;
                     case "System.Int64":
                         typeString += "h";
-                        parts.Add(setLong((long)arg));
+                        parts.Add(SetLong((long)arg));
                         break;
                     case "System.UInt64":
                         typeString += "t";

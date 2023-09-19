@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Blinker.h"
-#include "State.h"
-#include "StateMachine.h"
-#include "Time.h"
+#include "blinker.h"
+#include "state.h"
+#include "stateMachine.h"
+#include "time.h"
 
 namespace App
 {

@@ -1,26 +1,20 @@
 #pragma once
 
-#include "core.h"
+#include <FastLED.h>
 
-template <ESPIChipsets CHIPSET, uint8_t DATA_PIN, uint8_t CLOCK_PIN, EOrder RGB_ORDER, uint8_t NUMBER_OF_LEDS>
+extern volatile bool doFastLed;
+
 void fastLedTask(void *parameters)
 {
-    auto queue = (QueueHandle_t)parameters;
-
-    Messages::CommandMessage message;
-    Devices::EdtFastLed<CHIPSET, DATA_PIN, CLOCK_PIN, RGB_ORDER, NUMBER_OF_LEDS> device;
-
-    device.init();
-
     while (true)
     {
-        if (xQueueReceive(queue, &message, 12 * portTICK_PERIOD_MS))
+        if (doFastLed)
         {
-            device.handleMessage(message);
+            FastLED.show();
+
+            doFastLed = false;
         }
-        else
-        {
-            device.animate();
-        }
+        
+        vTaskDelay(1);
     }
 }

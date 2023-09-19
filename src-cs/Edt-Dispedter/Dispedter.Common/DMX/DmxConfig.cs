@@ -1,9 +1,9 @@
-﻿using Dispedter.Common.Factories;
-using Dispedter.Common.OSC;
-using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dispedter.Common.Factories;
+using Dispedter.Common.OSC;
+using Newtonsoft.Json;
 
 namespace Dispedter.Common.DMX
 {
@@ -21,16 +21,18 @@ namespace Dispedter.Common.DMX
             new DmxType { Name = "LED Spot - LED Spot light 4 channel", TypeNr = 1, Width = 6 },
             new DmxType { Name = "LED Par - Generic 3 channel", TypeNr = 2, Width = 3 },
             new DmxType { Name = "LED Par - Show Tec Compact Par 8 channel", TypeNr = 3, Width = 8 },
+            new DmxType { Name = "LED Par - Show Tec Compact Par 4 channel", TypeNr = 5, Width = 4 },
+            new DmxType { Name = "LED Par - Show Tec Compact Par 3 channel", TypeNr = 6, Width = 3 },
+            new DmxType { Name = "LED Par - JB Systems Par 56", TypeNr = 7, Width = 4 },
             new DmxType { Name = "Fixed - Single channel", TypeNr = 4, Width = 1 }
         };
-
 
         public void ReadConfig(string configString)
         {
             var config = JsonConvert.DeserializeObject<List<DmxDevice>>(configString);
 
             RemoveAllDevices();
-            
+
             config?.OrderBy(s => s.Address).ToList().ForEach(_dmxDevices.Add);
         }
 

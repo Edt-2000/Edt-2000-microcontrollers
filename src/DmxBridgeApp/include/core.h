@@ -1,10 +1,13 @@
-#include "CoreApp.h"
-#include "EthernetClient.h"
-#include "Statemachine.h"
-#include "Time.h"
-#include "FastLED.h"
-#include "Arduino.h"
+#pragma once
+
+#include "coreApp.h"
+#include <Arduino.h>
+#include <FastLED.h>
+#include "ethernetClient.h"
 #include "OSCArduino.h"
-#include "CommandMessage.h"
 #include "MessageConsumer.h"
-#include "EdtDmx.h"
+#include "dmxDevice.h"
+#include "dmxCommand.h"
+#include "devices/dmxDriver.h"
+#include "devices/dmxDriverConfig.h"
+#include "devices/dmxSerial.h"

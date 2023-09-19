@@ -7,15 +7,15 @@ namespace Edt_Kontrol.OSC
 {
     public abstract class OscPacket
     {
-        public static OscPacket GetPacket(byte[] OscData)
+        public static OscPacket GetPacket(byte[] oscData)
         {
-            if (OscData[0] == '#')
+            if (oscData[0] == '#')
             {
-                return parseBundle(OscData);
+                return parseBundle(oscData);
             }
             else
             {
-                return parseMessage(OscData, out var dummy);
+                return parseMessage(oscData, out var dummy);
             }
         }
 
@@ -439,7 +439,7 @@ namespace Edt_Kontrol.OSC
             return msg;
         }
 
-        protected static byte[] setLong(long value)
+        protected static byte[] SetLong(long value)
         {
             var rev = BitConverter.GetBytes(value);
             var output = new byte[8];
