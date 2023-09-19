@@ -5,8 +5,8 @@
 // TODO: deploy to 3 ESP32s
 
 FastLedApp fastLedApp = FastLedApp(
-    "LedApp3",
-    IPAddress(10, 0, 0, 22),
+    "LedApp1",
+    IPAddress(10, 0, 0, 21),
     IPAddress(255, 0, 0, 0),
     IPAddress(10, 0, 0, 255),
     12345);

@@ -36,6 +36,11 @@ public:
             });
     }
 
+    bool animationIsInFullControl() 
+    {
+        return animations.size() > 0 && animations.front()->fullControl;
+    }
+
     bool animate(bool progressAnimation)
     {
         bool shouldOutput = false;

@@ -265,7 +265,7 @@ public:
     {
         bool shouldOutput = animations.animate(progressAnimation);
 
-        if (progressAnimation)
+        if (!animations.animationIsInFullControl() && progressAnimation)
         {
             fastLedLeds.loop();
             return true;

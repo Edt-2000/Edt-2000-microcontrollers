@@ -14,6 +14,7 @@ void fastLedTask(void *parameters)
 
             doFastLed = false;
         }
-        delayMicroseconds(1);
+        
+        vTaskDelay(1);
     }
 }
