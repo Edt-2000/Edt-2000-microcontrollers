@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebSockEDT tester</title>
+</head>
+
+<body>
+    <button class="animationButton" data-name="blink">Blink</button><br>
+    <button class="animationButton" data-name="strobo">Strobo</button><br>
+    <script>
+        const socket = new WebSocket('ws://10.0.0.25:80/ws');
+
+        socket.onopen = function (event) {
+            console.log("WS open!");
+        };
+
+        socket.onmessage = function (event) {
+            console.log(event);
+        };
+
+        socket.onclose = function (event) {
+            console.log("WS borked!");
+        };
+
+        for (let button of document.getElementsByClassName("animationButton")) {
+            button.onclick = function () {
+                let message = { animation: button.dataset.name };
+                socket.send(JSON.stringify(message));
+            };
+        };
+    </script>
+</body>
+
+</html>

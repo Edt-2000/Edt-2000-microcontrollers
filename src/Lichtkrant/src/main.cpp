@@ -1,111 +1,54 @@
 #include <Arduino.h>
 #include <FastLED.h>
+#include <AsyncWebSocket.h>
 #include <vector>
+#include <Wifi.h>
+#include <ETH.h>
 
-/*
-Animation
-- name(): string
-- start(setup): void
-- stop(): void
-- isActive(): bool
-- loop(): void
+#include "animation.hpp"
+#include "animations/blinkAnimation.hpp"
+#include "animations/stroboAnimation.hpp"
 
-
-- Animation: string
-- Text: string
-- Color1-5: hsv
-- Speed: int
-- Brightness: int
-- Position: int
-*/
-
-struct Settings
-{
-  char *text;
-  CRGB *colors;
-  int speed;
-  int brightness;
-  int size;
-};
+#include "networking/ethernet.hpp"
+#include "networking/websocket.hpp"
+#include "settings.hpp"
 
 Settings globalSettings;
 
-class Animation
-{
-public:
-  virtual char *name() = 0;
-  virtual void start() = 0;
-  virtual void stop() = 0;
-  virtual bool isActive() = 0;
-  virtual void loop() = 0;
-};
+// my demo board has led "strips" with 1 led
+CRGB *leds = new CRGB[1];
 
-class TestAnimation : public Animation
-{
-public:
-  TestAnimation() {
-
-  }
-
-  char *name()
-  {
-    return "Test";
-  };
-  void start()
-  {
-  }
-  void stop()
-  {
-  }
-  bool isActive()
-  {
-  }
-  void loop()
-  {
-  }
-};
-
+// these are all the animations the system knows
 std::vector<Animation *> animations = {
-    new TestAnimation(),
-
+    new BlinkAnimation(),
+    new StroboAnimation(),
 };
-
+// current animation that's active - can be null
 Animation *currentAnimation = nullptr;
 
-void setup()
+void changeAnimation(const char *animationName)
 {
-  // websocket opzetten
-}
-
-void handleWebsocketMessage(uint8_t *data, uint8_t length)
-{
-  char *messageAction = new char[length];
-  char *payload = new char[length];
-
-  strncpy(messageAction, (char *)data, length);
-  strncpy(payload, ((char *)data) + strlen(messageAction), length - strlen(messageAction));
-
-  if (strcmp(messageAction, "updatetext") == 0)
-  {
-    delete globalSettings.text;
-    globalSettings.text = payload;
-  }
+  Serial.print("Animation requested: ");
+  Serial.println(animationName);
 
   for (auto animation : animations)
   {
-    if (strcmp(animation->name(), messageAction) == 0)
+    if (strcmp(animation->name(), animationName) == 0)
     {
-      if (currentAnimation != nullptr)
+      if (currentAnimation == animation)
       {
+        Serial.println("Animation already active");
+        break;
+      }
+      else if (currentAnimation != nullptr)
+      {
+        Serial.print("Stopping animation ");
+        Serial.print(currentAnimation->name());
+        Serial.println("..");
         currentAnimation->stop();
-
-        if (currentAnimation == animation)
-        {
-          currentAnimation = nullptr;
-          break;
-        }
       }
 
+      Serial.println("Starting animation..");
       animation->start();
 
       currentAnimation = animation;
@@ -115,10 +58,61 @@ void handleWebsocketMessage(uint8_t *data, uint8_t length)
   }
 }
 
+void changeSettings(Settings newSettings)
+{
+  Serial.print("New setting: ");
+  Serial.println(newSettings.text);
+}
+
+void setup()
+{
+  Serial.begin(115200);
+
+  Network.startEthernet(IPAddress(10, 0, 0, 25));
+
+  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
+  // my demo board has 2 separate strips - can be removed later
+  FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
+
+  do
+  {
+    Serial.println("Waiting for network..");
+    delay(100);
+  } while (!Network.ethernetIsConnected());
+
+  WebSocket.onAnimation(changeAnimation);
+  WebSocket.onSettings(changeSettings);
+  WebSocket.begin();
+}
+
 void loop()
 {
-  if (currentAnimation != nullptr && currentAnimation->isActive())
+  // copy animation pointer over to avoid race conditions
+  auto animation = currentAnimation;
+  if (animation != nullptr)
   {
-    currentAnimation->loop();
+    if (animation->isActive())
+    {
+      animation->loop();
+    }
+    else
+    {
+      // animation has finished
+      currentAnimation = nullptr;
+    }
   }
+
+  // TODO: this has to go to the blink/strobo animation
+  fill_solid(leds, 1, CRGB::White);
+  FastLED.show(10); // use 10 to prevent permanent eye damage
+
+  delay(500);
+
+  fill_solid(leds, 1, CRGB::Black);
+  FastLED.show(10); // use 10 to prevent permanent eye damage
+
+  delay(500);
+
+  // TODO: this maintenance can be every 1000 cycles probably
+  ws.cleanupClients();
 }
