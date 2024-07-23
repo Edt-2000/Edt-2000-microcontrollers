@@ -4,6 +4,8 @@
 #include <vector>
 #include <Wifi.h>
 #include <ETH.h>
+#include <stdio.h>
+#include <setjmp.h>
 
 #include "animation.hpp"
 #include "animations/blinkAnimation.hpp"
@@ -11,6 +13,7 @@
 
 #include "networking/ethernet.hpp"
 #include "networking/websocket.hpp"
+#include "time.hpp"
 #include "settings.hpp"
 
 Settings globalSettings;
@@ -53,6 +56,8 @@ void changeAnimation(const char *animationName)
 
       currentAnimation = animation;
 
+      Time.interrupt();
+
       break;
     }
   }
@@ -74,6 +79,9 @@ void setup()
   // my demo board has 2 separate strips - can be removed later
   FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
 
+  fill_solid(leds, 1, CRGB::Black);
+  FastLED.show();
+
   do
   {
     Serial.println("Waiting for network..");
@@ -81,12 +89,17 @@ void setup()
   } while (!Network.ethernetIsConnected());
 
   WebSocket.onAnimation(changeAnimation);
-  WebSocket.onSettings(changeSettings);
   WebSocket.begin();
 }
 
+// this buffer saves the start of the loop, which allows the time class
+// to jump to, interrupting the animation loop
+jmp_buf loop_jump_buffer;
+
 void loop()
 {
+  setjmp(loop_jump_buffer);
+
   // copy animation pointer over to avoid race conditions
   auto animation = currentAnimation;
   if (animation != nullptr)
@@ -102,17 +115,10 @@ void loop()
     }
   }
 
-  // TODO: this has to go to the blink/strobo animation
-  fill_solid(leds, 1, CRGB::White);
-  FastLED.show(10); // use 10 to prevent permanent eye damage
+  Time.loop();
 
-  delay(500);
-
-  fill_solid(leds, 1, CRGB::Black);
-  FastLED.show(10); // use 10 to prevent permanent eye damage
-
-  delay(500);
-
-  // TODO: this maintenance can be every 1000 cycles probably
-  ws.cleanupClients();
+  // run maintenance logic
+  if (Time.t1000ms) {
+    ws.cleanupClients();
+  }
 }

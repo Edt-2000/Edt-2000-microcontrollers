@@ -2,15 +2,19 @@
 
 #include "../animation.hpp"
 #include "../settings.hpp"
+#include "../time.hpp"
 
 extern Settings globalSettings;
 extern CRGB *leds;
 
 class BlinkAnimation : public Animation
 {
-public:
-  BlinkAnimation() {
+private:
+  bool _on = false;
 
+public:
+  BlinkAnimation()
+  {
   }
 
   const char *name()
@@ -21,6 +25,8 @@ public:
   void start()
   {
     _isActive = true;
+
+    _on = false;
   }
 
   void stop()
@@ -30,10 +36,17 @@ public:
 
   void loop()
   {
-    if (!_isActive) {
-        return;
+    if (!_isActive)
+    {
+      return;
     }
 
-    Serial.println("Blink active");
+    if (Time.t1000ms)
+    {
+      _on = !_on;
+    }
+
+    fill_solid(leds, 1, _on ? CRGB::White : CRGB::Black);
+    FastLED.show(globalSettings.brightness);
   }
 };
