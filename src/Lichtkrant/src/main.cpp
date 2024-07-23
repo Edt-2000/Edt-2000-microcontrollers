@@ -63,12 +63,6 @@ void changeAnimation(const char *animationName)
   }
 }
 
-void changeSettings(Settings newSettings)
-{
-  Serial.print("New setting: ");
-  Serial.println(newSettings.text);
-}
-
 void setup()
 {
   Serial.begin(115200);
