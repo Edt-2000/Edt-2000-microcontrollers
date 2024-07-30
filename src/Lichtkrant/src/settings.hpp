@@ -9,4 +9,6 @@ struct Settings
   int speed = 1;
   int brightness = 255;
   int size = 1;
-};
+} globalSettings;
+
+extern Settings globalSettings;

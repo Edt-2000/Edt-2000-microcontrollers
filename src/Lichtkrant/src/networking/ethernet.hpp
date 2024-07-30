@@ -10,13 +10,13 @@ static void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
 
     switch (event) {
         case ARDUINO_EVENT_ETH_START:
-            Serial.println("Starting ethernet..");
+            // Serial.println("Starting ethernet..");
             break;
         case ARDUINO_EVENT_ETH_CONNECTED:
-            Serial.println("Ethernet connected!");
+            // Serial.println("Ethernet connected!");
             break;
         case ARDUINO_EVENT_ETH_GOT_IP:
-            Serial.println("Ethernet got IP!");
+            // Serial.println("Ethernet got IP!");
             _ethernetConnected = true;
             break;
     }

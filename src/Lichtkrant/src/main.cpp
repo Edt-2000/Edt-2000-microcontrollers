@@ -13,10 +13,9 @@
 
 #include "networking/ethernet.hpp"
 #include "networking/websocket.hpp"
+// #include "networking/udp.hpp"
 #include "time.hpp"
 #include "settings.hpp"
-
-Settings globalSettings;
 
 // my demo board has led "strips" with 1 led
 CRGB *leds = new CRGB[1];
@@ -31,8 +30,8 @@ Animation *currentAnimation = nullptr;
 
 void changeAnimation(const char *animationName)
 {
-  Serial.print("Animation requested: ");
-  Serial.println(animationName);
+  // Serial.print("Animation requested: ");
+  // Serial.println(animationName);
 
   for (auto animation : animations)
   {
@@ -45,9 +44,9 @@ void changeAnimation(const char *animationName)
       }
       else if (currentAnimation != nullptr)
       {
-        Serial.print("Stopping animation ");
-        Serial.print(currentAnimation->name());
-        Serial.println("..");
+        // Serial.print("Stopping animation ");
+        // Serial.print(currentAnimation->name());
+        // Serial.println("..");
         currentAnimation->stop();
       }
 
@@ -78,10 +77,12 @@ void setup()
 
   do
   {
-    Serial.println("Waiting for network..");
+    // Serial.println("Waiting for network..");
     delay(100);
   } while (!Network.ethernetIsConnected());
 
+  //Udp.onAnimation(changeAnimation);
+  //Udp.begin();
   WebSocket.onAnimation(changeAnimation);
   WebSocket.begin();
 }
@@ -113,6 +114,6 @@ void loop()
 
   // run maintenance logic
   if (Time.t1000ms) {
-    ws.cleanupClients();
+    WebSocket.cleanUp();
   }
 }

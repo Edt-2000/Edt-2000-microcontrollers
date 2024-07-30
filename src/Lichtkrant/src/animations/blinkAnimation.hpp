@@ -46,7 +46,7 @@ public:
       _on = !_on;
     }
 
-    fill_solid(leds, 1, _on ? CRGB::White : CRGB::Black);
+    fill_solid(leds, 1, _on ? globalSettings.colors[0] : globalSettings.colors[1]);
     FastLED.show(globalSettings.brightness);
   }
 };

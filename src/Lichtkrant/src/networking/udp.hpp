@@ -1,34 +1,28 @@
 #pragma once
 
-#include <AsyncWebSocket.h>
+#include <functional>
+
+#include <Arduino.h>
+#include <AsyncUDP.h>
 #include <ArduinoJson.h>
 
 #include "../settings.hpp"
 
-using WSAnimationHandler = std::function<void(const char *animationName)>;
+using UDPAnimationHandler = std::function<void(const char *animationName)>;
 
-AsyncWebServer server(80);
-AsyncWebSocket ws("/ws");
+AsyncUDP udp;
 
 JsonDocument doc;
 
-WSAnimationHandler animationCallback;
+UDPAnimationHandler animationCallback;
 
-
-void onEvent(
-    AsyncWebSocket *server,
-    AsyncWebSocketClient *client,
-    AwsEventType type,
-    void *arg,
-    uint8_t *data,
-    size_t len)
+void onEvent(AsyncUDPPacket& packet)
 {
-    if (type == WS_EVT_DATA)
-    {
-        doc.clear();
-        auto error = deserializeJson(doc, data);
+    doc.clear();
+    
+    auto error = deserializeJson(doc, packet.data());
 
-        if (!error)
+    if (!error)
         {
             auto isAnimation = doc.containsKey("animation");
             auto isSettings = !isAnimation || (isAnimation && doc.size() > 1);
@@ -137,40 +131,19 @@ void onEvent(
                 }
             }
         }
-    }
-    else if (type == WS_EVT_CONNECT)
-    {
-        // Serial.println("Client connected");
-    }
-    else if (type == WS_EVT_DISCONNECT)
-    {
-        // Serial.println("Client disconnected");
-    }
 }
 
-class WebSocketHelper
-{
-public:
-    void begin()
-    {
-        // Serial.println("Starting web socket");
-
-        ws.onEvent(onEvent);
-        server.addHandler(&ws);
-        server.begin();
-
-        // Serial.println("Started web socket");
+class UdpHelper {
+    public:
+    void begin() {
+        udp.listen(12345);
+        udp.onPacket(onEvent);
     }
 
-    void onAnimation(WSAnimationHandler callback)
+    void onAnimation(UDPAnimationHandler callback)
     {
         animationCallback = callback;
     }
+} Udp;
 
-    void cleanUp() {
-        ws.cleanupClients();
-    }
-
-} WebSocket;
-
-extern WebSocketHelper WebSocket;
+extern UdpHelper Udp;
