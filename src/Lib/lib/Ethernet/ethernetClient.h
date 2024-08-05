@@ -14,17 +14,22 @@ namespace EthernetClient
     switch (event)
     {
     case SYSTEM_EVENT_ETH_START:
+    case ARDUINO_EVENT_ETH_START:
       ETH.setHostname(_hostname);
       break;
     case SYSTEM_EVENT_ETH_CONNECTED:
+    case ARDUINO_EVENT_ETH_CONNECTED:
       break;
     case SYSTEM_EVENT_ETH_GOT_IP:
+    case ARDUINO_EVENT_ETH_GOT_IP:
       _ethernetConnected = true;
       break;
     case SYSTEM_EVENT_ETH_DISCONNECTED:
+    case ARDUINO_EVENT_ETH_DISCONNECTED:
       _ethernetConnected = false;
       break;
     case SYSTEM_EVENT_ETH_STOP:
+    case ARDUINO_EVENT_ETH_STOP:
       _ethernetConnected = false;
       break;
     default:
@@ -45,7 +50,7 @@ namespace EthernetClient
 
   bool ethernetIsConnected()
   {
-    return _ethernetConnected;
+    return ETH.linkUp(); // _ethernetConnected;
   }
 
   void setupUdp(int port)

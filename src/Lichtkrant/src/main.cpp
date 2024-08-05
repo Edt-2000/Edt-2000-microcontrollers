@@ -14,8 +14,11 @@
 #include "networking/ethernet.hpp"
 #include "networking/websocket.hpp"
 // #include "networking/udp.hpp"
+
 #include "time.hpp"
 #include "settings.hpp"
+
+#include "debugging/logger.hpp"
 
 // my demo board has led "strips" with 1 led
 CRGB *leds = new CRGB[1];
@@ -30,8 +33,8 @@ Animation *currentAnimation = nullptr;
 
 void changeAnimation(const char *animationName)
 {
-  // Serial.print("Animation requested: ");
-  // Serial.println(animationName);
+  PrintDebug("Animation requested: ");
+  PrintLnDebug(animationName);
 
   for (auto animation : animations)
   {
@@ -39,18 +42,18 @@ void changeAnimation(const char *animationName)
     {
       if (currentAnimation == animation)
       {
-        Serial.println("Animation already active");
+        PrintLnInfo("Animation already running..");
         break;
       }
       else if (currentAnimation != nullptr)
       {
-        // Serial.print("Stopping animation ");
-        // Serial.print(currentAnimation->name());
-        // Serial.println("..");
+        PrintDebug("Stopping animation ");
+        PrintDebug(currentAnimation->name());
+        PrintLnDebug("..");
         currentAnimation->stop();
       }
 
-      Serial.println("Starting animation..");
+      PrintLnInfo("Starting animation..");
       animation->start();
 
       currentAnimation = animation;
@@ -77,14 +80,18 @@ void setup()
 
   do
   {
-    // Serial.println("Waiting for network..");
+    PrintLnInfo("Waiting for network..");
     delay(100);
   } while (!Network.ethernetIsConnected());
+
+  PrintLnInfo("Network started!");
 
   //Udp.onAnimation(changeAnimation);
   //Udp.begin();
   WebSocket.onAnimation(changeAnimation);
   WebSocket.begin();
+
+  PrintLnInfo("App started!");
 }
 
 // this buffer saves the start of the loop, which allows the time class

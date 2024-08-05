@@ -30,28 +30,24 @@ public:
 
   void loop()
   {
-    if (!_isActive) {
-        return;
-    }
-
     fill_solid(leds, 1, globalSettings.colors[0]);
     FastLED.show();
 
-    Time.delay(1);
+    delay(1);
 
     fill_solid(leds, 1, CRGB::Black);
     FastLED.show();
 
-    Time.delay(1000 / globalSettings.speed);
+    delay(1000.0 / globalSettings.speed);
 
     fill_solid(leds, 1, globalSettings.colors[1]);
     FastLED.show();
 
-    Time.delay(1);
+    delay(1);
 
     fill_solid(leds, 1, CRGB::Black);
     FastLED.show();
 
-    Time.delay(1000 / globalSettings.speed);
+    delay(1000.0 / globalSettings.speed);
   }
 };

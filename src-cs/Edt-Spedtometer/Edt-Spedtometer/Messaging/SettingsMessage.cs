@@ -1,9 +1,4 @@
-﻿global using Color = (int h, int s, int v);
-
-namespace EdtSpedtometer;
-
-internal record AnimationMessage(
-    string Animation);
+﻿namespace EdtSpedtometer.Messaging;
 
 internal record SettingsMessage
 {
@@ -17,6 +12,3 @@ internal record SettingsMessage
     public int? Brightness { get; init; }
     public int? Size { get; init; }
 }
-
-internal record AnimationAndSettingsMessage(
-    string Animation) : SettingsMessage;

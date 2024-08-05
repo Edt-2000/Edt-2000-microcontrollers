@@ -73,9 +73,9 @@ public:
             vTaskDelay(0);
             loop();
 
-            if (t10ms)
+            if (t1ms)
             {
-                current += 10;
+                current += 1;
                 if (current >= ms)
                 {
                     break;

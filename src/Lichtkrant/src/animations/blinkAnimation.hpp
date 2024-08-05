@@ -36,11 +36,6 @@ public:
 
   void loop()
   {
-    if (!_isActive)
-    {
-      return;
-    }
-
     if (Time.t1000ms)
     {
       _on = !_on;

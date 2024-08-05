@@ -1,11 +1,18 @@
 #pragma once
 
+#include "time.hpp"
+
 // Base abstract animation class 
 class Animation
 {
 protected:
   bool _isActive;
 
+  // delay the animation for the given milliseconds
+  // will interrupt and end animation automatically
+  inline void delay(unsigned int ms) {
+    Time.delay(ms);
+  }
 public:
   virtual const char *name() = 0;
 
@@ -19,5 +26,6 @@ public:
   virtual bool isActive() {
     return _isActive;
   }
+
   virtual void loop() = 0;
 };

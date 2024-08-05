@@ -1,17 +1,17 @@
 ﻿using System.Diagnostics;
 using System.IO.Ports;
-using EdtSpedtometer;
-
+using EdtSpedtometer.Messaging;
+using EdtSpedtometer.Networking;
 
 var currentTimestamp = Stopwatch.GetTimestamp();
 var results = new List<TimeSpan>();
 
 var sender = new WebSocketSender();
-// var sender = new UdpSender();
+// var sender = new UdpJsonSender();
 
 await sender.InitializeAsync();
 
-using var serial = new SerialPort("COM6", 115200, Parity.None, 8, StopBits.One);
+using var serial = new SerialPort("COM7", 115200, Parity.None, 8, StopBits.One);
 serial.DataReceived += Serial_DataReceived;
 serial.Open();
 
@@ -42,6 +42,11 @@ void Serial_DataReceived(object sender, SerialDataReceivedEventArgs e)
     var average = data.Average();
     var sumOfSquaresOfDifferences = data.Select(val => (val - average) * (val - average)).Sum();
     var sd = Math.Sqrt(sumOfSquaresOfDifferences / results.Count);
+
+    while (results.Count > 50)
+    {
+        results.RemoveAt(0);
+    }
 
     Console.WriteLine($"Took {delta}\t-\t{average:0}, {sd:0}");
 

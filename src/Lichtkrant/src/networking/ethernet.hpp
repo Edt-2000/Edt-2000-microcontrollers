@@ -2,6 +2,7 @@
 
 #include <WiFi.h>
 #include <ETH.h>
+#include "../debugging/logger.hpp"
 
 static bool _ethernetConnected;
 static void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
@@ -10,13 +11,13 @@ static void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
 
     switch (event) {
         case ARDUINO_EVENT_ETH_START:
-            // Serial.println("Starting ethernet..");
+            PrintLnInfo("Starting ethernet..");
             break;
         case ARDUINO_EVENT_ETH_CONNECTED:
-            // Serial.println("Ethernet connected!");
+            PrintLnInfo("Ethernet connected!");
             break;
         case ARDUINO_EVENT_ETH_GOT_IP:
-            // Serial.println("Ethernet got IP!");
+            PrintLnInfo("Ethernet got IP!");
             _ethernetConnected = true;
             break;
     }

@@ -4,6 +4,7 @@
 #include <ArduinoJson.h>
 
 #include "../settings.hpp"
+#include "../debugging/logger.hpp"
 
 using WSAnimationHandler = std::function<void(const char *animationName)>;
 
@@ -39,68 +40,68 @@ void onEvent(
                 {
                     globalSettings.text = doc["text"];
 
-                    // Serial.print("Setting text set to ");
-                    // Serial.println(globalSettings.text);
+                    PrintDebug("Setting text set to ");
+                    PrintLnDebug(globalSettings.text);
                 }
                 if (doc.containsKey("color1"))
                 {
                     auto color = doc["color1"];
                     globalSettings.colors[0] = CHSV(color[0], color[1], color[2]);
 
-                    // Serial.print("Setting color[0] set to ");
-                    // Serial.print(globalSettings.colors[0].h);
-                    // Serial.print(",");
-                    // Serial.print(globalSettings.colors[0].s);
-                    // Serial.print(",");
-                    // Serial.println(globalSettings.colors[0].v);
+                    PrintDebug("Setting color[0] set to ");
+                    PrintDebug(globalSettings.colors[0].h);
+                    PrintDebug(",");
+                    PrintDebug(globalSettings.colors[0].s);
+                    PrintDebug(",");
+                    PrintLnDebug(globalSettings.colors[0].v);
                 }
                 if (doc.containsKey("color2"))
                 {
                     auto color = doc["color2"];
                     globalSettings.colors[1] = CHSV(color[0], color[1], color[2]);
 
-                    // Serial.print("Setting color[1] set to ");
-                    // Serial.print(globalSettings.colors[1].h);
-                    // Serial.print(",");
-                    // Serial.print(globalSettings.colors[1].s);
-                    // Serial.print(",");
-                    // Serial.println(globalSettings.colors[1].v);
+                    PrintDebug("Setting color[1] set to ");
+                    PrintDebug(globalSettings.colors[1].h);
+                    PrintDebug(",");
+                    PrintDebug(globalSettings.colors[1].s);
+                    PrintDebug(",");
+                    PrintLnDebug(globalSettings.colors[1].v);
                 }
                 if (doc.containsKey("color3"))
                 {
                     auto color = doc["color3"];
                     globalSettings.colors[2] = CHSV(color[0], color[1], color[2]);
 
-                    // Serial.print("Setting color[2] set to ");
-                    // Serial.print(globalSettings.colors[2].h);
-                    // Serial.print(",");
-                    // Serial.print(globalSettings.colors[2].s);
-                    // Serial.print(",");
-                    // Serial.println(globalSettings.colors[2].v);
+                    PrintDebug("Setting color[2] set to ");
+                    PrintDebug(globalSettings.colors[2].h);
+                    PrintDebug(",");
+                    PrintDebug(globalSettings.colors[2].s);
+                    PrintDebug(",");
+                    PrintLnDebug(globalSettings.colors[2].v);
                 }
                 if (doc.containsKey("color4"))
                 {
                     auto color = doc["color4"];
                     globalSettings.colors[3] = CHSV(color[0], color[1], color[2]);
 
-                    // Serial.print("Setting color[3] set to ");
-                    // Serial.print(globalSettings.colors[3].h);
-                    // Serial.print(",");
-                    // Serial.print(globalSettings.colors[3].s);
-                    // Serial.print(",");
-                    // Serial.println(globalSettings.colors[3].v);
+                    PrintDebug("Setting color[3] set to ");
+                    PrintDebug(globalSettings.colors[3].h);
+                    PrintDebug(",");
+                    PrintDebug(globalSettings.colors[3].s);
+                    PrintDebug(",");
+                    PrintLnDebug(globalSettings.colors[3].v);
                 }
                 if (doc.containsKey("color5"))
                 {
                     auto color = doc["color5"];
                     globalSettings.colors[4] = CHSV(color[0], color[1], color[2]);
 
-                    // Serial.print("Setting color[4] set to ");
-                    // Serial.print(globalSettings.colors[4].h);
-                    // Serial.print(",");
-                    // Serial.print(globalSettings.colors[4].s);
-                    // Serial.print(",");
-                    // Serial.println(globalSettings.colors[4].v);
+                    PrintDebug("Setting color[4] set to ");
+                    PrintDebug(globalSettings.colors[4].h);
+                    PrintDebug(",");
+                    PrintDebug(globalSettings.colors[4].s);
+                    PrintDebug(",");
+                    PrintLnDebug(globalSettings.colors[4].v);
                 }
                 if (doc.containsKey("speed"))
                 {
@@ -110,22 +111,22 @@ void onEvent(
                         globalSettings.speed = 1;
                     }
                     
-                    // Serial.print("Setting speed set to ");
-                    // Serial.println(globalSettings.speed);
+                    PrintDebug("Setting speed set to ");
+                    PrintLnDebug(globalSettings.speed);
                 }
                 if (doc.containsKey("brightness"))
                 {
                     globalSettings.brightness = doc["brightness"];
                     
-                    // Serial.print("Setting brightness set to ");
-                    // Serial.println(globalSettings.brightness);
+                    PrintDebug("Setting brightness set to ");
+                    PrintLnDebug(globalSettings.brightness);
                 }
                 if (doc.containsKey("size"))
                 {
                     globalSettings.size = doc["size"];
                     
-                    // Serial.print("Setting size set to ");
-                    // Serial.println(globalSettings.size);
+                    PrintDebug("Setting size set to ");
+                    PrintLnDebug(globalSettings.size);
                 }
             }
 
@@ -140,11 +141,11 @@ void onEvent(
     }
     else if (type == WS_EVT_CONNECT)
     {
-        // Serial.println("Client connected");
+        PrintLnDebug("Client connected");
     }
     else if (type == WS_EVT_DISCONNECT)
     {
-        // Serial.println("Client disconnected");
+        PrintLnDebug("Client disconnected");
     }
 }
 
@@ -153,13 +154,13 @@ class WebSocketHelper
 public:
     void begin()
     {
-        // Serial.println("Starting web socket");
+        PrintLnDebug("Starting web socket");
 
         ws.onEvent(onEvent);
         server.addHandler(&ws);
         server.begin();
 
-        // Serial.println("Started web socket");
+        PrintLnDebug("Started web socket");
     }
 
     void onAnimation(WSAnimationHandler callback)
