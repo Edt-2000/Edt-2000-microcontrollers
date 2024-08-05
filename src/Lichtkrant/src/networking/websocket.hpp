@@ -26,7 +26,7 @@ void onEvent(
 {
     if (type == WS_EVT_DATA)
     {
-        doc.clear();
+        // TODO: move to messaging class to standardize
         auto error = deserializeJson(doc, data);
 
         if (!error)
