@@ -4,8 +4,8 @@
 #include <ETH.h>
 #include "../debugging/logger.hpp"
 
-static bool _ethernetConnected;
-static void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
+bool _ethernetConnected;
+void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
 {
     _ethernetConnected = false;
 
@@ -21,8 +21,6 @@ static void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
             _ethernetConnected = true;
             break;
     }
-    
-    _ethernetConnected = true;
 }
 
 class NetworkHelper

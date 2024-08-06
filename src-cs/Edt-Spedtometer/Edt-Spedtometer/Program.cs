@@ -11,9 +11,11 @@ var sender = new WebSocketSender();
 
 await sender.InitializeAsync();
 
-using var serial = new SerialPort("COM7", 115200, Parity.None, 8, StopBits.One);
+using var serial = new SerialPort("COM8", 115200, Parity.None, 8, StopBits.One);
 serial.DataReceived += Serial_DataReceived;
 serial.Open();
+
+await Task.Delay(1000);
 
 do
 {
@@ -28,7 +30,7 @@ do
 
     await sender.SendAsync(animation);
 
-    await Task.Delay(1);
+    await Task.Delay(10);
 }
 while (true);
 
@@ -48,7 +50,7 @@ void Serial_DataReceived(object sender, SerialDataReceivedEventArgs e)
         results.RemoveAt(0);
     }
 
-    Console.WriteLine($"Took {delta}\t-\t{average:0}, {sd:0}");
+    Console.WriteLine($"Took {delta}\t-\t{average:0}, {sd:0}\t\t{serial.ReadExisting().Trim()}");
 
     serial.ReadExisting();
 }

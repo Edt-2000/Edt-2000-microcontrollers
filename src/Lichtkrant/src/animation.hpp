@@ -10,7 +10,7 @@ protected:
 
   // delay the animation for the given milliseconds
   // will interrupt and end animation automatically
-  inline void delay(unsigned int ms) {
+  void delay(unsigned int ms) {
     Time.delay(ms);
   }
 public:

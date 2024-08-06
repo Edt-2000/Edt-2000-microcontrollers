@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <FastLED.h>
 #include <AsyncWebSocket.h>
-#include <vector>
 #include <Wifi.h>
 #include <ETH.h>
 #include <stdio.h>
@@ -15,6 +14,7 @@
 #include "networking/websocket.hpp"
 // #include "networking/udp.hpp"
 
+#include "animator.hpp"
 #include "time.hpp"
 #include "settings.hpp"
 
@@ -23,50 +23,12 @@
 // my demo board has led "strips" with 1 led
 CRGB *leds = new CRGB[1];
 
-// these are all the animations the system knows
-std::vector<Animation *> animations = {
-    new BlinkAnimation(),
-    new StroboAnimation(),
-};
-// current animation that's active - can be null
-Animation *currentAnimation = nullptr;
-
-void changeAnimation(const char *animationName)
-{
-  PrintDebug("Animation requested: ");
-  PrintLnDebug(animationName);
-
-  for (auto animation : animations)
-  {
-    if (strcmp(animation->name(), animationName) == 0)
-    {
-      if (currentAnimation == animation)
-      {
-        PrintLnInfo("Animation already running..");
-        break;
-      }
-      else if (currentAnimation != nullptr)
-      {
-        PrintDebug("Stopping animation ");
-        PrintDebug(currentAnimation->name());
-        PrintLnDebug("..");
-        currentAnimation->stop();
-      }
-
-      PrintLnInfo("Starting animation..");
-      animation->start();
-
-      currentAnimation = animation;
-
-      Time.interrupt();
-
-      break;
-    }
-  }
-}
-
 void setup()
 {
+  // these are all the animations the system knows
+  Animator.addAnimation(new BlinkAnimation());
+  Animator.addAnimation(new StroboAnimation());
+
   Serial.begin(115200);
 
   Network.startEthernet(IPAddress(10, 0, 0, 25));
@@ -86,9 +48,9 @@ void setup()
 
   PrintLnInfo("Network started!");
 
-  //Udp.onAnimation(changeAnimation);
+  JsonDeserializer.onAnimation([](std::string animation) { Animator.changeAnimation(animation); });
+
   //Udp.begin();
-  WebSocket.onAnimation(changeAnimation);
   WebSocket.begin();
 
   PrintLnInfo("App started!");
@@ -102,23 +64,8 @@ void loop()
 {
   setjmp(loop_jump_buffer);
 
-  // copy animation pointer over to avoid race conditions
-  auto animation = currentAnimation;
-  if (animation != nullptr)
-  {
-    if (animation->isActive())
-    {
-      animation->loop();
-    }
-    else
-    {
-      // animation has finished
-      currentAnimation = nullptr;
-    }
-  }
-
-  Time.loop();
-
+  Animator.loop();
+  
   // run maintenance logic
   if (Time.t1000ms) {
     WebSocket.cleanUp();
