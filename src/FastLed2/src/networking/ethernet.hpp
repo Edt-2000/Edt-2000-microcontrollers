@@ -1,0 +1,44 @@
+#pragma once
+
+#include <WiFi.h>
+#include <ETH.h>
+#include "../debugging/logger.hpp"
+
+bool _ethernetConnected;
+void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
+{
+    _ethernetConnected = false;
+
+    switch (event) {
+        case ARDUINO_EVENT_ETH_START:
+            PrintLnInfo("Starting ethernet..");
+            break;
+        case ARDUINO_EVENT_ETH_CONNECTED:
+            PrintLnInfo("Ethernet connected!");
+            break;
+        case ARDUINO_EVENT_ETH_GOT_IP:
+            PrintLnInfo("Ethernet got IP!");
+            _ethernetConnected = true;
+            break;
+    }
+}
+
+class NetworkHelper
+{
+public:
+    void startEthernet(IPAddress ip)
+    {
+        WiFi.onEvent(ethernetEventHandler);
+
+        // ESP32 ETH has ethernet client - otherwise its WiFi.begin() and WiFi.config()
+        ETH.begin();
+        ETH.config(ip, IPAddress(10, 0, 0, 1), IPAddress(255, 0, 0, 0));
+    }
+
+    bool ethernetIsConnected()
+    {
+        return _ethernetConnected;
+    }
+} Network;
+
+extern NetworkHelper Network;
