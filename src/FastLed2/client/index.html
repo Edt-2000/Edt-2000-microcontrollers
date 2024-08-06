@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WebSockEDT tester</title>
+</head>
+
+<body>
+    <button class="button" data-animation="stop" data-color1="0,0,0" data-key="Escape"><u>esc</u> Off</button><br>
+    <button class="button" data-animation="glow" data-color3="230,255,255" data-key="KeyD"><u>d</u> Glow</button><br>
+    <button class="button" data-animation="allPulse" data-color1="0,255,255" data-key="KeyU"><u>u</u> All
+        Pulse</button><br>
+    <button class="button" data-animation="allPulse" data-color1="95,255,255" data-key="KeyI"><u>i</u> All
+        Pulse</button><br>
+    <button class="button" data-animation="allPulse" data-color1="158,255,255" data-key="KeyO"><u>o</u> All
+        Pulse</button><br>
+    <button class="button" data-animation="allPulse" data-color1="238,255,255" data-key="KeyP"><u>p</u> All
+        Pulse</button><br>
+    <button class="button" data-animation="allSolid" data-color1="0,0,255" data-key="Backquote"><u>`</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSolid" data-color1="0,255,255" data-key="Digit1"><u>1</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSolid" data-color1="11,255,255" data-key="Digit2"><u>2</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSolid" data-color1="58,255,255" data-key="Digit3"><u>3</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSolid" data-color1="85,255,255" data-key="Digit4"><u>4</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSolid" data-color1="95,255,255" data-key="Digit5"><u>5</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSolid" data-color1="105,255,255" data-key="Digit6"><u>6</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSolid" data-color1="129,255,255" data-key="Digit7"><u>7</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSolid" data-color1="158,255,255" data-key="Digit8"><u>8</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSolid" data-color1="183,255,255" data-key="Digit9"><u>9</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSolid" data-color1="238,255,255" data-key="Digit0"><u>0</u> All
+        Solid</button><br>
+    <button class="button" data-animation="allSparkle" data-color1="random" data-key="KeyZ"><u>z</u> All
+        Sparkle</button><br>
+    <button class="button" data-animation="singlePulse" data-color1="0,255,255" data-led="0" data-key="KeyA"><u>a</u>
+        Single Pulse 0</button><br>
+    <button class="button" data-animation="singlePulse" data-color1="85,255,255" data-led="1" data-key="KeyS"><u>s</u>
+        Single Pulse 1</button><br>
+    <button class="button" data-animation="allPulse" data-key="KeyF"><u>f</u> Single Pulse</button><br>
+    <button class="button" data-animation="strobo" data-color1="random" data-color2="random"
+        data-key="Space"><u>&nbsp;</u> Strobo</button><br>
+    <hr>
+    <button onclick="stress()">Stress</button><br>
+    <hr>
+    <input class="setting" data-name="text" placeholder="text"><br>
+    <input class="setting" data-name="led" placeholder="led"><br>
+    <input class="setting" data-name="colorIndex" placeholder="colorIndex"><br>
+    <input class="setting" data-name="color1" placeholder="color1"><br>
+    <input class="setting" data-name="color2" placeholder="color2"><br>
+    <input class="setting" data-name="color3" placeholder="color3"><br>
+    <input class="setting" data-name="color4" placeholder="color4"><br>
+    <input class="setting" data-name="color5" placeholder="color5"><br>
+    <input class="setting" data-name="speed" placeholder="speed"><br>
+    <input class="setting" data-name="brightness" placeholder="brightness"><br>
+    <input class="setting" data-name="size" placeholder="size"><br>
+    <hr>
+    <button class="button" data-color1="0,255,255" data-color2="0,255,255" data-color3="0,255,255"
+        data-color4="0,255,255" data-color5="0,255,255" data-key="KeyB"><u>b</u> Red</button><br>
+    <button class="button" data-color1="95,255,255" data-color2="95,255,255" data-color3="95,255,255"
+        data-color4="95,255,255" data-color5="95,255,255" data-key="KeyN"><u>n</u> Green</button><br>
+    <button class="button" data-color1="158,255,255" data-color2="158,255,255" data-color3="158,255,255"
+        data-color4="158,255,255" data-color5="158,255,255" data-key="KeyM"><u>m</u> Blue</button><br>
+    <button class="button" data-color1="238,255,255" data-color2="238,255,255" data-color3="238,255,255"
+        data-color4="238,255,255" data-color5="238,255,255" data-key="Comma"><u>,</u> Pink</button><br>
+    <hr>
+    <button class="button" data-color1="0,255,255" data-color2="0,0,255" data-color3="0,255,255" data-color4="0,0,255"
+        data-color5="0,0,255" data-key="KeyH"><u>h</u> Red White</button><br>
+    <button class="button" data-color1="0,255,255" data-color2="158,255,255" data-color3="0,255,255"
+        data-color4="158,255,255" data-color5="0,255,255" data-key="KeyJ"><u>j</u> Red Blue </button><br>
+    <button class="button" data-color1="95,255,255" data-color2="0,0,255" data-color3="95,255,255" data-color4="0,0,255"
+        data-color5="95,255,255" data-key="KeyK"><u>k</u> Green White</button><br>
+    <button class="button" data-color1="0,255,255" data-color2="238,255,255" data-color3="0,255,255"
+        data-color4="238,255,255" data-color5="238,255,255" data-key="KeyL"><u>l</u> Red Pink</button><br>
+
+    <script>
+        const socket = new WebSocket('ws://10.0.0.25:80/ws');
+
+        socket.onopen = function (event) {
+            console.log("WS open!");
+        };
+
+        socket.onmessage = function (event) {
+            console.log(event);
+        };
+
+        socket.onclose = function (event) {
+            console.log("WS borked!");
+        };
+
+        const hotKeys = {};
+        let alternate = true;
+
+        for (let button of document.getElementsByClassName("button")) {
+            hotKeys[button.dataset.key] = button;
+
+            button.onclick = function () {
+                let message = { ...button.dataset };
+                delete message.key;
+                formatColor(message, "color1");
+                formatColor(message, "color2");
+                formatColor(message, "color3");
+                formatColor(message, "color4");
+                formatColor(message, "color5");
+
+                alternate = !alternate;
+                message.colorIndex = alternate ? 1 : 0;
+
+                socket.send(JSON.stringify(message));
+
+                let keys = Object.keys(message);
+                for (let key of keys) {
+                    let value = message[key];
+
+                    if (key == "animation") {
+                        continue;
+                    }
+
+                    if (key != "colorIndex" && key.startsWith("color")) {
+                        value = value.join(",");
+                    }
+
+                    let selector = `.setting[data-name="${key}"]`;
+                    let input = document.querySelector(selector);
+
+                    // only overwrite the current value if the input isn't being edited.
+                    if (document.activeElement != input) {
+                        input.value = value;
+                    }
+                }
+            };
+        };
+        for (let setting of document.getElementsByClassName("setting")) {
+            setting.onchange = function () {
+                let message = {};
+                message[setting.dataset.name] =
+                    setting.dataset.name.indexOf("color") == -1
+                        ? setting.value
+                        : setting.value.split(",");
+                socket.send(JSON.stringify(message));
+            };
+        };
+        window.onkeydown = function (e) {
+            if (hotKeys[e.code]) {
+                hotKeys[e.code].click();
+            }
+        }
+        function formatColor(message, name) {
+            if (message[name]) {
+                if (message[name] == "random") {
+                    message[name] = [Math.floor(Math.random() * 256), 255, 255];
+                }
+                else {
+                    message[name] = message[name].split(",").map(x => parseInt(x));
+                }
+            }
+        }
+        function stress() {
+            let interval = setInterval(() => {
+                let options = Object.keys(hotKeys);
+                let hotKey = options[Math.floor(Math.random() * options.length)];
+                console.log(hotKey);
+                hotKeys[hotKey].click();
+            }, 20);
+            setTimeout(() => { clearInterval(interval); }, 5000);
+        }
+    </script>
+</body>
+
+</html>
