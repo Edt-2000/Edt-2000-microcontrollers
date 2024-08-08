@@ -29,9 +29,9 @@ public:
         }
 
         unsigned long now = micros();
-
         if (now - _previous >= 1000UL)
         {
+            // TODO: add 1000 here
             _previous = now;
 
             t1ms = true;

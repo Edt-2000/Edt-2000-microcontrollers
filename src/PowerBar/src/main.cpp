@@ -10,7 +10,7 @@
 #include "animations/blinkAnimation.hpp"
 #include "animations/stroboAnimation.hpp"
 
-#include "networking/ethernet.hpp"
+#include "networking/network.hpp"
 #include "networking/websocket.hpp"
 // #include "networking/udp.hpp"
 
@@ -20,8 +20,7 @@
 
 #include "debugging/logger.hpp"
 
-// my demo board has led "strips" with 1 led
-CRGB *leds = new CRGB[1];
+CRGB *leds = new CRGB[640];
 
 void setup()
 {
@@ -31,13 +30,11 @@ void setup()
 
   Serial.begin(115200);
 
-  Network.startEthernet(IPAddress(10, 0, 0, 25));
+  Network.startWifi();
 
-  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
-  // my demo board has 2 separate strips - can be removed later
-  FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<WS2812B, 5, GRB>(leds, 640).setCorrection(TypicalLEDStrip);
 
-  fill_solid(leds, 1, CRGB::Black);
+  fill_solid(leds, 640, CRGB::Black);
   FastLED.show();
 
   do
@@ -48,9 +45,10 @@ void setup()
 
   PrintLnInfo("Network started!");
 
-  JsonDeserializer.onAnimation([](std::string animation) { Animator.changeAnimation(animation); });
+  JsonDeserializer.onAnimation([](std::string animation)
+                               { Animator.changeAnimation(animation); });
 
-  //Udp.begin();
+  // Udp.begin();
   WebSocket.begin();
 
   PrintLnInfo("App started!");
@@ -64,10 +62,15 @@ void loop()
 {
   setjmp(loop_jump_buffer);
 
-  Animator.loop();
-  
-  // run maintenance logic
-  if (Time.t1000ms) {
-    WebSocket.cleanUp();
-  }
+  do
+  {
+    Animator.loop();
+
+    // run maintenance logic
+    if (Time.t1000ms)
+    {
+      // TODO: send globalSettings + currentAnimation
+      WebSocket.cleanUp();
+    }
+  } while (true);
 }

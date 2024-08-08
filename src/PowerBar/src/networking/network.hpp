@@ -1,7 +1,7 @@
 #pragma once
 
 #include <WiFi.h>
-#include <ETH.h>
+// #include <ETH.h>
 #include "../debugging/logger.hpp"
 
 bool _ethernetConnected;
@@ -11,13 +11,16 @@ void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
 
     switch (event) {
         case ARDUINO_EVENT_ETH_START:
-            PrintLnInfo("Starting ethernet..");
+        case ARDUINO_EVENT_WIFI_STA_START:
+            PrintLnInfo("Starting network..");
             break;
         case ARDUINO_EVENT_ETH_CONNECTED:
-            PrintLnInfo("Ethernet connected!");
+        case ARDUINO_EVENT_WIFI_STA_CONNECTED:
+            PrintLnInfo("Network connected!");
             break;
         case ARDUINO_EVENT_ETH_GOT_IP:
-            PrintLnInfo("Ethernet got IP!");
+        case ARDUINO_EVENT_WIFI_STA_GOT_IP:
+            PrintLnInfo("Network got IP!");
             _ethernetConnected = true;
             break;
     }
@@ -26,13 +29,16 @@ void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
 class NetworkHelper
 {
 public:
-    void startEthernet(IPAddress ip)
+    void startWifi()
     {
+        WiFi.begin("xxx", "xxx");
         WiFi.onEvent(ethernetEventHandler);
 
-        // ESP32 ETH has ethernet client - otherwise its WiFi.begin() and WiFi.config()
-        ETH.begin();
-        ETH.config(ip, IPAddress(10, 0, 0, 1), IPAddress(255, 0, 0, 0));
+        auto staticIP = IPAddress(192, 168, 142, 100);
+        auto gatewayIP = IPAddress(192, 168, 142, 1);
+        auto subnet = IPAddress(255, 255, 255, 0);
+
+        WiFi.config(staticIP, gatewayIP, subnet);
     }
 
     bool ethernetIsConnected()

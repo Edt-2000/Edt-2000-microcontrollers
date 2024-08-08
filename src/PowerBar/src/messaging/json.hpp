@@ -125,6 +125,8 @@ public:
                     animationCallback(doc["animation"]);
                 }
             }
+    
+            // TODO: send globalSettings + currentAnimation
         }
     }
 

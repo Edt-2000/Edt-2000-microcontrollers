@@ -24,7 +24,7 @@ public:
     void changeAnimation(std::string animationName)
     {
         PrintDebug("Animation requested: ");
-        PrintLnDebug(animationName);
+        PrintLnDebug(animationName.c_str());
 
         auto animation = animations[animationName];
 

@@ -9,8 +9,8 @@ extern CRGB *leds;
 class StroboAnimation : public Animation
 {
 public:
-  StroboAnimation() {
-
+  StroboAnimation()
+  {
   }
 
   const char *name()
@@ -30,24 +30,27 @@ public:
 
   void loop()
   {
-    fill_solid(leds, 1, globalSettings.colors[0]);
-    FastLED.show();
+    do
+    {
+      fill_solid(leds, 640, globalSettings.colors[0]);
+      FastLED.show();
 
-    delay(1);
+      delay(1);
 
-    fill_solid(leds, 1, CRGB::Black);
-    FastLED.show();
+      fill_solid(leds, 640, CRGB::Black);
+      FastLED.show();
 
-    delay(1000.0 / globalSettings.speed);
+      delay(1000.0 / globalSettings.speed);
 
-    fill_solid(leds, 1, globalSettings.colors[1]);
-    FastLED.show();
+      fill_solid(leds, 640, globalSettings.colors[1]);
+      FastLED.show();
 
-    delay(1);
+      delay(1);
 
-    fill_solid(leds, 1, CRGB::Black);
-    FastLED.show();
+      fill_solid(leds, 640, CRGB::Black);
+      FastLED.show();
 
-    delay(1000.0 / globalSettings.speed);
+      delay(1000.0 / globalSettings.speed);
+    } while (true);
   }
 };
