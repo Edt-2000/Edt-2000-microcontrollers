@@ -9,21 +9,28 @@
 
 AsyncUDP udp;
 
-void onEvent(AsyncUDPPacket& packet)
+void onEvent(AsyncUDPPacket &packet)
 {
-    JsonDeserializer.deserialize(packet.data());
+    JsonHandler.deserialize(packet.data());
 }
 
-class UdpHelper {
-    public:
-    void begin() {
+class UdpHelper
+{
+public:
+    void begin()
+    {
         PrintLnDebug("Starting udp");
 
         udp.listen(12345);
         udp.onPacket(onEvent);
-        
+
         PrintLnDebug("Started udp");
     }
+
+    void send(String data) {
+        udp.print(data);
+    }
+
 } Udp;
 
 extern UdpHelper Udp;

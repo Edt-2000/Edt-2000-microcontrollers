@@ -9,6 +9,9 @@
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
+using StateChangedHandler = std::function<void()>;
+StateChangedHandler stateChangedCallback;
+
 void onEvent(
     AsyncWebSocket *server,
     AsyncWebSocketClient *client,
@@ -19,11 +22,16 @@ void onEvent(
 {
     if (type == WS_EVT_DATA)
     {
-        JsonDeserializer.deserialize(data);
+        JsonHandler.deserialize(data);
     }
     else if (type == WS_EVT_CONNECT)
     {
         PrintLnDebug("Client connected");
+        
+        if (stateChangedCallback)
+        {
+            stateChangedCallback();
+        }
     }
     else if (type == WS_EVT_DISCONNECT)
     {
@@ -45,8 +53,19 @@ public:
         PrintLnDebug("Started web socket");
     }
 
-    void cleanUp() {
+    void send(String data)
+    {
+        ws.textAll(data);
+    }
+
+    void cleanUp()
+    {
         ws.cleanupClients();
+    }
+
+    void onStateChange(StateChangedHandler callback)
+    {
+        stateChangedCallback = callback;
     }
 
 } WebSocket;

@@ -36,21 +36,27 @@ public:
       FastLED.show();
 
       delay(1);
-
+      
       fill_solid(leds, 640, CRGB::Black);
       FastLED.show();
 
       delay(1000.0 / globalSettings.speed);
-
+      
       fill_solid(leds, 640, globalSettings.colors[1]);
       FastLED.show();
 
       delay(1);
-
+      
       fill_solid(leds, 640, CRGB::Black);
       FastLED.show();
 
       delay(1000.0 / globalSettings.speed);
-    } while (true);
+      
+    } while (_isActive);
+  }
+
+  void step() {
+    
+
   }
 };

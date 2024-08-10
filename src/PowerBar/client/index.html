@@ -3,6 +3,11 @@
 
 <head>
     <title>WebSockEDT tester</title>
+    <style>
+        button.activeButton {
+            border: 3px solid black;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,14 +25,40 @@
     <input class="setting" data-name="size" placeholder="size" /><br>
 
     <script>
-        const socket = new WebSocket('ws://192.168.142.100:80/ws');
+        const socket = new WebSocket('ws://10.0.0.25:80/ws');
 
         socket.onopen = function (event) {
             console.log("WS open!");
         };
 
         socket.onmessage = function (event) {
-            console.log(event);
+            console.log("WS message!");
+
+            let data = JSON.parse(event.data);
+
+            let keys = Object.keys(data);
+
+            for (let key of keys) {
+                if (key == "animation") {
+                    let buttons = document.getElementsByClassName("animationButton");
+
+                    for (let i = 0; i < buttons.length; i++) {
+                        buttons[i].className = "animationButton";
+                    }
+
+                    let selector = `.animationButton[data-name="${data[key]}"]`;
+                    document.querySelector(selector).className = "animationButton activeButton";
+                }
+                else {
+                    let value = data[key];
+                    if (key.startsWith("color")) {
+                        value = value.join(",");
+                    }
+
+                    let selector = `.setting[data-name="${key}"]`;
+                    document.querySelector(selector).value = value;
+                }
+            }
         };
 
         socket.onclose = function (event) {
@@ -43,10 +74,10 @@
         for (let setting of document.getElementsByClassName("setting")) {
             setting.onchange = function () {
                 let message = {};
-                message[setting.dataset.name] = 
-                    setting.dataset.name.indexOf("color") == -1 
-                    ? setting.value
-                    : setting.value.split(",");
+                message[setting.dataset.name] =
+                    setting.dataset.name.indexOf("color") == -1
+                        ? setting.value
+                        : setting.value.split(",");
                 socket.send(JSON.stringify(message));
             };
         };

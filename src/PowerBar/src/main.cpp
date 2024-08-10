@@ -22,6 +22,18 @@
 
 CRGB *leds = new CRGB[640];
 
+auto animationCallback = [](std::string animation)
+{
+  Animator.changeAnimation(animation);
+};
+auto stateChangeCallback = []()
+{
+  PrintLnDebug("WebSocket send message");
+
+  auto json = JsonHandler.serialize(Animator.currentAnimationName());
+  WebSocket.send(json);
+};
+
 void setup()
 {
   // these are all the animations the system knows
@@ -30,9 +42,10 @@ void setup()
 
   Serial.begin(115200);
 
-  Network.startWifi();
+  Network.startEthernet();
 
-  FastLED.addLeds<WS2812B, 5, GRB>(leds, 640).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<WS2812B, 5, GRB>(leds, 640).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
 
   fill_solid(leds, 640, CRGB::Black);
   FastLED.show();
@@ -41,14 +54,15 @@ void setup()
   {
     PrintLnInfo("Waiting for network..");
     delay(100);
-  } while (!Network.ethernetIsConnected());
+  } while (!Network.networkIsConnected());
 
   PrintLnInfo("Network started!");
 
-  JsonDeserializer.onAnimation([](std::string animation)
-                               { Animator.changeAnimation(animation); });
+  JsonHandler.onAnimation(animationCallback);
+  JsonHandler.onStateChange(stateChangeCallback);
 
   // Udp.begin();
+  WebSocket.onStateChange(stateChangeCallback);
   WebSocket.begin();
 
   PrintLnInfo("App started!");
@@ -69,7 +83,6 @@ void loop()
     // run maintenance logic
     if (Time.t1000ms)
     {
-      // TODO: send globalSettings + currentAnimation
       WebSocket.cleanUp();
     }
   } while (true);

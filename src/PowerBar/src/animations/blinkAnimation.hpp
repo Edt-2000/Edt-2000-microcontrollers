@@ -41,11 +41,10 @@ public:
   {
     if (Time.t1000ms)
     {
-      PrintLnDebug("1sec");
       _on = !_on;
-    }
 
-    fill_solid(leds, 640, _on ? globalSettings.colors[0] : globalSettings.colors[1]);
-    FastLED.show(globalSettings.brightness);
+      fill_solid(leds, 640, _on ? globalSettings.colors[0] : globalSettings.colors[1]);
+      FastLED.show(globalSettings.brightness);
+    }
   }
 };

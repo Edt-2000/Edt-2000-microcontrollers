@@ -1,13 +1,13 @@
 #pragma once
 
 #include <WiFi.h>
-// #include <ETH.h>
+#include <ETH.h>
 #include "../debugging/logger.hpp"
 
-bool _ethernetConnected;
+bool _networkConnected;
 void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
 {
-    _ethernetConnected = false;
+    _networkConnected = false;
 
     switch (event) {
         case ARDUINO_EVENT_ETH_START:
@@ -21,7 +21,7 @@ void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
         case ARDUINO_EVENT_ETH_GOT_IP:
         case ARDUINO_EVENT_WIFI_STA_GOT_IP:
             PrintLnInfo("Network got IP!");
-            _ethernetConnected = true;
+            _networkConnected = true;
             break;
     }
 }
@@ -41,9 +41,21 @@ public:
         WiFi.config(staticIP, gatewayIP, subnet);
     }
 
-    bool ethernetIsConnected()
+    void startEthernet()
     {
-        return _ethernetConnected;
+        WiFi.onEvent(ethernetEventHandler);
+
+        auto staticIP = IPAddress(10, 0, 0, 25);
+        auto gatewayIP = IPAddress(10, 0, 0, 1);
+        auto subnet = IPAddress(255, 0, 0, 0);
+
+        ETH.begin();
+        ETH.config(staticIP, gatewayIP, subnet);
+    }
+
+    bool networkIsConnected()
+    {
+        return _networkConnected;
     }
 } Network;
 

@@ -66,7 +66,6 @@ public:
 
     void delay(unsigned int ms)
     {
-        _interrupted = false;
         unsigned int current = 0;
         do
         {
@@ -85,6 +84,8 @@ public:
 
         if (_interrupted)
         {
+            _interrupted = false;
+            
             // jump back to the main loop function as the animation loop should be stopped
             longjmp(loop_jump_buffer, 0);
         }

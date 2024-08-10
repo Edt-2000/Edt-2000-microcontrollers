@@ -68,6 +68,15 @@ public:
 
         Time.loop();
     }
+
+    const char* currentAnimationName() {
+        if (currentAnimation != nullptr) {
+            return currentAnimation->name();
+        }
+        else {
+            return nullptr;
+        }
+    }
 } Animator;
 
 extern AnimatorHelper Animator;
