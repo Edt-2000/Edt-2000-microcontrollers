@@ -27,11 +27,6 @@ void onEvent(
     else if (type == WS_EVT_CONNECT)
     {
         PrintLnDebug("Client connected");
-        
-        if (stateChangedCallback)
-        {
-            stateChangedCallback();
-        }
     }
     else if (type == WS_EVT_DISCONNECT)
     {

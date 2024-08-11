@@ -70,6 +70,9 @@ void setup()
 
 // this buffer saves the start of the loop, which allows the time class
 // to jump to, interrupting the animation loop
+// --
+// by doing a loop inside loop setjump isn't invoked every loop, which
+// should help performance
 jmp_buf loop_jump_buffer;
 
 void loop()
@@ -80,10 +83,12 @@ void loop()
   {
     Animator.loop();
 
-    // run maintenance logic
+    // run maintenance logic + send state to clients
     if (Time.t1000ms)
     {
       WebSocket.cleanUp();
+
+      stateChangeCallback();
     }
   } while (true);
 }

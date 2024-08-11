@@ -30,7 +30,12 @@ public:
 
         if (currentAnimation == animation)
         {
-            PrintLnInfo("Animation already running..");
+            PrintLnInfo("Stopping animation.");
+
+            currentAnimation->stop();
+            currentAnimation = nullptr;
+
+            Time.interrupt();
             return;
         }
         else if (currentAnimation != nullptr)
@@ -38,15 +43,15 @@ public:
             PrintDebug("Stopping animation ");
             PrintDebug(currentAnimation->name());
             PrintLnDebug("..");
+
             currentAnimation->stop();
+            Time.interrupt();
         }
 
         PrintLnInfo("Starting animation..");
         animation->start();
 
         currentAnimation = animation;
-
-        Time.interrupt();
     }
 
     void loop()
@@ -69,11 +74,14 @@ public:
         Time.loop();
     }
 
-    const char* currentAnimationName() {
-        if (currentAnimation != nullptr) {
+    const char *currentAnimationName()
+    {
+        if (currentAnimation != nullptr)
+        {
             return currentAnimation->name();
         }
-        else {
+        else
+        {
             return nullptr;
         }
     }

@@ -13,6 +13,12 @@ protected:
   void delay(unsigned int ms) {
     Time.delay(ms);
   }
+
+  // returns true once every interval
+  bool every(unsigned int interval) {
+    return Time.every(interval);
+  }
+
 public:
   virtual const char *name() = 0;
 

@@ -56,7 +56,12 @@
                     }
 
                     let selector = `.setting[data-name="${key}"]`;
-                    document.querySelector(selector).value = value;
+                    let input = document.querySelector(selector);
+
+                    // only overwrite the current value if the input isn't being edited.
+                    if (document.activeElement != input) {
+                        input.value = value;
+                    }
                 }
             }
         };

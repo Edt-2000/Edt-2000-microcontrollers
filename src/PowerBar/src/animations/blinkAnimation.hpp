@@ -2,8 +2,6 @@
 
 #include "../animation.hpp"
 #include "../settings.hpp"
-#include "../time.hpp"
-#include "../debugging/logger.hpp"
 #include <FastLED.h>
 
 extern Settings globalSettings;
@@ -11,9 +9,6 @@ extern CRGB *leds;
 
 class BlinkAnimation : public Animation
 {
-private:
-  bool _on = false;
-
 public:
   BlinkAnimation()
   {
@@ -27,9 +22,13 @@ public:
   void start()
   {
     _isActive = true;
-    globalSettings.colors[0] = CHSV(180, 255, 255);
-    globalSettings.colors[1] = CHSV(0, 255, 255);
     _on = false;
+
+    globalSettings.colors[0] = CHSV(158, 255, 255);
+    globalSettings.colors[1] = CHSV(0, 255, 255);
+
+    fill_solid(leds, 640, globalSettings.colors[1]);
+    FastLED.show(globalSettings.brightness);
   }
 
   void stop()
@@ -39,12 +38,22 @@ public:
 
   void loop()
   {
-    if (Time.t1000ms)
+    // every is true once every interval (this case once every 250ms)
+    // so the animation is progressed 4 times per second
+    if (every(250))
     {
-      _on = !_on;
-
-      fill_solid(leds, 640, _on ? globalSettings.colors[0] : globalSettings.colors[1]);
-      FastLED.show(globalSettings.brightness);
+      tick();
     }
+  }
+
+private:
+  bool _on = false;
+
+  void tick()
+  {
+    _on = !_on;
+
+    fill_solid(leds, 640, _on ? globalSettings.colors[0] : globalSettings.colors[1]);
+    FastLED.show(globalSettings.brightness);
   }
 };

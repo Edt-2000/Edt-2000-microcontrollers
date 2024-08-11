@@ -8,11 +8,14 @@ extern jmp_buf loop_jump_buffer;
 class TimeHelper
 {
 private:
-    volatile unsigned long _previous = micros();
-    unsigned int _ms = 0;
+    volatile unsigned long _next = micros();
     volatile bool _interrupted = false;
 
 public:
+    // current milliseconds of the current second
+    // resets after 12k
+    unsigned int ms = 0;
+
     bool t1ms;
     bool t10ms;
     bool t100ms;
@@ -29,29 +32,30 @@ public:
         }
 
         unsigned long now = micros();
-        if (now - _previous >= 1000UL)
+        if (now >= _next)
         {
-            // TODO: add 1000 here
-            _previous = now;
+            _next = now + 1000UL;
 
             t1ms = true;
 
-            _ms++;
+            ms++;
 
-            if (_ms == 1000)
+            if (ms % 1000 == 0)
             {
                 t10ms = true;
                 t100ms = true;
                 t1000ms = true;
 
-                // reset ms after 1s
-                _ms = 0;
+                // reset ms after 10s
+                if (ms > 12000) {
+                    ms = 0;
+                }
             }
-            else if (_ms % 10 == 0)
+            else if (ms % 10 == 0)
             {
                 t10ms = true;
 
-                if (_ms % 100 == 0)
+                if (ms % 100 == 0)
                 {
                     t100ms = true;
                 }
@@ -89,6 +93,10 @@ public:
             // jump back to the main loop function as the animation loop should be stopped
             longjmp(loop_jump_buffer, 0);
         }
+    }
+
+    bool every(unsigned int interval) {
+        return t1ms && (ms % interval) == 0;
     }
 } Time;
 
