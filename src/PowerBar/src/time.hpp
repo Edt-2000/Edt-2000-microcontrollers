@@ -11,17 +11,7 @@ private:
     volatile unsigned long _next = micros();
     volatile bool _interrupted = false;
 
-public:
-    // current milliseconds of the current second
-    // resets after 12k
-    unsigned int ms = 0;
-
-    bool t1ms;
-    bool t10ms;
-    bool t100ms;
-    bool t1000ms;
-
-    void loop()
+    void _loop()
     {
         if (t1ms)
         {
@@ -63,6 +53,23 @@ public:
         }
     }
 
+public:
+    // current milliseconds of the current second
+    // resets after 12k
+    unsigned int ms = 0;
+
+    bool t1ms;
+    bool t10ms;
+    bool t100ms;
+    bool t1000ms;
+
+    void loop()
+    {
+        // if the main loop calls Time.loop(), there is no need for interruption anymore as we're back where we should have been
+        _interrupted = false;
+        _loop();
+    }
+
     void interrupt()
     {
         _interrupted = true;
@@ -74,7 +81,7 @@ public:
         do
         {
             vTaskDelay(0);
-            loop();
+            _loop();
 
             if (t1ms)
             {
@@ -88,8 +95,6 @@ public:
 
         if (_interrupted)
         {
-            _interrupted = false;
-            
             // jump back to the main loop function as the animation loop should be stopped
             longjmp(loop_jump_buffer, 0);
         }

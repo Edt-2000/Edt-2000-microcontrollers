@@ -56,6 +56,8 @@ public:
 
     void loop()
     {
+        Time.loop();
+
         // copy animation pointer over to avoid race conditions
         auto animation = currentAnimation;
         if (animation != nullptr)
@@ -70,8 +72,6 @@ public:
                 currentAnimation = nullptr;
             }
         }
-
-        Time.loop();
     }
 
     const char *currentAnimationName()

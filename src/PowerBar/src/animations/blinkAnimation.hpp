@@ -34,6 +34,9 @@ public:
   void stop()
   {
     _isActive = false;
+    
+    fill_solid(leds, 640, CRGB::Black);
+    FastLED.show();
   }
 
   void loop()
