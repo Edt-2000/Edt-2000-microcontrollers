@@ -4,6 +4,10 @@
 <head>
     <title>WebSockEDT tester</title>
     <style>
+        button {
+            border: 1px solid gray;
+        }
+
         button.activeButton {
             border: 3px solid black;
         }
@@ -13,16 +17,16 @@
 <body>
     <button class="animationButton" data-name="blink">Blink</button><br>
     <button class="animationButton" data-name="strobo">Strobo</button><br>
-
-    <input class="setting" data-name="text" placeholder="text" /><br>
-    <input class="setting" data-name="color1" placeholder="color1" /><br>
-    <input class="setting" data-name="color2" placeholder="color2" /><br>
-    <input class="setting" data-name="color3" placeholder="color3" /><br>
-    <input class="setting" data-name="color4" placeholder="color4" /><br>
-    <input class="setting" data-name="color5" placeholder="color5" /><br>
-    <input class="setting" data-name="speed" placeholder="speed" /><br>
-    <input class="setting" data-name="brightness" placeholder="brightness" /><br>
-    <input class="setting" data-name="size" placeholder="size" /><br>
+    <hr>
+    <input class="setting" data-name="text" placeholder="text"><br>
+    <input class="setting" data-name="color1" placeholder="color1"><br>
+    <input class="setting" data-name="color2" placeholder="color2"><br>
+    <input class="setting" data-name="color3" placeholder="color3"><br>
+    <input class="setting" data-name="color4" placeholder="color4"><br>
+    <input class="setting" data-name="color5" placeholder="color5"><br>
+    <input class="setting" data-name="speed" placeholder="speed"><br>
+    <input class="setting" data-name="brightness" placeholder="brightness"><br>
+    <input class="setting" data-name="size" placeholder="size"><br>
 
     <script>
         const socket = new WebSocket('ws://10.0.0.25:80/ws');
@@ -35,17 +39,16 @@
             console.log("WS message!");
 
             let data = JSON.parse(event.data);
-
             let keys = Object.keys(data);
+
+            let buttons = document.getElementsByClassName("animationButton");
+
+            for (let i = 0; i < buttons.length; i++) {
+                buttons[i].className = "animationButton";
+            }
 
             for (let key of keys) {
                 if (key == "animation") {
-                    let buttons = document.getElementsByClassName("animationButton");
-
-                    for (let i = 0; i < buttons.length; i++) {
-                        buttons[i].className = "animationButton";
-                    }
-
                     let selector = `.animationButton[data-name="${data[key]}"]`;
                     document.querySelector(selector).className = "animationButton activeButton";
                 }
