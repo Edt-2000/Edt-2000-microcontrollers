@@ -19,6 +19,7 @@
 #include "settings.hpp"
 
 #include "debugging/logger.hpp"
+#include "debugging/status.hpp"
 
 CRGB *leds = new CRGB[640];
 
@@ -36,6 +37,11 @@ auto stateChangeCallback = []()
 
 void setup()
 {
+  // FastLED.addLeds<WS2812B, 5, GRB>(leds, 640).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
+
+  Status.init();
+
   // these are all the animations the system knows
   Animator.addAnimation(new BlinkAnimation());
   Animator.addAnimation(new StroboAnimation());
@@ -44,11 +50,7 @@ void setup()
 
   Network.startEthernet();
 
-  // FastLED.addLeds<WS2812B, 5, GRB>(leds, 640).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
-
-  fill_solid(leds, 640, CRGB::Black);
-  FastLED.show();
+  Status.setup();
 
   do
   {
@@ -66,6 +68,8 @@ void setup()
   WebSocket.begin();
 
   PrintLnInfo("App started!");
+  
+  Status.allOk();
 }
 
 // this buffer saves the start of the loop, which allows the time class
