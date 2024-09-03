@@ -20,9 +20,9 @@
 #include "animations/partialSingleAnimation.hpp"
 
 // expermental animations
+#include "animations/allChaseAnimation.hpp"
 
 #include "animations/allPulseAnimation.hpp"
-#include "animations/glowAnimation.hpp"
 #include "animations/singlePulseAnimation.hpp"
 
 #include "networking/ethernet.hpp"
@@ -62,8 +62,16 @@ void setup()
   
   Animator.addAnimation(new AllSparkleAnimation());
 
-  Animator.addAnimation(new GlowAnimation(0));
-  Animator.addAnimation(new GlowAnimation(1));
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
 
   Animator.addAnimation(new SinglePulseAnimation());
 

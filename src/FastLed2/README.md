@@ -29,9 +29,11 @@
 
 ## Pending ideas + todos
 
+- Find a good naming scheme for all animations (all and one, single bar multi-bar, etc, must be consistent)
+- How to tackle the different colors?
 - Support rainbows everywhere -- almost like a texture so chases can also use it
 - Support one (as opposed to all) -- requires `ledIndex` setting.
-- Support chases (vertical (on / all led bars) and sideways (always all led bars))
+- Support chases (vertical (on / all led bars) and sideways (always all led bars)) + directionality
 - Support fire
 - Support theatre chase (multiple repeating chases)
 - Support swipe (horizontal line across multiple led bars)
