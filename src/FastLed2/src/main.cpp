@@ -6,15 +6,24 @@
 #include <stdio.h>
 #include <setjmp.h>
 
+#include "leds.hpp"
+
 #include "animation.hpp"
+
+// tested animations
+#include "animations/stroboAnimation.hpp"
+#include "animations/stopAnimation.hpp"
+
+#include "animations/allSingleAnimation.hpp"
+#include "animations/allDoubleAnimation.hpp"
+
+#include "animations/partialSingleAnimation.hpp"
+
+// expermental animations
+
 #include "animations/allPulseAnimation.hpp"
-#include "animations/allSolidAnimation.hpp"
-#include "animations/allSparkleAnimation.hpp"
 #include "animations/glowAnimation.hpp"
 #include "animations/singlePulseAnimation.hpp"
-#include "animations/stroboAnimation.hpp"
-
-#include "animations/stopAnimation.hpp"
 
 #include "networking/ethernet.hpp"
 #include "networking/websocket.hpp"
@@ -27,10 +36,6 @@
 #include "debugging/logger.hpp"
 #include "debugging/status.hpp"
 
-// my demo board has led "strips" with 1 led
-CRGB *led1 = new CRGB[1];
-CRGB *led2 = new CRGB[1];
-
 auto animationCallback = [](std::string animation)
 {
   Animator.changeAnimation(animation);
@@ -38,14 +43,23 @@ auto animationCallback = [](std::string animation)
 
 void setup()
 {
-  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(led1, 1).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(led2, 1).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 16, 32, BGR, DATA_RATE_KHZ(500)>(leds0, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds1, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds2, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 15, 32, BGR, DATA_RATE_KHZ(500)>(leds3, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 5, 32, BGR, DATA_RATE_KHZ(500)>(leds4, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 4, 32, BGR, DATA_RATE_KHZ(500)>(leds5, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 3, 32, BGR, DATA_RATE_KHZ(500)>(leds6, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 2, 32, BGR, DATA_RATE_KHZ(500)>(leds7, 59).setCorrection(TypicalLEDStrip);
 
   Status.init();
 
   // these are all the animations the system knows
-  Animator.addAnimation(new AllPulseAnimation());
-  Animator.addAnimation(new AllSolidAnimation());
+  Animator.addAnimation(new AllSingleAnimation());
+  Animator.addAnimation(new AllDoubleAnimation());
+  
+  Animator.addAnimation(new PartialSingleAnimation());
+  
   Animator.addAnimation(new AllSparkleAnimation());
 
   Animator.addAnimation(new GlowAnimation(0));
@@ -53,9 +67,8 @@ void setup()
 
   Animator.addAnimation(new SinglePulseAnimation());
 
-  Animator.addAnimation(new StroboAnimation());
-
   Animator.addAnimation(new StopAnimation());
+  Animator.addAnimation(new StroboAnimation());
 
   Serial.begin(115200);
 

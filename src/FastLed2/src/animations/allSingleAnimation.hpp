@@ -6,20 +6,18 @@
 
 #include "../debugging/logger.hpp"
 
-extern Settings globalSettings;
-extern CRGB *led1;
-extern CRGB *led2;
+#include "../leds.hpp"
 
-class AllSolidAnimation : public Animation
+class AllSingleAnimation : public Animation
 {
 public:
-  AllSolidAnimation()
+  AllSingleAnimation()
   {
   }
 
   const char *name()
   {
-    return "allSolid";
+    return "allSingle";
   }
 
   void start()
@@ -34,13 +32,11 @@ public:
 
   inline void loop()
   {
-    fill_solid(led1, 1, globalSettings.color());
-    fill_solid(led2, 1, globalSettings.color());
+    applyToLeds([](CRGB* leds) { fill_solid(leds, 59, globalSettings.primaryColor()); });
 
     FastLED.show();
 
-    Fader.disableFade(0);
-    Fader.disableFade(1);
+    Fader.scheduleFade(globalSettings.speed, globalSettings.fadeMode());
 
     _isActive = false;
   }

@@ -124,12 +124,19 @@ public:
                     PrintDebug("Setting size set to ");
                     PrintLnDebug(globalSettings.size);
                 }
-                if (deserializeDoc.containsKey("colorIndex"))
+                if (deserializeDoc.containsKey("fade"))
                 {
-                    globalSettings.colorIndex = deserializeDoc["colorIndex"];
+                    globalSettings.fade = deserializeDoc["fade"];
 
-                    PrintDebug("Setting size colorIndex to ");
-                    PrintLnDebug(globalSettings.colorIndex);
+                    PrintDebug("Setting fade set to ");
+                    PrintLnDebug(globalSettings.fade);
+                }
+                if (deserializeDoc.containsKey("percentage"))
+                {
+                    globalSettings.percentage = deserializeDoc["percentage"];
+
+                    PrintDebug("Setting percentage set to ");
+                    PrintLnDebug(globalSettings.percentage);
                 }
             }
 

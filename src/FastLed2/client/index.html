@@ -16,30 +16,32 @@
         Pulse</button><br>
     <button class="button" data-animation="allPulse" data-color1="238,255,255" data-key="KeyP"><u>p</u> All
         Pulse</button><br>
-    <button class="button" data-animation="allSolid" data-color1="0,0,255" data-key="Backquote"><u>`</u> All
+    <button class="button" data-animation="allSingle" data-color1="0,0,255" data-key="Backquote"><u>`</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSolid" data-color1="0,255,255" data-key="Digit1"><u>1</u> All
+    <button class="button" data-animation="allSingle" data-color1="0,255,255" data-key="Digit1"><u>1</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSolid" data-color1="11,255,255" data-key="Digit2"><u>2</u> All
+    <button class="button" data-animation="allSingle" data-color1="11,255,255" data-key="Digit2"><u>2</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSolid" data-color1="58,255,255" data-key="Digit3"><u>3</u> All
+    <button class="button" data-animation="allSingle" data-color1="58,255,255" data-key="Digit3"><u>3</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSolid" data-color1="85,255,255" data-key="Digit4"><u>4</u> All
+    <button class="button" data-animation="allSingle" data-color1="85,255,255" data-key="Digit4"><u>4</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSolid" data-color1="95,255,255" data-key="Digit5"><u>5</u> All
+    <button class="button" data-animation="allSingle" data-color1="95,255,255" data-key="Digit5"><u>5</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSolid" data-color1="105,255,255" data-key="Digit6"><u>6</u> All
+    <button class="button" data-animation="allSingle" data-color1="105,255,255" data-key="Digit6"><u>6</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSolid" data-color1="129,255,255" data-key="Digit7"><u>7</u> All
+    <button class="button" data-animation="allSingle" data-color1="129,255,255" data-key="Digit7"><u>7</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSolid" data-color1="158,255,255" data-key="Digit8"><u>8</u> All
+    <button class="button" data-animation="allSingle" data-color1="158,255,255" data-key="Digit8"><u>8</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSolid" data-color1="183,255,255" data-key="Digit9"><u>9</u> All
+    <button class="button" data-animation="allSingle" data-color1="183,255,255" data-key="Digit9"><u>9</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSolid" data-color1="238,255,255" data-key="Digit0"><u>0</u> All
+    <button class="button" data-animation="allSingle" data-color1="238,255,255" data-key="Digit0"><u>0</u> All
         Solid</button><br>
-    <button class="button" data-animation="allSparkle" data-color1="random" data-key="KeyZ"><u>z</u> All
+    <button class="button" data-animation="allSingle" data-color1="random" data-key="KeyZ"><u>z</u> All
         Sparkle</button><br>
+    <button class="button" data-key="KeyX"><u>x</u> Beat</button><br>
+    <button class="button" data-key="KeyC" data-color1="random"><u>c</u> Beat + Random</button><br>
     <button class="button" data-animation="singlePulse" data-color1="0,255,255" data-led="0" data-key="KeyA"><u>a</u>
         Single Pulse 0</button><br>
     <button class="button" data-animation="singlePulse" data-color1="85,255,255" data-led="1" data-key="KeyS"><u>s</u>
@@ -50,7 +52,24 @@
     <hr>
     <button onclick="stress()">Stress</button><br>
     <hr>
-    <input class="setting" data-name="text" placeholder="text"><br>
+    <select class="setting" data-name="animation">
+        <option value="allSingle">allSingle</option>
+        <option value="allDouble">allDouble</option>
+        <option value="partialSingle">partialSingle</option>
+    </select><br>
+    <select class="setting" data-name="fade">
+        <option value="0">No fade</option>
+        <option value="1">Fade All</option>
+        <option value="2">Fade One by One</option>
+        <option value="3">Sparkle</option>
+    </select><br>
+    <select class="setting" data-name="percentage">
+        <option value="0">0%</option>
+        <option value="64">25%</option>
+        <option value="128">50%</option>
+        <option value="191">75%</option>
+        <option value="255">100%</option>
+    </select><br>
     <input class="setting" data-name="led" placeholder="led"><br>
     <input class="setting" data-name="colorIndex" placeholder="colorIndex"><br>
     <input class="setting" data-name="color1" placeholder="color1"><br>
@@ -63,13 +82,13 @@
     <input class="setting" data-name="size" placeholder="size"><br>
     <hr>
     <button class="button" data-color1="0,255,255" data-color2="0,255,255" data-color3="0,255,255"
-        data-color4="0,255,255" data-color5="0,255,255" data-key="KeyB"><u>b</u> Red</button><br>
+        data-color4="0,255,255" data-color5="0,255,255" data-key="KeyV"><u>v</u> Red</button><br>
     <button class="button" data-color1="95,255,255" data-color2="95,255,255" data-color3="95,255,255"
-        data-color4="95,255,255" data-color5="95,255,255" data-key="KeyN"><u>n</u> Green</button><br>
+        data-color4="95,255,255" data-color5="95,255,255" data-key="KeyB"><u>b</u> Green</button><br>
     <button class="button" data-color1="158,255,255" data-color2="158,255,255" data-color3="158,255,255"
-        data-color4="158,255,255" data-color5="158,255,255" data-key="KeyM"><u>m</u> Blue</button><br>
+        data-color4="158,255,255" data-color5="158,255,255" data-key="KeyN"><u>n</u> Blue</button><br>
     <button class="button" data-color1="238,255,255" data-color2="238,255,255" data-color3="238,255,255"
-        data-color4="238,255,255" data-color5="238,255,255" data-key="Comma"><u>,</u> Pink</button><br>
+        data-color4="238,255,255" data-color5="238,255,255" data-key="KeyM"><u>m</u> Pink</button><br>
     <hr>
     <button class="button" data-color1="0,255,255" data-color2="0,0,255" data-color3="0,255,255" data-color4="0,0,255"
         data-color5="0,0,255" data-key="KeyH"><u>h</u> Red White</button><br>
@@ -96,7 +115,6 @@
         };
 
         const hotKeys = {};
-        let alternate = true;
 
         for (let button of document.getElementsByClassName("button")) {
             hotKeys[button.dataset.key] = button;
@@ -104,24 +122,22 @@
             button.onclick = function () {
                 let message = { ...button.dataset };
                 delete message.key;
+
+                if (!message.animation) {
+                    message.animation = document.querySelector('.setting[data-name="animation"]').value;
+                }
+
                 formatColor(message, "color1");
                 formatColor(message, "color2");
                 formatColor(message, "color3");
                 formatColor(message, "color4");
                 formatColor(message, "color5");
 
-                alternate = !alternate;
-                message.colorIndex = alternate ? 1 : 0;
-
                 socket.send(JSON.stringify(message));
 
                 let keys = Object.keys(message);
                 for (let key of keys) {
                     let value = message[key];
-
-                    if (key == "animation") {
-                        continue;
-                    }
 
                     if (key != "colorIndex" && key.startsWith("color")) {
                         value = value.join(",");
@@ -131,7 +147,7 @@
                     let input = document.querySelector(selector);
 
                     // only overwrite the current value if the input isn't being edited.
-                    if (document.activeElement != input) {
+                    if (input && document.activeElement != input) {
                         input.value = value;
                     }
                 }

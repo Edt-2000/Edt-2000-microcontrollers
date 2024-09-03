@@ -3,9 +3,7 @@
 #include "../animation.hpp"
 #include "../settings.hpp"
 
-extern Settings globalSettings;
-extern CRGB *led1;
-extern CRGB *led2;
+#include "../leds.hpp"
 
 class SinglePulseAnimation : public Animation
 {
@@ -35,7 +33,7 @@ public:
 
   inline void loop()
   {
-    fill_solid(_led == 0 ? led1 : led2, 1, globalSettings.color());
+    applyToLed(_led, [](CRGB* leds) { fill_solid(leds, 59, globalSettings.primaryColor()); });
 
     FastLED.show();
 

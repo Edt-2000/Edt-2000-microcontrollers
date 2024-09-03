@@ -4,9 +4,7 @@
 #include "../fader.hpp"
 #include "../settings.hpp"
 
-extern Settings globalSettings;
-extern CRGB *led1;
-extern CRGB *led2;
+#include "../leds.hpp"
 
 class StopAnimation : public Animation
 {
@@ -29,12 +27,11 @@ public:
   {
     _isActive = true;
 
-    fill_solid(led1, 1, CRGB::Black);
-    fill_solid(led2, 1, CRGB::Black);
+    applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
+
     FastLED.show();
 
-    Fader.disableFade(0);
-    Fader.disableFade(1);
+    Fader.disableFade();
   }
 
   void stop()
@@ -44,12 +41,11 @@ public:
 
   void loop()
   {
-    fill_solid(led1, 1, CRGB::Black);
-    fill_solid(led2, 1, CRGB::Black);
+    applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
+
     FastLED.show();
 
-    Fader.disableFade(0);
-    Fader.disableFade(1);
+    Fader.disableFade();
 
     _isActive = false;
   }

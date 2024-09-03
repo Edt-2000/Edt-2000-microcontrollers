@@ -6,9 +6,9 @@
 
 #include "../debugging/logger.hpp"
 
+#include "../leds.hpp"
+
 extern Settings globalSettings;
-extern CRGB *led1;
-extern CRGB *led2;
 
 class AllSparkleAnimation : public Animation
 {
@@ -34,13 +34,11 @@ public:
 
   inline void loop()
   {
-    fill_solid(led1, 1, globalSettings.color());
-    fill_solid(led2, 1, globalSettings.color());
+    applyToLeds([](CRGB* leds) { fill_solid(leds, 59, globalSettings.primaryColor()); });
 
     FastLED.show();
 
-    Fader.scheduleFade(0, globalSettings.speed, FadeMode::fadeAll);
-    Fader.scheduleFade(1, globalSettings.speed, FadeMode::fadeAll);
+    Fader.scheduleFade(globalSettings.speed, FadeMode::fadeAll);
 
     _isActive = false;
   }

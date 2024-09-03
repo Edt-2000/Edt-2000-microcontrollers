@@ -4,9 +4,7 @@
 #include "../fader.hpp"
 #include "../settings.hpp"
 
-extern Settings globalSettings;
-extern CRGB *led1;
-extern CRGB *led2;
+#include "../leds.hpp"
 
 class GlowAnimation : public Animation
 {
@@ -47,13 +45,13 @@ public:
       _state++;
 
       if (_led == 0) {
-        fill_solid(led1, 1, globalSettings.animationColor());
-        led1[0].fadeToBlackBy(sin8(_state));
+        fill_solid(leds1, 1, globalSettings.alternativeColor());
+        leds1[0].fadeToBlackBy(sin8(_state));
         Fader.disableFade(0);
       } 
       else {
-        fill_solid(led2, 1, globalSettings.animationColor());
-        led2[0].fadeToBlackBy(sin8(_state));
+        fill_solid(leds2, 1, globalSettings.alternativeColor());
+        leds2[0].fadeToBlackBy(sin8(_state));
         Fader.disableFade(1);
       }
 

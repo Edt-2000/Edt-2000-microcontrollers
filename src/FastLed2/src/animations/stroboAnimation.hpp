@@ -3,9 +3,7 @@
 #include "../animation.hpp"
 #include "../settings.hpp"
 
-extern Settings globalSettings;
-extern CRGB *led1;
-extern CRGB *led2;
+#include "../leds.hpp"
 
 class StroboAnimation : public Animation
 {
@@ -38,21 +36,22 @@ public:
   {
     do
     {
-      fill_solid(led1, 1, globalSettings.alternativeColor());
-      fill_solid(led2, 1, globalSettings.alternativeColor());
+      applyToLeds([](CRGB* leds) { fill_solid(leds, 59, globalSettings.alternativeColor()); });
 
+      // going back to black is uninterruptible, otherwise the leds might stay on full blast
       uninterruptibleShow();
 
       uint8_t onDelay = 
         globalSettings.speed <= 5 ? 20 :
         globalSettings.speed <= 10 ? 10 : 5;        
 
-      // going back to black is uninterruptible, otherwise the leds might stay on full blast
       uninterruptibleDelay(onDelay);
-      fill_solid(led1, 1, CRGB::Black);
-      fill_solid(led2, 1, CRGB::Black);
+      
+      applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
+      
       uninterruptibleShow();
 
+      // from this point the animation is interruptible
       delay(1000.0 / globalSettings.speed);
 
     } while (_isActive);
