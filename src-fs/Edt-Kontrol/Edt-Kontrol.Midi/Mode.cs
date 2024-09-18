@@ -9,3 +9,8 @@ public enum Mode
     Two = 2,
     Four = 4
 }
+
+public enum Animation
+{
+
+}
