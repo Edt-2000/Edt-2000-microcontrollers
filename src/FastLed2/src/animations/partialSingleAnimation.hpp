@@ -41,8 +41,6 @@ public:
         }
       } });
     
-    FastLED.show();
-
     _isActive = false;
   }
 };

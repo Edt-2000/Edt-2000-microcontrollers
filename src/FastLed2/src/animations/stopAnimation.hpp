@@ -29,7 +29,7 @@ public:
 
     applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
 
-    FastLED.show();
+    uninterruptibleShow();
 
     Fader.disableFade();
   }
@@ -43,7 +43,7 @@ public:
   {
     applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
 
-    FastLED.show();
+    uninterruptibleShow();
 
     Fader.disableFade();
 

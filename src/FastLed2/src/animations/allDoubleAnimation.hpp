@@ -43,8 +43,6 @@ public:
         }
       } });
 
-    FastLED.show();
-
     Fader.scheduleFade(globalSettings.speed, globalSettings.fadeMode());
 
     _isActive = false;

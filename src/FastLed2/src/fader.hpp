@@ -47,6 +47,8 @@ public:
 
     void loop()
     {
+        FastLED.show();
+
         uint8_t led = 0;
         for (auto &states : _fades)
         {
@@ -94,8 +96,6 @@ public:
 
             ++led;
         }
-
-        FastLED.show();
     }
 
     inline void scheduleFade(uint8_t led, uint8_t index, uint8_t speed, FadeMode mode)
