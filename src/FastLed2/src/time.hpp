@@ -10,16 +10,19 @@ extern jmp_buf loop_jump_buffer;
 class TimeHelper
 {
 private:
-    volatile unsigned long _next = 0;
-    volatile unsigned int _diff100ms = 0;
-    volatile unsigned int _count100ms = 0;
+    volatile unsigned long _next10ms;
+    volatile unsigned long _next100ms;
+    volatile unsigned long _next1000ms;
+    // volatile unsigned int _diff100ms;
+    // volatile unsigned int _diff1000ms;
+    volatile unsigned int _count1000ms;
     volatile bool _interrupted = false;
 
     void _loop()
     {
-        if (t10ms)
+        if (t10ms || t100ms || t1000ms)
         {
-            //t1ms = false;
+            // t1ms = false;
             t10ms = false;
             t100ms = false;
             t1000ms = false;
@@ -27,50 +30,53 @@ private:
         }
 
         auto now = millis();
-        if (now >= _next)
+        if (now >= _next10ms)
         {
-            _diff100ms += 10 + (now - _next);
+            auto diff = now - _next10ms;
 
-            _next = now + 10;
+            _next10ms = _next10ms + 10;
+            ms += 10 + diff;
 
             t10ms = true;
 
-            ms+=10;
-
-            //if (ms % 10 == 0)
+            // if (ms % 10 == 0)
             //{
-                //t10ms = true;
+            // t10ms = true;
 
-                // PrintDebug(ms);
-                // PrintDebug(" ");
-                // PrintLnDebug(now);
-                // PrintLnDebug("10ms");
-
-                if (_diff100ms > 100)
-                {
-                    _diff100ms = 0;
-                    _count100ms++;
-
-                    t100ms = true;
-                    //PrintLnDebug("100ms");
-
-                    if (_count100ms % 10 == 0)
-                    {
-                        //PrintLnDebug("1s");
-
-                        t1000ms = true;
-
-                        // reset ms after 12s
-                        if (_count100ms > 120)
-                        {
-                            ms = 0;
-                            t12000ms = true;
-                            _count100ms = 0;
-                        }
-                    }
-                }
-            //}
+            // PrintDebug(ms);
+            // PrintDebug(" ");
+            // PrintLnDebug(now);
+            // PrintLnDebug("10ms");
         }
+        if (now > _next100ms)
+        {
+            _next100ms = _next100ms + 100;
+
+            // _diff1000ms += _diff100ms;
+            //_diff100ms = 0;
+
+            t100ms = true;
+            // PrintLnDebug("100ms");
+        }
+        if (now > _next1000ms)
+        {
+            _next1000ms = _next1000ms + 1000;
+
+            //_diff1000ms -= 1000;
+            _count1000ms++;
+            // PrintLnDebug("1s");
+
+            t1000ms = true;
+
+            // reset ms after 12s
+            if (_count1000ms > 12)
+            {
+                ms = 0;
+                t12000ms = true;
+                _count1000ms = 0;
+            }
+        }
+        //}
     }
 
 public:
@@ -78,12 +84,22 @@ public:
     // resets after 12k
     unsigned int ms = 0;
 
-    //bool t1ms;
-    
+    // bool t1ms;
+
     bool t10ms;
     bool t100ms;
     bool t1000ms;
     bool t12000ms;
+
+    inline void setup()
+    {
+        _next10ms = millis() - 1000;
+        _next1000ms = _next100ms = _next10ms;
+        // _diff100ms = 0;
+        // _diff1000ms = 0;
+        _count1000ms = 0;
+        _interrupted = false;
+    }
 
     inline void loop()
     {

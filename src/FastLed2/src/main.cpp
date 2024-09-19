@@ -100,6 +100,8 @@ void setup()
   PrintLnInfo("App started!");
 
   Status.allOk();
+
+  Time.setup();
 }
 
 // this buffer saves the start of the loop, which allows the time class
@@ -113,6 +115,10 @@ void loop()
   do
   {
     Animator.loop();
+
+    if (Time.t100ms) {
+      WebSocket.send(String(Time.ms));
+    }
 
     // run maintenance logic
     if (Time.t12000ms)
