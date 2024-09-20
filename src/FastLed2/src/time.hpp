@@ -10,73 +10,70 @@ extern jmp_buf loop_jump_buffer;
 class TimeHelper
 {
 private:
-    volatile unsigned long _next10ms;
-    volatile unsigned long _next100ms;
-    volatile unsigned long _next1000ms;
-    // volatile unsigned int _diff100ms;
-    // volatile unsigned int _diff1000ms;
-    volatile unsigned int _count1000ms;
-    volatile bool _interrupted = false;
+    unsigned long _next1ms;
+    unsigned long _next20ms;
+    unsigned long _next100ms;
+    unsigned long _next1000ms;
+    unsigned int _count1000ms;
+    bool _interrupted = false;
 
     void _loop()
     {
-        if (t10ms || t100ms || t1000ms)
+        if (t1ms)
         {
-            // t1ms = false;
-            t10ms = false;
+            t1ms = false;
+        }
+        if (t20ms || t100ms || t1000ms)
+        {
+            t20ms = false;
             t100ms = false;
             t1000ms = false;
             t12000ms = false;
         }
 
         auto now = millis();
-        if (now >= _next10ms)
+        if (now >= _next1ms)
         {
-            auto diff = now - _next10ms;
+            _next1ms = now + 1;
 
-            _next10ms = _next10ms + 10;
-            ms += 10 + diff;
+            t1ms = true;
 
-            t10ms = true;
-
-            // if (ms % 10 == 0)
-            //{
-            // t10ms = true;
-
-            // PrintDebug(ms);
-            // PrintDebug(" ");
-            // PrintLnDebug(now);
-            // PrintLnDebug("10ms");
-        }
-        if (now > _next100ms)
-        {
-            _next100ms = _next100ms + 100;
-
-            // _diff1000ms += _diff100ms;
-            //_diff100ms = 0;
-
-            t100ms = true;
-            // PrintLnDebug("100ms");
-        }
-        if (now > _next1000ms)
-        {
-            _next1000ms = _next1000ms + 1000;
-
-            //_diff1000ms -= 1000;
-            _count1000ms++;
-            // PrintLnDebug("1s");
-
-            t1000ms = true;
-
-            // reset ms after 12s
-            if (_count1000ms > 12)
+            if (now >= _next20ms)
             {
-                ms = 0;
-                t12000ms = true;
-                _count1000ms = 0;
+                auto diff = now - _next20ms;
+
+                _next20ms = now + 20 - diff;
+                ms += 20 + diff;
+
+                t20ms = true;
+
+                if (now > _next100ms)
+                {
+                    diff = now - _next100ms;
+                    _next100ms = now + 100 - diff;
+
+                    t100ms = true;
+
+                    if (now > _next1000ms)
+                    {
+                        diff = now - _next100ms;
+                        _next1000ms = now + 1000 - diff;
+
+                        _count1000ms++;
+
+                        t1000ms = true;
+
+                        // reset ms after 12s
+                        if (_count1000ms > 12)
+                        {
+                            ms = 0;
+                            t12000ms = true;
+                            _count1000ms = 0;
+                        }
+                    }
+                }
             }
         }
-        //}
     }
 
 public:
@@ -84,19 +81,15 @@ public:
     // resets after 12k
     unsigned int ms = 0;
 
-    // bool t1ms;
-
-    bool t10ms;
+    bool t1ms;
+    bool t20ms;
     bool t100ms;
     bool t1000ms;
     bool t12000ms;
 
     inline void setup()
     {
-        _next10ms = millis() - 1000;
-        _next1000ms = _next100ms = _next10ms;
-        // _diff100ms = 0;
-        // _diff1000ms = 0;
+        _next1000ms = _next100ms = _next20ms = _next1ms = 0;
         _count1000ms = 0;
         _interrupted = false;
     }
@@ -115,7 +108,7 @@ public:
 
     // delay the execution for the given milliseconds
     // will interrupt and end execution automatically
-    inline void delay(unsigned int ms)
+    inline void delay(unsigned int target)
     {
         unsigned int current = 0;
         do
@@ -123,10 +116,10 @@ public:
             vTaskDelay(0);
             _loop();
 
-            if (t10ms)
+            if (t1ms)
             {
-                current += 10;
-                if (current >= ms)
+                current++;
+                if (current >= target)
                 {
                     break;
                 }
@@ -134,13 +127,6 @@ public:
         } while (!_interrupted);
 
         yield();
-    }
-
-    // returns true once every interval
-    inline bool every(unsigned int interval)
-    {
-        // TODO: this interval skips a lot and makes things hard
-        return interval == 0 || (t10ms && (ms % interval == 0));
     }
 
     // will interrupt and end execution automatically

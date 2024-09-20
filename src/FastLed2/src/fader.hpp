@@ -47,14 +47,15 @@ public:
 
     void loop()
     {
-        FastLED.show();
-
-        uint8_t led = 0;
-        for (auto &states : _fades)
+        uint8_t ledMax = _fades.size();
+        for (uint8_t led = 0; led < ledMax; led++)
         {
-            uint8_t i = 0;
-            for (auto &state : states)
+            auto states = _fades[led];
+            uint8_t iMax = states.size();
+            for (uint8_t i = 0; i < iMax; i++)
             {
+                auto state = states[i];
+
                 if (state.speed > 0)
                 {
                     if (state.mode == FadeMode::fadeAll)
@@ -90,11 +91,7 @@ public:
                         }
                     }
                 }
-
-                ++i;
             }
-
-            ++led;
         }
     }
 
@@ -120,7 +117,8 @@ public:
             return;
         }
 
-        for (uint8_t i = 0; i < _fades[led].size(); i++)
+        uint8_t size = _fades[led].size();
+        for (uint8_t i = 0; i < size; i++)
         {
             scheduleFade(led, i, speed, mode);
         }
@@ -134,36 +132,36 @@ public:
             return;
         }
 
-        uint8_t led = 0;
-        for (auto &states : _fades)
+        uint8_t leds = _fades.size();
+        for (uint8_t led = 0; led < leds; led++)
         {
-            for (uint8_t i = 0; i < states.size(); i++)
+            uint8_t size = _fades[led].size();
+            for (uint8_t i = 0; i < size; i++)
             {
                 scheduleFade(led, i, speed, mode);
             }
-
-            ++led;
         }
     }
 
     void disableFade(uint8_t led)
     {
-        for (uint8_t i = 0; i < _fades[led].size(); i++)
+        uint8_t size = _fades[led].size();
+        for (uint8_t i = 0; i < size; i++)
         {
-            scheduleFade(led, i, 0, FadeMode::oneByOne);
+            scheduleFade(led, i, 0, FadeMode::none);
         }
     }
 
     void disableFade()
     {
-        uint8_t led = 0;
-        for (auto &states : _fades)
+        uint8_t leds = _fades.size();
+        for (uint8_t led = 0; led < leds; led++)
         {
-            for (uint8_t i = 0; i < _fades[led].size(); i++)
+            uint8_t size = _fades[led].size();
+            for (uint8_t i = 0; i < size; i++)
             {
-                scheduleFade(led, i, 0, FadeMode::oneByOne);
+                scheduleFade(led, i, 0, FadeMode::none);
             }
-            ++led;
         }
     }
 } Fader;

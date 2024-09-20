@@ -7,8 +7,8 @@ struct Settings
 {
   
   // settings
-  uint8_t fade = 0;
-  uint8_t speed = 10;
+  uint8_t fade = FadeMode::fadeAll;
+  uint8_t speed = 50;
   uint8_t brightness = 255;
   uint8_t percentage = 127;
 

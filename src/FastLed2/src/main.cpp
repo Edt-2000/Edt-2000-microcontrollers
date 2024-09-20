@@ -22,9 +22,6 @@
 // expermental animations
 #include "animations/allChaseAnimation.hpp"
 
-#include "animations/allPulseAnimation.hpp"
-#include "animations/singlePulseAnimation.hpp"
-
 #include "networking/ethernet.hpp"
 #include "networking/websocket.hpp"
 // #include "networking/udp.hpp"
@@ -32,6 +29,7 @@
 #include "animator.hpp"
 #include "time.hpp"
 #include "settings.hpp"
+#include "fastLedTask.hpp"
 
 #include "debugging/logger.hpp"
 #include "debugging/status.hpp"
@@ -57,10 +55,8 @@ void setup()
   // these are all the animations the system knows
   Animator.addAnimation(new AllSingleAnimation());
   Animator.addAnimation(new AllDoubleAnimation());
-  
+
   Animator.addAnimation(new PartialSingleAnimation());
-  
-  Animator.addAnimation(new AllSparkleAnimation());
 
   Animator.addAnimation(new AllChaseAnimation());
   Animator.addAnimation(new AllChaseAnimation());
@@ -72,8 +68,11 @@ void setup()
   Animator.addAnimation(new AllChaseAnimation());
   Animator.addAnimation(new AllChaseAnimation());
   Animator.addAnimation(new AllChaseAnimation());
-
-  Animator.addAnimation(new SinglePulseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllChaseAnimation());
 
   Animator.addAnimation(new StopAnimation());
   Animator.addAnimation(new StroboAnimation());
@@ -81,7 +80,7 @@ void setup()
   Serial.begin(115200);
 
   Network.startEthernet();
-  
+
   Status.setup();
 
   do
@@ -101,6 +100,8 @@ void setup()
 
   Status.allOk();
 
+  xTaskCreate(&fastLedTask, "OSC", 5120, NULL, 1, NULL);
+
   Time.setup();
 }
 
@@ -116,9 +117,20 @@ void loop()
   {
     Animator.loop();
 
-    if (Time.t100ms) {
+#ifdef DEBUG
+    if (Time.t100ms)
+    {
       WebSocket.send(String(Time.ms));
     }
+    if (Time.t1000ms)
+    {
+      WebSocket.send("=== 1s");
+    }
+    if (Time.t12000ms)
+    {
+      WebSocket.send("================== 12s");
+    }
+#endif
 
     // run maintenance logic
     if (Time.t12000ms)

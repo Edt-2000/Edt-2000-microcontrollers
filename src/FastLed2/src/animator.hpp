@@ -26,7 +26,8 @@ private:
     const std::function<bool(Animation *)> loopIfNotIdle = [](Animation *animation)
     {
         auto active = animation->isActive();
-        if (active) {
+        if (active)
+        {
             animation->loop();
         }
         return !active;
@@ -73,7 +74,7 @@ public:
                 PrintLnDebug("Stopping current animation");
 
                 currentAnimations.front()->stop();
-                
+
                 mustBeStopped = false;
 
                 Time.interrupt();
@@ -84,7 +85,7 @@ public:
             {
                 PrintLnDebug("Stopping animations");
 
-                for (auto const& animation : currentAnimations)
+                for (auto const &animation : currentAnimations)
                 {
                     animation->stop();
                 }
@@ -137,7 +138,7 @@ public:
     {
         Time.loop();
 
-        if (Time.t10ms)
+        if (Time.t20ms)
         {
             Fader.loop();
         }

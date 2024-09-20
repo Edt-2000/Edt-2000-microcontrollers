@@ -2,6 +2,8 @@
 
 #include <FastLED.h>
 
+volatile bool doFastLed = true;
+
 CRGB leds0[59];
 CRGB leds1[59];
 CRGB leds2[59];

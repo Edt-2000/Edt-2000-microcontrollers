@@ -12,10 +12,11 @@ class AllChaseAnimation : public Animation
 {
 private:
   uint8_t _state;
-  uint8_t _limit;
   uint8_t _step;
-  uint8_t _speed;
+  uint8_t _stepSize;
   FadeMode _fadeMode;
+  CRGB _color;
+  uint8_t _fadeSpeed;
 
 public:
   AllChaseAnimation()
@@ -36,10 +37,11 @@ public:
   {
     _isActive = true;
     _state = 0;
-    _limit = 25 - (globalSettings.speed / 10);
-    _step = 1;
-    _speed = (255 - globalSettings.speed) / 10;
+    _step = 0;
+    _stepSize = 1 + (globalSettings.speed / 5);
     _fadeMode = globalSettings.fadeMode();
+    _color = globalSettings.primaryAnimationColor();
+    _fadeSpeed = globalSettings.speed / 2;
   }
 
   void stop()
@@ -49,51 +51,33 @@ public:
 
   void loop()
   {
-    // this every does not work correctly if the loops are not keeping up
-    // need to make it as the old chase animation (progress + speed)
-    if (every(_speed)) {
-      if (_state == 59) {
-        _isActive = false;
+    if (Time.t1ms)
+    {
+      _step = qadd8(_step, _stepSize);
+      if (_step != 255)
+      {
         return;
       }
 
-      // PrintDebug("Step ");
-      // PrintLnDebug(_step);
+      _step = 0;
 
-      //_step--;
+      auto state = _state;
+      auto mode = _fadeMode;
+      auto fadeSpeed = _fadeSpeed;
 
-      //if (_step == 0) {
-        _state++;
-        //_step = _limit;
-        
-       PrintDebug("State ");
-       PrintLnDebug(_state);
+      applyToLeds(
+          [=](CRGB *leds, uint8_t index)
+          { 
+          leds[state] = _color; 
+          Fader.scheduleFade(index, state, fadeSpeed, mode); });
 
-        auto state = _state;
-        auto mode = _fadeMode;
-        applyToLeds([=](CRGB* leds, uint8_t index) { 
-          leds[state] = globalSettings.primaryAnimationColor(); 
-          Fader.scheduleFade(index, state, 30, mode);
-          });
-      //}
+      _state++;
+
+      if (_state > 58)
+      {
+        _isActive = false;
+        return;
+      }
     }
-
-
-    // TODO: find a good way to get the timing correct
-  //   if (every(255 - _speed)) {
-  //     if (_state == 59) {
-  //       _isActive = false;
-  //       return;
-  //     }
-
-  //     _state++;
-
-  //     auto state = _state;
-  //     auto mode = _fadeMode;
-  //     applyToLeds([state, mode](CRGB* leds, uint8_t index) { 
-  //       leds[state] = globalSettings.primaryAnimationColor(); 
-  //       Fader.scheduleFade(index, state, globalSettings.speed, mode);
-  //       });
-  //   }
   }
 };

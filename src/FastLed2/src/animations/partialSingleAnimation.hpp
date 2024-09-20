@@ -37,7 +37,7 @@ public:
       {
         if (globalSettings.percentage > random8()) {
           leds[i] = globalSettings.primaryColor();
-          Fader.scheduleFade(index, i, globalSettings.speed, globalSettings.fadeMode());
+          Fader.scheduleFade(index, i, globalSettings.speed / 2, globalSettings.fadeMode());
         }
       } });
     

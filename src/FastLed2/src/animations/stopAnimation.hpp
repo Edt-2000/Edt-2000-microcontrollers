@@ -28,9 +28,6 @@ public:
     _isActive = true;
 
     applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
-
-    uninterruptibleShow();
-
     Fader.disableFade();
   }
 
@@ -42,9 +39,6 @@ public:
   void loop()
   {
     applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
-
-    uninterruptibleShow();
-
     Fader.disableFade();
 
     _isActive = false;

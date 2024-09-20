@@ -34,7 +34,7 @@ public:
   {
     applyToLeds([](CRGB* leds) { fill_solid(leds, 59, globalSettings.primaryColor()); });
 
-    Fader.scheduleFade(globalSettings.speed, globalSettings.fadeMode());
+    Fader.scheduleFade(globalSettings.speed / 2, globalSettings.fadeMode());
 
     _isActive = false;
   }

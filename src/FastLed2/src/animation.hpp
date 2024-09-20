@@ -21,11 +21,6 @@ protected:
     ::delay(ms);
   }
 
-  // returns true once every interval
-  inline bool every(unsigned int interval) {
-    return Time.every(interval);
-  }
-
   // calls FastLED.show() after checking if the animation should be interrupted
   // if the animation does not delay() the animation can call FastLED.show() directly 
   inline void show() {
@@ -37,6 +32,17 @@ protected:
   // NOTE: use sparingly
   inline void uninterruptibleShow() {
     FastLED.show();
+  }
+
+  // suspends the fastLed thread so the animation can gain fastLed control
+  // TODO: this should check whether the thread has actually finished fast led (by checking another bool)
+  inline void takeFastLedControl() {
+    doFastLed = false;
+  }
+
+  // yields fastLed control back to the fastLed thread
+  inline void yieldFastLedControl() {
+    doFastLed = true;
   }
   
 public:

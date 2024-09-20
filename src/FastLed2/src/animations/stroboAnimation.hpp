@@ -24,11 +24,13 @@ public:
 
   void start()
   {
+    takeFastLedControl();
     _isActive = true;
   }
 
   void stop()
   {
+    yieldFastLedControl();
     _isActive = false;
   }
 
@@ -42,8 +44,8 @@ public:
       uninterruptibleShow();
 
       uint8_t onDelay = 
-        globalSettings.speed <= 5 ? 20 :
-        globalSettings.speed <= 10 ? 10 : 5;        
+        globalSettings.speed <= 5 ? 12 :
+        globalSettings.speed <= 10 ? 6 : 3;
 
       uninterruptibleDelay(onDelay);
       
@@ -51,7 +53,7 @@ public:
       
       uninterruptibleShow();
 
-      // from this point the animation is interruptible
+      // from this point the animation is interruptable
       delay(1000.0 / globalSettings.speed);
 
     } while (_isActive);

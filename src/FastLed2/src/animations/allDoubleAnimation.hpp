@@ -43,7 +43,7 @@ public:
         }
       } });
 
-    Fader.scheduleFade(globalSettings.speed, globalSettings.fadeMode());
+    Fader.scheduleFade(globalSettings.speed / 2, globalSettings.fadeMode());
 
     _isActive = false;
   }
