@@ -2,10 +2,16 @@
 <html>
 
 <head>
-    <title>WebSockEDT tester</title>
+    <title>WebSockEDT driver</title>
+    <script src="./animationRepeater.js"></script>
 </head>
 
 <body>
+    <animation-repeater data-channel="4"></animation-repeater>
+    <animation-repeater data-channel="5"></animation-repeater>
+    <animation-repeater data-channel="6"></animation-repeater>
+    <animation-repeater data-channel="7"></animation-repeater>
+
     <button class="button" data-animation="stop" data-color1="0,0,0" data-key="Escape"><u>esc</u> Off</button><br>
     <button class="button" data-animation="allChase" data-color3="random" data-key="KeyD"><u>d</u> Chase</button><br>
     <button class="button" data-animation="allPulse" data-color1="0,255,255" data-key="KeyU"><u>u</u> All
@@ -101,14 +107,23 @@
         data-color4="238,255,255" data-color5="238,255,255" data-key="KeyL"><u>l</u> Red Pink</button><br>
 
     <script>
-        const socket = new WebSocket('ws://10.0.0.25:80/ws');
+        const socket = new WebSocket('ws://localhost:5151/control');
+
+        const repeaters = document.getElementsByTagName("animation-repeater");
 
         socket.onopen = function (event) {
             console.log("WS open!");
         };
 
         socket.onmessage = function (event) {
-            console.log(event);
+            var eventData = JSON.parse(event.data);
+
+            if (eventData instanceof Array) {
+                for (let repeater of repeaters) {
+                    var midiData = eventData[repeater.dataset.channel];
+                    repeater.onMessage(midiData);
+                }
+            }
         };
 
         socket.onclose = function (event) {
