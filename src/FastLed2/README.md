@@ -30,8 +30,14 @@
 ## Pending ideas + todos
 
 - Find a good naming scheme for all animations (all and one, single bar multi-bar, etc, must be consistent)
+    -> "all": entire led bar overwritten
+    -> "single": uses one color
+    -> "double": uses 2 colors
+    -> 
 - How to tackle the different colors?
-- Support rainbows everywhere -- almost like a texture so chases can also use it
+    -> KISS: 2 colors: primary + secondary.
+    -> 
+- Support rainbows everywhere -- almost like a texture so chases can also use it (make a special hsv code for it)
 - Support one (as opposed to all) -- requires `ledIndex` setting.
 - Support chases (vertical (on / all led bars) and sideways (always all led bars)) + directionality
 - Support fire

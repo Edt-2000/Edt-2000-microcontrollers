@@ -1,7 +1,10 @@
 ﻿using System.Net.WebSockets;
+using System.Text;
 using EdtWebSockEDT;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.WebHost.UseUrls("http://*:5151");
 
 builder.Services.AddSingleton(new WebSocketHandler());
 
@@ -19,16 +22,33 @@ app.Map("/{type:regex(^led|control$)}", async (string type, HttpContext context,
 
         using var ws = await context.WebSockets.AcceptWebSocketAsync();
 
-        handler.AddWebSocket(type, ws);
-
-        var buffer = new byte[1024 * 4];
-
-        while (ws.State == WebSocketState.Open)
+        try
         {
-            // todo: this should be forwarded to the led units
-            await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+            handler.AddWebSocket(type, ws);
 
-            await Task.Delay(1000);
+            var buffer = new byte[1024 * 4];
+            var memory = new Memory<byte>(buffer);
+
+            while (ws.State == WebSocketState.Open)
+            {
+                // todo: this should be forwarded to the led units
+                var result = await ws.ReceiveAsync(memory, CancellationToken.None);
+
+                if (type == "control")
+                {
+                    var data = memory.Slice(0, result.Count);
+
+                    var @string = Encoding.UTF8.GetString(data.Span);
+
+                    await handler.SendAsync("led", @string);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Device failed with error {ex.Message}");
+
+            handler.RemoveWebSocket(ws);
         }
 
         Console.WriteLine($"Device of type {type} left");

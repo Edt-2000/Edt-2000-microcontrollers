@@ -12,10 +12,14 @@ public class WebSocketHandler
         _webSockets.Add((type, ws));
     }
 
+    public void RemoveWebSocket(WebSocket ws)
+    {
+        _webSockets.RemoveAll(x => x.ws == ws);
+    }
+
     public async Task SendAsync(string type, string data)
     {
         var memory = new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(data));
-
         var sockets = _webSockets.Where(x => x.type == type).ToArray();
 
         foreach (var socket in sockets)

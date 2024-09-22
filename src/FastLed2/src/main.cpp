@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <FastLED.h>
-#include <AsyncWebSocket.h>
 #include <Wifi.h>
 #include <ETH.h>
 #include <stdio.h>
@@ -24,7 +23,6 @@
 
 #include "networking/ethernet.hpp"
 #include "networking/websocket.hpp"
-// #include "networking/udp.hpp"
 
 #include "animator.hpp"
 #include "time.hpp"
@@ -93,12 +91,9 @@ void setup()
 
   JsonHandler.onAnimation(animationCallback);
 
-  // Udp.begin();
   WebSocket.begin();
 
   PrintLnInfo("App started!");
-
-  Status.allOk();
 
   xTaskCreate(&fastLedTask, "OSC", 5120, NULL, 1, NULL);
 
@@ -131,11 +126,5 @@ void loop()
       WebSocket.send("================== 12s");
     }
 #endif
-
-    // run maintenance logic
-    if (Time.t12000ms)
-    {
-      WebSocket.cleanUp();
-    }
   } while (true);
 }

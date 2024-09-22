@@ -1,6 +1,6 @@
 #pragma once
 
-#include <WiFi.h>
+// #include <WiFi.h>
 #include <ETH.h>
 #include "../debugging/logger.hpp"
 
@@ -29,17 +29,17 @@ void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
 class NetworkHelper
 {
 public:
-    void startWifi()
-    {
-        WiFi.begin("xxx", "xxx");
-        WiFi.onEvent(ethernetEventHandler);
+    // void startWifi()
+    // {
+    //     WiFi.begin("xxx", "xxx");
+    //     WiFi.onEvent(ethernetEventHandler);
 
-        auto staticIP = IPAddress(192, 168, 142, 100);
-        auto gatewayIP = IPAddress(192, 168, 142, 1);
-        auto subnet = IPAddress(255, 255, 255, 0);
+    //     auto staticIP = IPAddress(192, 168, 142, 100);
+    //     auto gatewayIP = IPAddress(192, 168, 142, 1);
+    //     auto subnet = IPAddress(255, 255, 255, 0);
 
-        WiFi.config(staticIP, gatewayIP, subnet);
-    }
+    //     WiFi.config(staticIP, gatewayIP, subnet);
+    // }
 
     void startEthernet()
     {

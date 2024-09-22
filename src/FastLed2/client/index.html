@@ -7,12 +7,12 @@
 </head>
 
 <body>
-    <animation-repeater data-channel="4"></animation-repeater>
-    <animation-repeater data-channel="5"></animation-repeater>
-    <animation-repeater data-channel="6"></animation-repeater>
-    <animation-repeater data-channel="7"></animation-repeater>
+    <animation-repeater data-channel="4" data-key="KeyA,KeyJ"></animation-repeater>
+    <animation-repeater data-channel="5" data-key="KeyS,KeyK"></animation-repeater>
+    <animation-repeater data-channel="6" data-key="KeyD,KeyL"></animation-repeater>
+    <animation-repeater data-channel="7" data-key="KeyF,Semicolon"></animation-repeater>
 
-    <button class="button" data-animation="stop" data-color1="0,0,0" data-key="Escape"><u>esc</u> Off</button><br>
+    <!-- <button class="button" data-animation="stop" data-color1="0,0,0" data-key="Escape"><u>esc</u> Off</button><br>
     <button class="button" data-animation="allChase" data-color3="random" data-key="KeyD"><u>d</u> Chase</button><br>
     <button class="button" data-animation="allPulse" data-color1="0,255,255" data-key="KeyU"><u>u</u> All
         Pulse</button><br>
@@ -48,13 +48,13 @@
         Sparkle</button><br>
     <button class="button" data-key="KeyX"><u>x</u> Beat</button><br>
     <button class="button" data-key="KeyC" data-color1="random"><u>c</u> Beat + Random</button><br>
-    <!-- <button class="button" data-animation="singlePulse" data-color1="0,255,255" data-led="0" data-key="KeyA"><u>a</u>
+    <button class="button" data-animation="singlePulse" data-color1="0,255,255" data-led="0" data-key="KeyA"><u>a</u>
         Single Pulse 0</button><br>
     <button class="button" data-animation="singlePulse" data-color1="85,255,255" data-led="1" data-key="KeyS"><u>s</u>
         Single Pulse 1</button><br>
-    <button class="button" data-animation="allPulse" data-key="KeyF"><u>f</u> Single Pulse</button><br> -->
+    <button class="button" data-animation="allPulse" data-key="KeyF"><u>f</u> Single Pulse</button><br>
     <button class="button" data-animation="strobo" data-color1="random" data-color2="random"
-        data-key="Space"><u>&nbsp;</u> Strobo</button><br>
+        data-key="Space"><u>&nbsp;</u> Strobo</button><br> -->
     <hr>
     <button onclick="stress()">Stress</button><br>
     <hr>
@@ -77,7 +77,7 @@
         <option value="191">75%</option>
         <option value="255">100%</option>
     </select><br>
-    <input class="setting" data-name="led" placeholder="led"><br>
+    <!-- <input class="setting" data-name="led" placeholder="led"><br>
     <input class="setting" data-name="colorIndex" placeholder="colorIndex"><br>
     <input class="setting" data-name="color1" placeholder="color1"><br>
     <input class="setting" data-name="color2" placeholder="color2"><br>
@@ -104,31 +104,41 @@
     <button class="button" data-color1="95,255,255" data-color2="0,0,255" data-color3="95,255,255" data-color4="0,0,255"
         data-color5="95,255,255" data-key="KeyK"><u>k</u> Green White</button><br>
     <button class="button" data-color1="0,255,255" data-color2="238,255,255" data-color3="0,255,255"
-        data-color4="238,255,255" data-color5="238,255,255" data-key="KeyL"><u>l</u> Red Pink</button><br>
+        data-color4="238,255,255" data-color5="238,255,255" data-key="KeyL"><u>l</u> Red Pink</button><br> -->
 
     <script>
-        const socket = new WebSocket('ws://localhost:5151/control');
+        let socket;
 
-        const repeaters = document.getElementsByTagName("animation-repeater");
+        function setupSocket() {
+            socket =  new WebSocket('ws://localhost:5151/control');
 
-        socket.onopen = function (event) {
-            console.log("WS open!");
-        };
-
-        socket.onmessage = function (event) {
-            var eventData = JSON.parse(event.data);
-
-            if (eventData instanceof Array) {
-                for (let repeater of repeaters) {
-                    var midiData = eventData[repeater.dataset.channel];
-                    repeater.onMessage(midiData);
-                }
+            const repeaters = document.getElementsByTagName("animation-repeater");
+            for (let repeater of repeaters) {
+                repeater.setWebsocket(socket);
             }
-        };
+            socket.onopen = function (event) {
+                console.log("WS open!");
+            };
 
-        socket.onclose = function (event) {
-            console.log("WS borked!");
-        };
+            socket.onmessage = function (event) {
+                var eventData = JSON.parse(event.data);
+
+                if (eventData instanceof Array) {
+                    for (let repeater of repeaters) {
+                        var midiData = eventData[repeater.dataset.channel];
+                        repeater.onMessage(midiData);
+                    }
+                }
+            };
+
+            socket.onclose = function (event) {
+                console.log("WS borked!");
+
+                setTimeout(setupSocket, 1000);
+            };
+        }
+
+        setupSocket();
 
         const hotKeys = {};
 

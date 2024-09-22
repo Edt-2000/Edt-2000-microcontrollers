@@ -13,6 +13,7 @@ public class Kontrol
     {
         _messageCallback = onMessage;
 
+        // TODO: reconnect when connection is lost
         do
         {
             if (_input == null)
@@ -84,9 +85,9 @@ public class Kontrol
 
                 var output = Cs[channel].GetMode();
 
-                _output.Send([0x90, (byte)(channel + 8), IsOn(output, Mode.One)], 0, 3, 0);
-                _output.Send([0x90, (byte)(channel + 16), IsOn(output, Mode.Two)], 0, 3, 0);
-                _output.Send([0x90, (byte)(channel + 0), IsOn(output, Mode.Four)], 0, 3, 0);
+                _output?.Send([0x90, (byte)(channel + 8), IsOn(output, Mode.One)], 0, 3, 0);
+                _output?.Send([0x90, (byte)(channel + 16), IsOn(output, Mode.Two)], 0, 3, 0);
+                _output?.Send([0x90, (byte)(channel + 0), IsOn(output, Mode.Four)], 0, 3, 0);
             }
         }
         else if (x == 0xb0)
