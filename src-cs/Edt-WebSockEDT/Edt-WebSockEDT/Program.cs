@@ -34,7 +34,7 @@ app.Map("/{type:regex(^led|control$)}", async (string type, HttpContext context,
                 // todo: this should be forwarded to the led units
                 var result = await ws.ReceiveAsync(memory, CancellationToken.None);
 
-                if (type == "control")
+                if (type == "control" && result.Count > 0)
                 {
                     var data = memory.Slice(0, result.Count);
 

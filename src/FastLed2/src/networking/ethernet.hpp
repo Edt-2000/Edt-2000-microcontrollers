@@ -23,6 +23,11 @@ void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
             PrintLnInfo("Network got IP!");
             _networkConnected = true;
             break;
+        case ARDUINO_EVENT_ETH_DISCONNECTED:
+        case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
+            PrintLnInfo("Network disconnected!");
+            ESP.restart();
+            break;
     }
 }
 

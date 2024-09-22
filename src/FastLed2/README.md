@@ -37,6 +37,7 @@
 - How to tackle the different colors?
     -> KISS: 2 colors: primary + secondary.
     -> 
+- Speed and duration need to be tweaked per animation type (partialSingle needs slow fade but high speed)
 - Support rainbows everywhere -- almost like a texture so chases can also use it (make a special hsv code for it)
 - Support one (as opposed to all) -- requires `ledIndex` setting.
 - Support chases (vertical (on / all led bars) and sideways (always all led bars)) + directionality

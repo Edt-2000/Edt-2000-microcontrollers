@@ -48,6 +48,8 @@ void setup()
   FastLED.addLeds<APA102, 3, 32, BGR, DATA_RATE_KHZ(500)>(leds6, 59).setCorrection(TypicalLEDStrip);
   FastLED.addLeds<APA102, 2, 32, BGR, DATA_RATE_KHZ(500)>(leds7, 59).setCorrection(TypicalLEDStrip);
 
+  xTaskCreate(&fastLedTask, "OSC", 5120, NULL, 1, NULL);
+
   Status.init();
 
   // these are all the animations the system knows
@@ -94,8 +96,6 @@ void setup()
   WebSocket.begin();
 
   PrintLnInfo("App started!");
-
-  xTaskCreate(&fastLedTask, "OSC", 5120, NULL, 1, NULL);
 
   Time.setup();
 }

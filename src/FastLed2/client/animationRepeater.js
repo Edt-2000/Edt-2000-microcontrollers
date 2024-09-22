@@ -11,7 +11,6 @@ class HSV {
 
     toHsl() {
         let vFactor = this.S == 0 ? 100.0 : 50.0;
-
         return `hsl(${((360.0 * this.H) / 255.0)} ${((100.0 * this.S) / 255.0)}% ${((vFactor * this.V) / 255.0)}%)`
     }
     toArray() {
@@ -34,6 +33,12 @@ class Colors {
     static Pink = new HSV(238);
     static White = new HSV(0, 0, 255);
 }
+
+// TODO: rename percentage to modifier
+// TODO: make animations a real class that handles:
+// - color set calculations (based on index + set choosen)
+// - duration of fade based on modifier for single animations
+// - duration of fade based on modifier for chase animations
 
 class Constants {
     static Animations = ['allSingle', 'allDouble', 'partialSingle', 'allChase']
@@ -76,7 +81,8 @@ class AnimationRepeaterState {
         }
         else {
             let animation = this.getAnimation();
-
+            
+            // TODO: this should be abstracted away by moving some stuff into an Animation class
             if (animation == 'allDouble') {
                 return set;
             }
@@ -106,11 +112,6 @@ class AnimationRepeaterState {
     }
 }
 
-function ease(input) {
-    //y = (1 - (1 - (x / 255))^3) * 255
-    return ((1 - Math.pow(1 - (input / 127.0), 3)) * 127.0);
-}
-
 function getElement(array, index) {
     if (array.length === 0) {
         return null;
@@ -119,12 +120,16 @@ function getElement(array, index) {
     return array[index % array.length];
 }
 
+function spaceCapitals(text)  {
+    return text.replace(/([A-Z])/g, ' $1').trim();
+}
+
 function arrayEquals(a, b) {
     if (a === b) return true;
     if (a == null || b == null) return false;
     if (a.length !== b.length) return false;
 
-    for (var i = 0; i < a.length; ++i) {
+    for (let i = 0; i < a.length; ++i) {
         if (a[i] !== b[i]) return false;
     }
     return true;
@@ -133,7 +138,7 @@ function arrayEquals(a, b) {
 class AnimationRepeater extends HTMLElement {
     state = new AnimationRepeaterState();
     animationState = new AnimationRepeaterState();
-    animationStep = 0;
+    previousAnimation = 0;
     animationIndex = 0;
 
     constructor() {
@@ -141,7 +146,6 @@ class AnimationRepeater extends HTMLElement {
     }
 
     connectedCallback() {
-        this.shadow = this.attachShadow({ mode: "open" });
         this.drawState();
 
         const keys = this.dataset.key.split(',');
@@ -152,8 +156,6 @@ class AnimationRepeater extends HTMLElement {
             }
         });
         window.addEventListener("keyup", (e) => {
-            console.log(e);
-
             if (keys.includes(e.code)) {
                 this.onKeyUp();
             }
@@ -176,33 +178,32 @@ class AnimationRepeater extends HTMLElement {
         }
         this.state.Percentage = 1 + (message.s * 2);
         this.state.Speed = 1 + (message.i * 2);
-        this.state.RepeatTime = ease(message.i);
+        this.state.RepeatTime = (145 - message.i) * 3;
 
         this.drawState();
     }
 
     sendMessage(firstMessage) {
-        if (--this.animationStep < this.state.RepeatTime) {
-            this.animationStep = 127;
-        }
-        else if (!firstMessage) {
+        let now = performance.now();
+        let diff = now - this.previousAnimation;
+        
+        if (!firstMessage && diff < this.state.RepeatTime) {
             return;
         }
-
+        this.previousAnimation = now;
 
         let previousColorSet = this.state.getColorSet(this.animationIndex);
-
         this.animationIndex++;
-
         let colorSet = this.state.getColorSet(this.animationIndex);
 
         let message = {
             animation: this.state.getAnimation()
         };
 
-        if (firstMessage || !arrayEquals(previousColorSet, colorSet)) {
+        if (firstMessage || !arrayEquals(previousColorSet, colorSet) || this.animationState.ColorSet != this.state.ColorSet) {
             message.color1 = getElement(colorSet, 0).toArray();
             message.color2 = getElement(colorSet, 1).toArray();
+            this.animationState.ColorSet = this.state.ColorSet;
         }
 
         if (this.animationState.Fade != this.state.Fade) {
@@ -214,7 +215,7 @@ class AnimationRepeater extends HTMLElement {
             this.animationState.Percentage = this.state.Percentage;
         }
         if (this.animationState.Speed != this.state.Speed) {
-            message.speed = this.state.Speed;
+            message.speed = Math.max(20, this.state.Speed);
             this.animationState.Speed = this.state.Speed;
         }
 
@@ -223,28 +224,32 @@ class AnimationRepeater extends HTMLElement {
 
     drawState() {
         const colorSet = Constants.ColorSets[this.state.ColorSet];
-        const animation = Constants.Animations[this.state.Animation];
-        const fade = Constants.Fades[this.state.Fade];
+        const animation = spaceCapitals(Constants.Animations[this.state.Animation]);
+        const fade = spaceCapitals(Constants.Fades[this.state.Fade]);
 
-        let colorHtml = colorSet.map((color, index) => `<p style="background-color: ${color.toHsl()}">Color ${index}</p>`).join('');
+        let colors = colorSet.length;
+        let gradient = colorSet.map((color, index) => `${color.toHsl()} ${(100 * index / colors)}%, ${color.toHsl()} ${(100 * (index + 1) / colors)}%`).join(', ');
+        let colorStyle = `background: linear-gradient(90deg, ${gradient});`;
 
-        this.shadow.innerHTML = `<div>
-            <fieldset>
-                <legend>Repeater ${this.dataset.channel}</legend>
+        let speed = 100 * (this.state.Speed / 255.0);
+        let percentage = 100 * (this.state.Percentage / 255.0);
 
-                <p>Animation: ${animation}</p>
-                <progress max="255" value="${this.state.Speed}"></progress>
-                <progress max="255" value="${this.state.Percentage}"></progress>
-                <p>Fade: ${fade}</p>
-                ${colorHtml}
-            </fieldset>
+        this.innerHTML = `<div class="repeater">
+            
+            <h2 class="type">Repeater ${this.dataset.channel}</h2>
+
+            <p class="text-setting">${animation}</p>
+            <p class="value-setting" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${speed}%, var(--setting) ${speed}%, var(--setting) 100%);">Speed</p>
+            <p class="value-setting" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${percentage}%, var(--setting) ${percentage}%, var(--setting) 100%);">Percentage</p>
+            <p class="color-setting" style="${colorStyle}">&nbsp;</p>
+            <p class="text-setting">${fade}</p>
         </div>`
     }
 
     onKeyDown() {
         if (this.animationInterval == null) {
             this.sendMessage(true);
-            this.animationInterval = window.setInterval(() => this.sendMessage(), 10);
+            this.animationInterval = window.setInterval(() => this.sendMessage(), 0);
         }
     }
 
