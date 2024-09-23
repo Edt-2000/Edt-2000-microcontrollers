@@ -1,47 +1,126 @@
-class HSV {
-    H = 0;
-    S = 0;
-    V = 0;
+class Animation {
+    name = "";
 
-    constructor(h, s, v) {
-        this.H = h;
-        this.S = s ?? 255;
-        this.V = v ?? 255;
+    generateMessage(state) {}
+}
+
+class AllSingleAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "allSingle";
     }
 
-    toHsl() {
-        let vFactor = this.S == 0 ? 100.0 : 50.0;
-        return `hsl(${((360.0 * this.H) / 255.0)} ${((100.0 * this.S) / 255.0)}% ${((vFactor * this.V) / 255.0)}%)`
-    }
-    toArray() {
-        return [this.H, this.S, this.V];
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, state.Tick).toArray(),
+            fade: state.getFade(),
+            speed: state.Modifier
+        };
+
+        return message;
     }
 }
 
-class Colors {
-    static Black = new HSV(0, 0, 0);
-    static Red = new HSV(0);
-    static Amber = new HSV(11);
-    static Orange = new HSV(18);
-    static Yellow = new HSV(58);
-    static Lime = new HSV(85);
-    static Green = new HSV(95);
-    static SeaGreen = new HSV(105);
-    static Turquoise = new HSV(129);
-    static Blue = new HSV(158);
-    static Purple = new HSV(183);
-    static Pink = new HSV(238);
-    static White = new HSV(0, 0, 255);
+class PartialSingleAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "partialSingle";
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, state.Tick).toArray(),
+            fade: state.getFade(),
+            speed: 30,
+            percentage: state.Modifier
+        };
+
+        return message;
+    }
 }
 
-// TODO: rename percentage to modifier
-// TODO: make animations a real class that handles:
-// - color set calculations (based on index + set choosen)
-// - duration of fade based on modifier for single animations
-// - duration of fade based on modifier for chase animations
+class AllDoubleAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "allDouble";
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        // use the same colors every tick if there are only 2
+        let tick = colorSet.length == 2 ? 0 : state.Tick;
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, tick).toArray(),
+            color2: getElement(colorSet, tick + 1).toArray(),
+            fade: state.getFade(),
+            speed: Math.min(255, state.Speed * 3),
+            percentage: state.Modifier
+        };
+
+        return message;
+    }
+}
+
+class AllSingleChaseAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "allSingleChase";
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, state.Tick).toArray(),
+            fade: state.getFade(),
+            speed: state.Modifier
+        };
+
+        return message;
+    }
+}
+
+class AllDoubleChaseAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "allDoubleChase";
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        let tick = colorSet.length == 2 ? 0 : state.Tick;
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, tick).toArray(),
+            color2: getElement(colorSet, tick + 1).toArray(),
+            fade: state.getFade(),
+            speed: state.Modifier
+        };
+
+        return message;
+    }
+}
 
 class Constants {
-    static Animations = ['allSingle', 'allDouble', 'partialSingle', 'allChase']
+    static Animations = [
+        new AllSingleAnimation(), 
+        new AllDoubleAnimation(), 
+        new PartialSingleAnimation(),
+        new AllSingleChaseAnimation(),
+        new AllDoubleChaseAnimation()
+    ];
     static ColorSets = [
         [Colors.Red, Colors.White],
         [Colors.Red, Colors.Blue],
@@ -51,18 +130,20 @@ class Constants {
         [Colors.Green, Colors.White],
         [Colors.Red, Colors.Amber],
         [Colors.Red, Colors.Amber, Colors.Orange, Colors.Yellow, Colors.Lime, Colors.Green, Colors.SeaGreen, Colors.Turquoise, Colors.Blue, Colors.Purple, Colors.Pink],
-        [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime, Colors.Amber]
-    ]
-    static Fades = ['none', 'fadeAll', 'oneByOne', 'sparkle']
+        [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime, Colors.Amber],
+        [Colors.White]
+    ];
+    static Fades = ['none', 'fadeAll', 'oneByOne', 'sparkle'];
 }
 
 class AnimationRepeaterState {
-    Percentage = 0;
+    Modifier = 0;
     Speed = 0;
     RepeatTime = 0;
     Animation = 0;
     ColorSet = 0;
     Fade = 0;
+    Tick = -1;
 
     getAnimation() { return Constants.Animations[this.Animation]; }
     nextAnimation() {
@@ -71,26 +152,7 @@ class AnimationRepeaterState {
             this.Animation = 0;
         }
     }
-    getColorSet(animationIndex) {
-        let set = Constants.ColorSets[this.ColorSet];
-        if (set.length == 1) {
-            return [set[0], set[0]];
-        }
-        else if (set.length > 2) {
-            return [getElement(set, animationIndex), getElement(set, animationIndex + 1)];
-        }
-        else {
-            let animation = this.getAnimation();
-            
-            // TODO: this should be abstracted away by moving some stuff into an Animation class
-            if (animation == 'allDouble') {
-                return set;
-            }
-            else {
-                return [getElement(set, animationIndex), getElement(set, animationIndex + 1)];
-            }
-        }
-    }
+    getColorSet() { return Constants.ColorSets[this.ColorSet]; }
     nextColorSet() {
         this.ColorSet++;
         if (this.ColorSet >= Constants.ColorSets.length) {
@@ -105,39 +167,14 @@ class AnimationRepeaterState {
         }
     }
 
+    updateTick() { this.Tick = this.Tick + 1; }
     reset() {
-        this.Fade = -1;
-        this.Percentage = 0;
-        this.Speed = 0;
+        this.Tick = -1;
     }
-}
-
-function getElement(array, index) {
-    if (array.length === 0) {
-        return null;
-    }
-
-    return array[index % array.length];
-}
-
-function spaceCapitals(text)  {
-    return text.replace(/([A-Z])/g, ' $1').trim();
-}
-
-function arrayEquals(a, b) {
-    if (a === b) return true;
-    if (a == null || b == null) return false;
-    if (a.length !== b.length) return false;
-
-    for (let i = 0; i < a.length; ++i) {
-        if (a[i] !== b[i]) return false;
-    }
-    return true;
 }
 
 class AnimationRepeater extends HTMLElement {
     state = new AnimationRepeaterState();
-    animationState = new AnimationRepeaterState();
     previousAnimation = 0;
     animationIndex = 0;
 
@@ -176,7 +213,7 @@ class AnimationRepeater extends HTMLElement {
         if (message.bR) {
             this.state.nextFade();
         }
-        this.state.Percentage = 1 + (message.s * 2);
+        this.state.Modifier = 1 + (message.s * 2);
         this.state.Speed = 1 + (message.i * 2);
         this.state.RepeatTime = (145 - message.i) * 3;
 
@@ -192,39 +229,30 @@ class AnimationRepeater extends HTMLElement {
         }
         this.previousAnimation = now;
 
-        let previousColorSet = this.state.getColorSet(this.animationIndex);
-        this.animationIndex++;
-        let colorSet = this.state.getColorSet(this.animationIndex);
+        this.state.updateTick();
 
-        let message = {
-            animation: this.state.getAnimation()
-        };
+        let animation = this.state.getAnimation();
 
-        if (firstMessage || !arrayEquals(previousColorSet, colorSet) || this.animationState.ColorSet != this.state.ColorSet) {
-            message.color1 = getElement(colorSet, 0).toArray();
-            message.color2 = getElement(colorSet, 1).toArray();
-            this.animationState.ColorSet = this.state.ColorSet;
-        }
+        let message = animation.generateMessage(this.state);
+        let previousMessageLocal = structuredClone(previousMessage);
+        let messageClone = structuredClone(message);
 
-        if (this.animationState.Fade != this.state.Fade) {
-            message.fade = this.state.getFade();
-            this.animationState.Fade = this.state.Fade;
-        }
-        if (this.animationState.Percentage != this.state.Percentage) {
-            message.percentage = this.state.Percentage;
-            this.animationState.Percentage = this.state.Percentage;
-        }
-        if (this.animationState.Speed != this.state.Speed) {
-            message.speed = Math.max(20, this.state.Speed);
-            this.animationState.Speed = this.state.Speed;
+        let keys = Object.keys(message).filter(x => x !== "animation");
+        for (let key of keys) {
+            if (message[key] === previousMessageLocal[key] ||
+                (message[key] instanceof Array && arrayEquals(message[key], previousMessageLocal[key]))) {
+                delete message[key];
+            }
         }
 
         this.ws.send(JSON.stringify(message));
+
+        previousMessage = messageClone;
     }
 
     drawState() {
         const colorSet = Constants.ColorSets[this.state.ColorSet];
-        const animation = spaceCapitals(Constants.Animations[this.state.Animation]);
+        const animation = spaceCapitals(Constants.Animations[this.state.Animation].name);
         const fade = spaceCapitals(Constants.Fades[this.state.Fade]);
 
         let colors = colorSet.length;
@@ -232,7 +260,7 @@ class AnimationRepeater extends HTMLElement {
         let colorStyle = `background: linear-gradient(90deg, ${gradient});`;
 
         let speed = 100 * (this.state.Speed / 255.0);
-        let percentage = 100 * (this.state.Percentage / 255.0);
+        let modifier = 100 * (this.state.Modifier / 255.0);
 
         this.innerHTML = `<div class="repeater">
             
@@ -240,7 +268,7 @@ class AnimationRepeater extends HTMLElement {
 
             <p class="text-setting">${animation}</p>
             <p class="value-setting" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${speed}%, var(--setting) ${speed}%, var(--setting) 100%);">Speed</p>
-            <p class="value-setting" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${percentage}%, var(--setting) ${percentage}%, var(--setting) 100%);">Percentage</p>
+            <p class="value-setting" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${modifier}%, var(--setting) ${modifier}%, var(--setting) 100%);">Modifier</p>
             <p class="color-setting" style="${colorStyle}">&nbsp;</p>
             <p class="text-setting">${fade}</p>
         </div>`
@@ -248,6 +276,7 @@ class AnimationRepeater extends HTMLElement {
 
     onKeyDown() {
         if (this.animationInterval == null) {
+            previousMessage = {};
             this.sendMessage(true);
             this.animationInterval = window.setInterval(() => this.sendMessage(), 0);
         }
@@ -257,7 +286,7 @@ class AnimationRepeater extends HTMLElement {
         window.clearInterval(this.animationInterval);
         this.animationInterval = null;
 
-        this.animationState.reset();
+        this.state.reset();
     }
 }
 

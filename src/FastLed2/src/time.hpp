@@ -14,7 +14,7 @@ private:
     unsigned long _next20ms;
     unsigned long _next100ms;
     unsigned long _next1000ms;
-    unsigned int _count1000ms;
+    uint8_t _count1000ms;
     bool _interrupted = false;
 
     void _loop()

@@ -18,8 +18,11 @@
 
 #include "animations/partialSingleAnimation.hpp"
 
+#include "animations/allSingleChaseAnimation.hpp"
+#include "animations/allDoubleChaseAnimation.hpp"
+
 // expermental animations
-#include "animations/allChaseAnimation.hpp"
+// /
 
 #include "networking/ethernet.hpp"
 #include "networking/websocket.hpp"
@@ -44,8 +47,8 @@ void setup()
   FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds2, 59).setCorrection(TypicalLEDStrip);
   FastLED.addLeds<APA102, 15, 32, BGR, DATA_RATE_KHZ(500)>(leds3, 59).setCorrection(TypicalLEDStrip);
   FastLED.addLeds<APA102, 5, 32, BGR, DATA_RATE_KHZ(500)>(leds4, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 4, 32, BGR, DATA_RATE_KHZ(500)>(leds5, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 3, 32, BGR, DATA_RATE_KHZ(500)>(leds6, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 3, 32, BGR, DATA_RATE_KHZ(500)>(leds5, 59).setCorrection(TypicalLEDStrip); // 3 or 4?
+  FastLED.addLeds<APA102, 4, 32, BGR, DATA_RATE_KHZ(500)>(leds6, 59).setCorrection(TypicalLEDStrip); // 4 or 3?
   FastLED.addLeds<APA102, 2, 32, BGR, DATA_RATE_KHZ(500)>(leds7, 59).setCorrection(TypicalLEDStrip);
 
   xTaskCreate(&fastLedTask, "OSC", 5120, NULL, 1, NULL);
@@ -58,21 +61,37 @@ void setup()
 
   Animator.addAnimation(new PartialSingleAnimation());
 
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
-  Animator.addAnimation(new AllChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+  Animator.addAnimation(new AllSingleChaseAnimation());
+
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new AllDoubleChaseAnimation());
 
   Animator.addAnimation(new StopAnimation());
   Animator.addAnimation(new StroboAnimation());

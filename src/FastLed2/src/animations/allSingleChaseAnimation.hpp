@@ -8,7 +8,7 @@
 
 #include "../debugging/logger.hpp"
 
-class AllChaseAnimation : public Animation
+class AllSingleChaseAnimation : public Animation
 {
 private:
   uint8_t _state;
@@ -19,13 +19,13 @@ private:
   uint8_t _fadeSpeed;
 
 public:
-  AllChaseAnimation()
+  AllSingleChaseAnimation()
   {
   }
 
   const char *name()
   {
-    return "allChase";
+    return "allSingleChase";
   }
 
   bool mustRunSolo()
@@ -40,7 +40,7 @@ public:
     _step = 0;
     _stepSize = 1 + (globalSettings.speed / 5);
     _fadeMode = globalSettings.fadeMode();
-    _color = globalSettings.primaryAnimationColor();
+    _color = globalSettings.primaryColor();
     _fadeSpeed = globalSettings.speed / 2;
   }
 
@@ -61,15 +61,11 @@ public:
 
       _step = 0;
 
-      auto state = _state;
-      auto mode = _fadeMode;
-      auto fadeSpeed = _fadeSpeed;
-
       applyToLeds(
           [=](CRGB *leds, uint8_t index)
           { 
-          leds[state] = _color; 
-          Fader.scheduleFade(index, state, fadeSpeed, mode); });
+          leds[_state] = _color; 
+          Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode); });
 
       _state++;
 

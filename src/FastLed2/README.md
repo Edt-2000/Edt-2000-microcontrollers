@@ -27,22 +27,37 @@
 - Uses primary color.
 - Supports fade & speed.
 
+### `allSingleChase`
+
+- Lights up chase across the led bar -- can be stacked.
+- Uses primary color.
+- Supports fade & speed.
+
+### `allDoubleChase`
+
+- Lights up chase across the led bar -- can be stacked.
+- User primary and secondary color.
+- Supports fade & speed.
+
 ## Pending ideas + todos
 
 - Find a good naming scheme for all animations (all and one, single bar multi-bar, etc, must be consistent)
     -> "all": entire led bar overwritten
+    -> "partial": effect is added
+    -> "one": single led bar is used
     -> "single": uses one color
     -> "double": uses 2 colors
-    -> 
 - How to tackle the different colors?
     -> KISS: 2 colors: primary + secondary.
     -> 
-- Speed and duration need to be tweaked per animation type (partialSingle needs slow fade but high speed)
 - Support rainbows everywhere -- almost like a texture so chases can also use it (make a special hsv code for it)
 - Support one (as opposed to all) -- requires `ledIndex` setting.
 - Support chases (vertical (on / all led bars) and sideways (always all led bars)) + directionality
 - Support fire
+- Support strobo
 - Support theatre chase (multiple repeating chases)
-- Support swipe (horizontal line across multiple led bars)
-- Support animations that only affect a section of a led bar
-- Support more stackable animations
+- Support swipe (horizontal line across multiple led bars - kinda a narrow chase)
+- Support horizontal rainbow (could be 8 "ones")
+- Support animations that only affect a section of a led bar (unsure - never used in the old system)
+- Support reconnecting network + websocket
+- Always save everything to local storage so refreshes are not painful

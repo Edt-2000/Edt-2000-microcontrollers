@@ -38,7 +38,7 @@ public:
   {
     do
     {
-      applyToLeds([](CRGB* leds) { fill_solid(leds, 59, globalSettings.alternativeColor()); });
+      applyToLeds([](CRGB* leds) { fill_solid(leds, 59, globalSettings.primaryColor()); });
 
       // going back to black is uninterruptible, otherwise the leds might stay on full blast
       uninterruptibleShow();
