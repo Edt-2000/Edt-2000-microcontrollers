@@ -8,6 +8,10 @@
 - Uses primary color.
 - Supports speed.
 
+### `stop`
+
+- Stops all animations and blacks out all led bars.
+
 ### `allSingle`
 
 - Lights up the entire led bar -- cannot be stacked.
@@ -54,7 +58,6 @@
 - Support one (as opposed to all) -- requires `ledIndex` setting.
 - Support chases (vertical (on / all led bars) and sideways (always all led bars)) + directionality
 - Support fire
-- Support strobo
 - Support theatre chase (multiple repeating chases)
 - Support swipe (horizontal line across multiple led bars - kinda a narrow chase)
 - Support horizontal rainbow (could be 8 "ones")

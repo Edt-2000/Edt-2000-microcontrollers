@@ -6,6 +6,16 @@ namespace EdtWebSockEDT;
 public class WebSocketHandler
 {
     private readonly List<(string type, WebSocket ws)> _webSockets = new();
+    private readonly bool _activelyOpenOutboundWebSocket;
+
+    public WebSocketHandler(bool activelyOpenOutboundWebSocket)
+    {
+        _activelyOpenOutboundWebSocket = activelyOpenOutboundWebSocket;
+        if (activelyOpenOutboundWebSocket)
+        {
+            AddOutboundWebSocketAsync();
+        }
+    }
 
     public void AddWebSocket(string type, WebSocket ws)
     {
@@ -21,6 +31,11 @@ public class WebSocketHandler
     {
         var memory = new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(data));
         var sockets = _webSockets.Where(x => x.type == type).ToArray();
+
+        if (type == "led" && sockets.Length == 0 && _activelyOpenOutboundWebSocket)
+        {
+            await AddOutboundWebSocketAsync();
+        }
 
         foreach (var socket in sockets)
         {
@@ -52,5 +67,13 @@ public class WebSocketHandler
                 Console.WriteLine($"WebSocketHandler encountered issue: {ex.Message}");
             }
         }
+    }
+
+    private async Task AddOutboundWebSocketAsync()
+    {
+        var outbound = new ClientWebSocket();
+        await outbound.ConnectAsync(new Uri("ws://10.0.0.25:80/ws"), CancellationToken.None);
+        Console.WriteLine("New device of type led added");
+        _webSockets.Add(("led", outbound));
     }
 }

@@ -57,4 +57,278 @@ function arrayEquals(a, b) {
     return true;
 }
 
-var previousMessage = {};
+class AnimationElementBase extends HTMLElement {
+    constructor() {
+        super();
+    }
+
+    setWebSocketHandler(webSocketHandler) {
+        this.webSocketHandler = webSocketHandler;
+    }  
+    
+    createSettingHtml(value, description) {
+        let setting = 100 * (value / 255.0);
+        return `<p class="value-setting" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${setting}%, var(--setting) ${setting}%, var(--setting) 100%);">${description}</p>`;
+    }
+
+    createColorSetHtml(colorSetIndex) {
+        let colorSet = Constants.ColorSets[colorSetIndex];
+        let colors = colorSet.length;
+        let gradient = colorSet.map((color, index) => `${color.toHsl()} ${(100 * index / colors)}%, ${color.toHsl()} ${(100 * (index + 1) / colors)}%`).join(', ');
+        let colorStyle = `background: linear-gradient(90deg, ${gradient});`;
+
+        return `<p class="color-setting" style="${colorStyle}">&nbsp;</p>`;
+    }
+}
+
+class WebSocketHandler {
+    previousMessage = {};
+    previousSender = null;
+
+    constructor(ws) {
+        this.ws = ws;
+    }
+
+    send(sender, message) {
+        this.previousSender = sender;
+
+        let previousMessageLocal = structuredClone(this.previousMessage);
+        let messageClone = structuredClone(message);
+
+        let keys = Object.keys(message).filter(x => x !== "animation");
+        for (let key of keys) {
+            if (message[key] === previousMessageLocal[key] ||
+                (message[key] instanceof Array && arrayEquals(message[key], previousMessageLocal[key]))) {
+                delete message[key];
+            }
+        }
+
+        if (Object.keys(message).length == 0) {
+            return;
+        }
+
+        this.ws.send(JSON.stringify(message));
+
+        this.previousMessage = messageClone;
+    }
+}
+
+class Animation {
+    name = "";
+    selectable = true;
+
+    generateMessage(state) {}
+}
+
+class AllSingleAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "allSingle";
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, state.Tick).toArray(),
+            fade: state.getFade(),
+            speed: state.Modifier
+        };
+
+        return message;
+    }
+}
+
+class PartialSingleAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "partialSingle";
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, state.Tick).toArray(),
+            fade: state.getFade(),
+            speed: 30,
+            percentage: state.Modifier
+        };
+
+        return message;
+    }
+}
+
+class AllDoubleAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "allDouble";
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        // use the same colors every tick if there are only 2
+        let tick = colorSet.length == 2 ? 0 : state.Tick;
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, tick).toArray(),
+            color2: getElement(colorSet, tick + 1).toArray(),
+            fade: state.getFade(),
+            speed: Math.min(255, state.Speed * 3),
+            percentage: state.Modifier
+        };
+
+        return message;
+    }
+}
+
+class AllSingleChaseAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "allSingleChase";
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, state.Tick).toArray(),
+            fade: state.getFade(),
+            speed: state.Modifier
+        };
+
+        return message;
+    }
+}
+
+class AllDoubleChaseAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "allDoubleChase";
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        let tick = colorSet.length == 2 ? 0 : state.Tick;
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, tick).toArray(),
+            color2: getElement(colorSet, tick + 1).toArray(),
+            fade: state.getFade(),
+            speed: state.Modifier
+        };
+
+        return message;
+    }
+}
+
+class StroboAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "strobo";
+        this.selectable = false;
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, state.Tick).toArray(),
+            speed: state.Speed
+        };
+
+        return message;
+    }
+}
+
+class StopAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "stop";
+        this.selectable = false;
+    }
+
+    generateMessage(state) {
+        let message = {
+            animation: this.name
+        };
+
+        return message;
+    }
+}
+
+class Constants {
+    static Animations = [
+        new AllSingleAnimation(), 
+        new AllDoubleAnimation(), 
+        new PartialSingleAnimation(),
+        new AllSingleChaseAnimation(),
+        new AllDoubleChaseAnimation(),
+        new StroboAnimation(),
+        new StopAnimation()
+    ];
+    static ColorSets = [
+        [Colors.Red, Colors.White],
+        [Colors.Red, Colors.Blue],
+        [Colors.Turquoise, Colors.Pink],
+        [Colors.Pink],
+        [Colors.Green, Colors.Amber],
+        [Colors.Green, Colors.White],
+        [Colors.Red, Colors.Amber],
+        [Colors.Red, Colors.Amber, Colors.Orange, Colors.Yellow, Colors.Lime, Colors.Green, Colors.SeaGreen, Colors.Turquoise, Colors.Blue, Colors.Purple, Colors.Pink],
+        [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime, Colors.Amber],
+        [Colors.White]
+    ];
+    static Fades = ['none', 'fadeAll', 'oneByOne', 'sparkle'];
+}
+
+class AnimationState {
+    // animations
+    Modifier = 0;
+    Speed = 0;
+    Animation = 0;
+    ColorSet = 0;
+    Fade = 0;
+    
+    // timings
+    RepeatTime = 0;
+    Tick = -1;
+
+    getAnimation() { return Constants.Animations[this.Animation]; }
+    nextAnimation() {
+        this.Animation++;
+        if (this.Animation >= Constants.Animations.length) {
+            this.Animation = 0;
+        }
+        if (!this.getAnimation().selectable) {
+            this.nextAnimation();
+        }
+    }
+    getColorSet() { return Constants.ColorSets[this.ColorSet]; }
+    nextColorSet() {
+        this.ColorSet++;
+        if (this.ColorSet >= Constants.ColorSets.length) {
+            this.ColorSet = 0;
+        }
+    }
+    getFade() { return this.Fade; }
+    nextFade() {
+        this.Fade++;
+        if (this.Fade >= Constants.Fades.length) {
+            this.Fade = 0;
+        }
+    }
+
+    updateTick() { this.Tick = this.Tick + 1; }
+    reset() {
+        this.Tick = -1;
+    }
+}

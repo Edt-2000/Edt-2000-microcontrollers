@@ -26,9 +26,6 @@ public:
   void start()
   {
     _isActive = true;
-
-    applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
-    Fader.disableFade();
   }
 
   void stop()

@@ -3,16 +3,43 @@
 
 <head>
     <title>WebSockEDT driver</title>
-    <link rel="stylesheet" href="./styles.css"> 
+    <link rel="stylesheet" href="./styles.css">
     <script src="./base.js"></script>
+    <script src="./animationInvoker.js"></script>
     <script src="./animationRepeater.js"></script>
 </head>
 
 <body>
-    <animation-repeater data-channel="4" data-key="KeyA,KeyJ"></animation-repeater>
-    <animation-repeater data-channel="5" data-key="KeyS,KeyK"></animation-repeater>
-    <animation-repeater data-channel="6" data-key="KeyD,KeyL"></animation-repeater>
-    <animation-repeater data-channel="7" data-key="KeyF,Semicolon"></animation-repeater>
+
+    <div>
+        <animation-invoker data-channel="0" data-key="KeyZ"></animation-invoker>
+    </div>
+    <div>
+        <animation-invoker data-channel="0" data-key="KeyQ" 
+            data-modifier="30" data-speed="127" data-animation="allSingle" data-fade="1"></animation-invoker>
+    </div>
+    <div>
+
+    </div>
+    <div>
+        <animation-invoker data-channel="3" data-key="Space" data-animation="strobo"
+            data-continuous="true" data-modifier="false" data-fade="false"></animation-invoker>
+        <animation-invoker data-key="Escape" data-animation="stop" data-speed="false"
+            data-color-set="false" data-modifier="false" data-fade="false"></animation-invoker>
+    </div>
+    <div>
+        <animation-repeater data-channel="4" data-key="KeyA,KeyJ"></animation-repeater>
+    </div>
+    <div>
+        <animation-repeater data-channel="5" data-key="KeyS,KeyK"></animation-repeater>
+    </div>
+    <div>
+        <animation-repeater data-channel="6" data-key="KeyD,KeyL"></animation-repeater>
+    </div>
+    <div>
+        <animation-repeater data-channel="7" data-key="KeyF,Semicolon"></animation-repeater>
+    </div>
+
 
     <!-- <button class="button" data-animation="stop" data-color1="0,0,0" data-key="Escape"><u>esc</u> Off</button><br>
     <button class="button" data-animation="allChase" data-color3="random" data-key="KeyD"><u>d</u> Chase</button><br>
@@ -57,7 +84,7 @@
     <button class="button" data-animation="allPulse" data-key="KeyF"><u>f</u> Single Pulse</button><br>
     <button class="button" data-animation="strobo" data-color1="random" data-color2="random"
         data-key="Space"><u>&nbsp;</u> Strobo</button><br> -->
-    
+    <!--     
         <div>
     <hr>
     <button onclick="stress()">Stress</button><br>
@@ -81,7 +108,7 @@
         <option value="191">75%</option>
         <option value="255">100%</option>
     </select><br>
-</div>
+</div> -->
     <!-- <input class="setting" data-name="led" placeholder="led"><br>
     <input class="setting" data-name="colorIndex" placeholder="colorIndex"><br>
     <input class="setting" data-name="color1" placeholder="color1"><br>
@@ -115,11 +142,13 @@
         let socket;
 
         function setupSocket() {
-            socket =  new WebSocket('ws://localhost:5151/control');
+            socket = new WebSocket('ws://localhost:5151/control');
 
-            const repeaters = document.getElementsByTagName("animation-repeater");
-            for (let repeater of repeaters) {
-                repeater.setWebsocket(socket);
+            let handler = new WebSocketHandler(socket);
+
+            const animationElements = document.querySelectorAll("animation-invoker, animation-repeater");
+            for (let element of animationElements) {
+                element.setWebSocketHandler(handler);
             }
             socket.onopen = function (event) {
                 console.log("WS open!");
@@ -129,9 +158,11 @@
                 var eventData = JSON.parse(event.data);
 
                 if (eventData instanceof Array) {
-                    for (let repeater of repeaters) {
-                        var midiData = eventData[repeater.dataset.channel];
-                        repeater.onMessage(midiData);
+                    for (let element of animationElements) {
+                        if (element.dataset.channel) {
+                            var midiData = eventData[element.dataset.channel];
+                            element.onMessage(midiData);
+                        }
                     }
                 }
             };

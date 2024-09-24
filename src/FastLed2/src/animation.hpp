@@ -28,19 +28,32 @@ protected:
     FastLED.show();
   }
 
-  // calls FastLED.show() no matter what.
+  // calls FastLED.show() no matter what
   // NOTE: use sparingly
   inline void uninterruptibleShow() {
     FastLED.show();
   }
 
   // suspends the fastLed thread so the animation can gain fastLed control
-  // TODO: this should check whether the thread has actually finished fast led (by checking another bool)
   inline void takeFastLedControl() {
     doFastLed = false;
+
+    uint8_t max = 50;
+    while (!fastLedSuspended) {
+      Time.delay(1);
+
+      // do not wait for too long -- we don't want to hang
+      if (--max == 0) {
+        break;
+      }
+    }
+
+    // no matter how we got here, the fastLed thread should be considered stopped
+    fastLedSuspended = true;
   }
 
   // yields fastLed control back to the fastLed thread
+  // TODO: this causes some glitches due to 2 threads doing FastLED.show() at the same time
   inline void yieldFastLedControl() {
     doFastLed = true;
   }

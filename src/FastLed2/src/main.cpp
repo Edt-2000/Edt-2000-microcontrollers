@@ -9,6 +9,8 @@
 
 #include "animation.hpp"
 
+#define SERVER
+
 // tested animations
 #include "animations/stroboAnimation.hpp"
 #include "animations/stopAnimation.hpp"
@@ -25,7 +27,11 @@
 // /
 
 #include "networking/ethernet.hpp"
-#include "networking/websocket.hpp"
+#ifdef SERVER
+#include "networking/websocketServer.hpp"
+#else
+#include "networking/websocketClient.hpp"
+#endif
 
 #include "animator.hpp"
 #include "time.hpp"
@@ -145,5 +151,13 @@ void loop()
       WebSocket.send("================== 12s");
     }
 #endif
+
+#ifdef SERVER
+    if (Time.t12000ms)
+    {
+      WebSocket.cleanUp();
+    }
+#endif
+
   } while (true);
 }

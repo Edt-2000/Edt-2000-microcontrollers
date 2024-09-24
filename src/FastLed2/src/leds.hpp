@@ -3,6 +3,7 @@
 #include <FastLED.h>
 
 volatile bool doFastLed = true;
+volatile bool fastLedSuspended = false;
 
 CRGB leds0[59];
 CRGB leds1[59];
