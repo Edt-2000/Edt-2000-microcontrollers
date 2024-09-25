@@ -13,19 +13,31 @@
 
     <div>
         <animation-invoker data-channel="0" data-key="KeyZ"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Backquote" data-color="White"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Digit1" data-color="Red"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Digit2" data-color="Orange"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Digit3" data-color="Yellow"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Digit4" data-color="Lime"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Digit5" data-color="Green"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Digit6" data-color="SeaGreen"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Digit7" data-color="Turquoise"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Digit8" data-color="Blue"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Digit9" data-color="Purple"></animation-invoker>
+        <animation-invoker data-channel="0" data-key="Digit0" data-color="Pink"></animation-invoker>
     </div>
     <div>
-        <animation-invoker data-channel="0" data-key="KeyQ" 
-            data-modifier="30" data-speed="127" data-animation="allSingle" data-fade="1"></animation-invoker>
+        <animation-invoker data-channel="1" data-key="KeyX" data-color="Rainbow"></animation-invoker>
+    </div>
+
     </div>
     <div>
 
     </div>
     <div>
-        <animation-invoker data-channel="3" data-key="Space" data-animation="strobo"
-            data-continuous="true" data-modifier="false" data-fade="false"></animation-invoker>
-        <animation-invoker data-key="Escape" data-animation="stop" data-speed="false"
-            data-color-set="false" data-modifier="false" data-fade="false"></animation-invoker>
+        <animation-invoker data-channel="3" data-key="Space" data-animation="strobo" data-continuous="true"
+            data-modifier="false" data-fade="false"></animation-invoker>
+        <animation-invoker data-key="Escape" data-animation="stop" data-speed="false" data-color-set="false"
+            data-modifier="false" data-fade="false"></animation-invoker>
     </div>
     <div>
         <animation-repeater data-channel="4" data-key="KeyA,KeyJ"></animation-repeater>
@@ -40,50 +52,6 @@
         <animation-repeater data-channel="7" data-key="KeyF,Semicolon"></animation-repeater>
     </div>
 
-
-    <!-- <button class="button" data-animation="stop" data-color1="0,0,0" data-key="Escape"><u>esc</u> Off</button><br>
-    <button class="button" data-animation="allChase" data-color3="random" data-key="KeyD"><u>d</u> Chase</button><br>
-    <button class="button" data-animation="allPulse" data-color1="0,255,255" data-key="KeyU"><u>u</u> All
-        Pulse</button><br>
-    <button class="button" data-animation="allPulse" data-color1="95,255,255" data-key="KeyI"><u>i</u> All
-        Pulse</button><br>
-    <button class="button" data-animation="allPulse" data-color1="158,255,255" data-key="KeyO"><u>o</u> All
-        Pulse</button><br>
-    <button class="button" data-animation="allPulse" data-color1="238,255,255" data-key="KeyP"><u>p</u> All
-        Pulse</button><br>
-    <button class="button" data-animation="allSingle" data-color1="0,0,255" data-key="Backquote"><u>`</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="0,255,255" data-key="Digit1"><u>1</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="11,255,255" data-key="Digit2"><u>2</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="58,255,255" data-key="Digit3"><u>3</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="85,255,255" data-key="Digit4"><u>4</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="95,255,255" data-key="Digit5"><u>5</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="105,255,255" data-key="Digit6"><u>6</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="129,255,255" data-key="Digit7"><u>7</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="158,255,255" data-key="Digit8"><u>8</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="183,255,255" data-key="Digit9"><u>9</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="238,255,255" data-key="Digit0"><u>0</u> All
-        Solid</button><br>
-    <button class="button" data-animation="allSingle" data-color1="random" data-key="KeyZ"><u>z</u> All
-        Sparkle</button><br>
-    <button class="button" data-key="KeyX"><u>x</u> Beat</button><br>
-    <button class="button" data-key="KeyC" data-color1="random"><u>c</u> Beat + Random</button><br>
-    <button class="button" data-animation="singlePulse" data-color1="0,255,255" data-led="0" data-key="KeyA"><u>a</u>
-        Single Pulse 0</button><br>
-    <button class="button" data-animation="singlePulse" data-color1="85,255,255" data-led="1" data-key="KeyS"><u>s</u>
-        Single Pulse 1</button><br>
-    <button class="button" data-animation="allPulse" data-key="KeyF"><u>f</u> Single Pulse</button><br>
-    <button class="button" data-animation="strobo" data-color1="random" data-color2="random"
-        data-key="Space"><u>&nbsp;</u> Strobo</button><br> -->
     <!--     
         <div>
     <hr>
@@ -229,6 +197,7 @@
             if (hotKeys[e.code]) {
                 hotKeys[e.code].click();
             }
+            e.preventDefault();
         }
         function formatColor(message, name) {
             if (message[name]) {

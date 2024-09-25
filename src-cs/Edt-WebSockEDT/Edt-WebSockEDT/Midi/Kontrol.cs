@@ -122,8 +122,8 @@ public class Kontrol
 
     public Channel[] Cs { get; set; } = [
         new StateChannel(),
-        new RegularChannel(),
-        new RegularChannel(),
+        new StateChannel(),
+        new StateChannel(),
         new StateChannel(),
         new StateChannel(),
         new StateChannel(),

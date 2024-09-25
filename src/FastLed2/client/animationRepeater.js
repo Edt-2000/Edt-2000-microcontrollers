@@ -64,14 +64,13 @@ class AnimationRepeater extends AnimationElementBase {
         const fade = spaceCapitals(Constants.Fades[this.state.Fade]);
         
         this.innerHTML = `<div>
-            
             <h2 class="type">Repeater ${this.dataset.channel}</h2>
 
-            <p class="text-setting">${animation}</p>
-            ${this.createSettingHtml(this.state.Speed, "Speed")}
-            ${this.createSettingHtml(this.state.Modifier, "Modifier")}
+            ${this.createSettingHtml(animation)}
+            ${this.createValueHtml(this.state.Speed, "Speed")}
+            ${this.createValueHtml(this.state.Modifier, "Modifier")}
             ${this.createColorSetHtml(this.state.ColorSet)}
-            <p class="text-setting">${fade}</p>
+            ${this.createSettingHtml(fade)}
         </div>`
     }
 

@@ -36,9 +36,16 @@ public:
 
   void loop()
   {
+    auto color = globalSettings.primaryColor();
+
     do
     {
-      applyToLeds([](CRGB* leds) { fill_solid(leds, 59, globalSettings.primaryColor()); });
+      if (isRainbow(color)) {
+        applyToLeds([](CRGB* leds) { fill_rainbow(leds, 59, 0, DEFAULT_DELTA_HUE); });
+      }
+      else {
+        applyToLeds([&](CRGB* leds) { fill_solid(leds, 59, color); });
+      }
 
       // going back to black is uninterruptible, otherwise the leds might stay on full blast
       uninterruptibleShow();

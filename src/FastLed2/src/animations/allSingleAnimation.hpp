@@ -32,7 +32,14 @@ public:
 
   inline void loop()
   {
-    applyToLeds([](CRGB* leds) { fill_solid(leds, 59, globalSettings.primaryColor()); });
+    auto color = globalSettings.primaryColor();
+
+    if (isRainbow(color)) {
+      applyToLeds([](CRGB* leds) { fill_rainbow(leds, 59, 0, DEFAULT_DELTA_HUE); });
+    }
+    else {
+      applyToLeds([&](CRGB* leds) { fill_solid(leds, 59, color); });
+    }
 
     Fader.scheduleFade(globalSettings.speed / 2, globalSettings.fadeMode());
 

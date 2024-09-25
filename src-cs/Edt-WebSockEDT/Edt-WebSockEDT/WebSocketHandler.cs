@@ -13,7 +13,7 @@ public class WebSocketHandler
         _activelyOpenOutboundWebSocket = activelyOpenOutboundWebSocket;
         if (activelyOpenOutboundWebSocket)
         {
-            AddOutboundWebSocketAsync();
+            _ = AddOutboundWebSocketAsync();
         }
     }
 
@@ -73,7 +73,9 @@ public class WebSocketHandler
     {
         var outbound = new ClientWebSocket();
         await outbound.ConnectAsync(new Uri("ws://10.0.0.25:80/ws"), CancellationToken.None);
+
         Console.WriteLine("New device of type led added");
+
         _webSockets.Add(("led", outbound));
     }
 }

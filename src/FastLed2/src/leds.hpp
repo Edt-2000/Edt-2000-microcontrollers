@@ -2,6 +2,8 @@
 
 #include <FastLED.h>
 
+#define DEFAULT_DELTA_HUE 5
+
 volatile bool doFastLed = true;
 volatile bool fastLedSuspended = false;
 
@@ -66,4 +68,9 @@ void applyToLed(uint8_t led, std::function<void(CRGB[])> action)
         action(leds0);
         break;
     }
+}
+
+// check for magic numbers to hide some functionality in HSVs
+bool isRainbow(CHSV color) {
+    return color.s == 10;
 }

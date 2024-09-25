@@ -15,7 +15,7 @@ private:
   uint8_t _step;
   uint8_t _stepSize;
   FadeMode _fadeMode;
-  CRGB _color;
+  CHSV _color;
   uint8_t _fadeSpeed;
 
 public:
@@ -61,11 +61,20 @@ public:
 
       _step = 0;
 
-      applyToLeds(
+      if (isRainbow(_color)) {
+        applyToLeds(
+          [=](CRGB *leds, uint8_t index)
+          { 
+          leds[_state] = CHSV(_state * DEFAULT_DELTA_HUE, 255, 255); 
+          Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode); });
+      }
+      else {
+        applyToLeds(
           [=](CRGB *leds, uint8_t index)
           { 
           leds[_state] = _color; 
           Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode); });
+      }
 
       _state++;
 

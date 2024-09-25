@@ -16,12 +16,14 @@ class HSV {
     toArray() {
         return [this.H, this.S, this.V];
     }
+    isRainbow() {
+        return this.S === 10;
+    }
 }
 
 class Colors {
     static Black = new HSV(0, 0, 0);
     static Red = new HSV(0);
-    static Amber = new HSV(11);
     static Orange = new HSV(18);
     static Yellow = new HSV(58);
     static Lime = new HSV(85);
@@ -32,6 +34,9 @@ class Colors {
     static Purple = new HSV(183);
     static Pink = new HSV(238);
     static White = new HSV(0, 0, 255);
+
+    // magic colors
+    static Rainbow = new HSV(0, 10, 0);
 }
 
 function getElement(array, index) {
@@ -64,20 +69,35 @@ class AnimationElementBase extends HTMLElement {
 
     setWebSocketHandler(webSocketHandler) {
         this.webSocketHandler = webSocketHandler;
-    }  
-    
-    createSettingHtml(value, description) {
-        let setting = 100 * (value / 255.0);
-        return `<p class="value-setting" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${setting}%, var(--setting) ${setting}%, var(--setting) 100%);">${description}</p>`;
     }
 
-    createColorSetHtml(colorSetIndex) {
-        let colorSet = Constants.ColorSets[colorSetIndex];
-        let colors = colorSet.length;
-        let gradient = colorSet.map((color, index) => `${color.toHsl()} ${(100 * index / colors)}%, ${color.toHsl()} ${(100 * (index + 1) / colors)}%`).join(', ');
-        let colorStyle = `background: linear-gradient(90deg, ${gradient});`;
+    createSettingHtml(value, disabled) {
+        return `<p class="text-setting${disabled ? ' disabled' : ''}">${value}</p>`;
+    }
+    
+    createValueHtml(value, description, disabled) {
+        let setting = 100 * (value / 255.0);
+        return `<p class="value-setting${disabled ? ' disabled' : ''}" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${setting}%, var(--setting) ${setting}%, var(--setting) 100%);">${description}</p>`;
+    }
 
-        return `<p class="color-setting" style="${colorStyle}">&nbsp;</p>`;
+    createColorSetHtml(colorSetIndex, disabled) {
+        let colorSet = Constants.ColorSets[colorSetIndex];
+        return this.createColorsHtml(colorSet, disabled);
+    }
+
+    createColorsHtml(colors, disabled) {
+        let colorStyle = '';
+
+        if (colors.length == 1 && colors[0].isRainbow())  {
+            colorStyle = `background: linear-gradient(in hsl longer hue 90deg, red 0 0);`;
+        }
+        else {
+            let colorLength = colors.length;
+            let gradient = colors.map((color, index) => `${color.toHsl()} ${(100 * index / colorLength)}%, ${color.toHsl()} ${(100 * (index + 1) / colorLength)}%`).join(', ');
+            colorStyle = `background: linear-gradient(90deg, ${gradient});`;
+        }
+
+        return `<p class="color-setting${disabled ? ' disabled' : ''}" style="${colorStyle}">&nbsp;</p>`;
     }
 }
 
@@ -280,11 +300,12 @@ class Constants {
         [Colors.Red, Colors.Blue],
         [Colors.Turquoise, Colors.Pink],
         [Colors.Pink],
-        [Colors.Green, Colors.Amber],
+        [Colors.Green, Colors.Orange],
         [Colors.Green, Colors.White],
-        [Colors.Red, Colors.Amber],
-        [Colors.Red, Colors.Amber, Colors.Orange, Colors.Yellow, Colors.Lime, Colors.Green, Colors.SeaGreen, Colors.Turquoise, Colors.Blue, Colors.Purple, Colors.Pink],
-        [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime, Colors.Amber],
+        [Colors.Red, Colors.Orange],
+        [Colors.Red, Colors.Orange, Colors.Yellow, Colors.Lime, Colors.Green, Colors.SeaGreen, Colors.Turquoise, Colors.Blue, Colors.Purple, Colors.Pink],
+        [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime],
+        [Colors.Rainbow],
         [Colors.White]
     ];
     static Fades = ['none', 'fadeAll', 'oneByOne', 'sparkle'];
@@ -295,6 +316,7 @@ class AnimationState {
     Modifier = 0;
     Speed = 0;
     Animation = 0;
+    Color = null;
     ColorSet = 0;
     Fade = 0;
     
@@ -312,7 +334,7 @@ class AnimationState {
             this.nextAnimation();
         }
     }
-    getColorSet() { return Constants.ColorSets[this.ColorSet]; }
+    getColorSet() { return this.Color ? [this.Color] : Constants.ColorSets[this.ColorSet]; }
     nextColorSet() {
         this.ColorSet++;
         if (this.ColorSet >= Constants.ColorSets.length) {

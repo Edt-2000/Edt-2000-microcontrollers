@@ -39,9 +39,12 @@ class AnimationInvoker extends AnimationElementBase {
             }
         }
 
-        // TODO: allow for configuring specific colors instead of a set (for 1->0)
+        if (this.dataset.color) {
+            this.colorSet = false;
 
-        if (this.dataset.colorSet) {
+            this.state.Color = Colors[this.dataset.color];
+        }
+        else if (this.dataset.colorSet) {
             this.colorSet = false;
 
             if (this.dataset.colorSet !== "false") {
@@ -142,28 +145,27 @@ class AnimationInvoker extends AnimationElementBase {
         const animation = spaceCapitals(Constants.Animations[this.state.Animation].name);
         const fade = spaceCapitals(Constants.Fades[this.state.Fade]);
 
-        // TODO: this should make clear some settings are disabled
-
         let html = `<div>
-            
             <h2 class="type">${this.dataset.key}</h2>
-
-            <p class="text-setting">${animation}</p>`;
+            ${this.createSettingHtml(animation, this.dataset.animation)}`;
 
         if (this.dataset.speed !== "false") {
-            html += this.createSettingHtml(this.state.Speed, "Speed");
+            html += this.createValueHtml(this.state.Speed, "Speed", this.dataset.speed);
         }
 
         if (this.dataset.modifier !== "false") {
-            html += this.createSettingHtml(this.state.Modifier, "Modifier");
+            html += this.createValueHtml(this.state.Modifier, "Modifier", this.dataset.modifier);
         }
 
-        if (this.dataset.dataSet !== "false") {
-            html += this.createColorSetHtml(this.state.ColorSet);
+        if (this.dataset.color) {
+            html += this.createColorsHtml([this.state.Color]);
+        }
+        else if (this.dataset.colorSet !== "false") {
+            html += this.createColorSetHtml(this.state.ColorSet, this.dataset.colorSet);
         }
 
         if (this.dataset.fade !== "false") {
-            html += `<p class="text-setting">${fade}</p>`;
+            html += this.createSettingHtml(fade, this.dataset.fade);
         }
 
         html += '</div>';
