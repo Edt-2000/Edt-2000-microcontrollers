@@ -32,7 +32,7 @@ public:
 
   inline void loop()
   {
-    auto color = globalSettings.primaryColor();
+    auto const color = globalSettings.primaryColor();
 
     if (isRainbow(color)) {
       applyToLeds([](CRGB* leds) { fill_rainbow(leds, 59, 0, DEFAULT_DELTA_HUE); });

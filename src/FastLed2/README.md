@@ -45,6 +45,7 @@
 
 ## Pending ideas + todos
 
+- Find solution for Modifier and Speed swaps because of the repeater -- it makes the invoker a bit weird between different animations.
 - Find a good naming scheme for all animations (all and one, single bar multi-bar, etc, must be consistent)
     -> "all": entire led bar overwritten
     -> "partial": effect is added

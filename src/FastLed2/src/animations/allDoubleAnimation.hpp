@@ -32,14 +32,28 @@ public:
 
   inline void loop()
   {
-    applyToLeds([](CRGB *leds) { 
+    auto const color1 = globalSettings.primaryColor();
+    auto const color2 = globalSettings.secondaryColor();
+    auto const rainbow = isRainbow(color1);
+
+    applyToLeds([&, rainbow](CRGB *leds) { 
       for (uint8_t i = 0; i < 59; i++) 
       {
-        if (globalSettings.percentage > random8()) {
-          leds[i] = globalSettings.primaryColor();
+        if (rainbow) {
+          if (globalSettings.percentage > random8()) {
+            leds[i] = CHSV(i * DEFAULT_DELTA_HUE, 255, 255); 
+          }
+          else {
+            leds[i] = CRGB::Black;
+          }
         }
         else {
-          leds[i] = globalSettings.secondaryColor();
+          if (globalSettings.percentage > random8()) {
+            leds[i] = color1;
+          }
+          else {
+            leds[i] = color2;
+          }
         }
       } });
 
