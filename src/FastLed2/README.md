@@ -45,9 +45,9 @@
 
 ## Pending ideas + todos
 
-- Find solution for Modifier and Speed swaps because of the repeater -- it makes the invoker a bit weird between different animations.
+- Rename Speed to intensity so it describes what it does
 - Find a good naming scheme for all animations (all and one, single bar multi-bar, etc, must be consistent)
-    -> "all": entire led bar overwritten
+    -> "all": entire led bar overwritten --> should be removed as all and one should be same animation, just checking for led == 0 or led >=1
     -> "partial": effect is added
     -> "one": single led bar is used
     -> "single": uses one color
@@ -55,7 +55,6 @@
 - How to tackle the different colors?
     -> KISS: 2 colors: primary + secondary.
     -> 
-- Support rainbows everywhere -- almost like a texture so chases can also use it (make a special hsv code for it)
 - Support one (as opposed to all) -- requires `ledIndex` setting.
 - Support chases (vertical (on / all led bars) and sideways (always all led bars)) + directionality
 - Support fire

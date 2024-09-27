@@ -18,6 +18,8 @@
 #include "animations/allSingleAnimation.hpp"
 #include "animations/allDoubleAnimation.hpp"
 
+#include "animations/oneSingleAnimation.hpp"
+
 #include "animations/partialSingleAnimation.hpp"
 
 #include "animations/allSingleChaseAnimation.hpp"
@@ -66,6 +68,8 @@ void setup()
   Animator.addAnimation(new AllDoubleAnimation());
 
   Animator.addAnimation(new PartialSingleAnimation());
+
+  Animator.addAnimation(new OneSingleAnimation());
 
   Animator.addAnimation(new AllSingleChaseAnimation());
   Animator.addAnimation(new AllSingleChaseAnimation());

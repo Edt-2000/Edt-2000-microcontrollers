@@ -96,13 +96,13 @@ public:
             //     PrintDebug(",");
             //     PrintLnDebug(globalSettings.colors[4].v);
             // }
-            // if (deserializeDoc.containsKey("led"))
-            // {
-            //     globalSettings.led = deserializeDoc["led"];
+            if (deserializeDoc.containsKey("led"))
+            {
+                globalSettings.led = deserializeDoc["led"];
 
-            //     PrintDebug("Setting led set to ");
-            //     PrintLnDebug(globalSettings.led);
-            // }
+                PrintDebug("Setting led set to ");
+                PrintLnDebug(globalSettings.led);
+            }
             if (deserializeDoc.containsKey("speed"))
             {
                 globalSettings.speed = deserializeDoc["speed"];

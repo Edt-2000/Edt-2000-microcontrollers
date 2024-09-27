@@ -160,6 +160,27 @@ class AllSingleAnimation extends Animation {
     }
 }
 
+class OneSingleAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "oneSingle";
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        let message = {
+            animation: this.name,
+            color1: getElement(colorSet, state.Tick).toArray(),
+            // TODO: add random led value
+            fade: state.getFade(),
+            speed: state.Modifier
+        };
+
+        return message;
+    }
+}
+
 class PartialSingleAnimation extends Animation {
     constructor() {
         super();
@@ -198,8 +219,8 @@ class AllDoubleAnimation extends Animation {
             color1: getElement(colorSet, tick).toArray(),
             color2: getElement(colorSet, tick + 1).toArray(),
             fade: state.getFade(),
-            speed: Math.min(255, state.Speed * 3),
-            percentage: state.Modifier
+            speed: Math.min(255, state.Modifier * 3),
+            percentage: state.Speed
         };
 
         return message;
@@ -262,7 +283,7 @@ class StroboAnimation extends Animation {
         let message = {
             animation: this.name,
             color1: getElement(colorSet, state.Tick).toArray(),
-            speed: state.Speed
+            speed: state.Modifier
         };
 
         return message;
@@ -323,6 +344,7 @@ class AnimationState {
     // timings
     RepeatTime = 0;
     Tick = -1;
+
 
     getAnimation() { return Constants.Animations[this.Animation]; }
     nextAnimation() {
