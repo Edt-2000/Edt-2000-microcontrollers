@@ -8,25 +8,26 @@
 
 #include "../debugging/logger.hpp"
 
-class AllDoubleChaseAnimation : public Animation
+class DoubleChaseAnimation : public Animation
 {
 private:
   uint8_t _state;
   uint8_t _step;
   uint8_t _stepSize;
+  uint8_t _led;
   FadeMode _fadeMode;
   CHSV _color1;
   CHSV _color2;
   uint8_t _fadeSpeed;
 
 public:
-  AllDoubleChaseAnimation()
+  DoubleChaseAnimation()
   {
   }
 
   const char *name()
   {
-    return "allDoubleChase";
+    return "doubleChase";
   }
 
   bool mustRunSolo()
@@ -40,6 +41,7 @@ public:
     _state = 0;
     _step = 0;
     _stepSize = 1 + (globalSettings.speed / 5);
+    _led = globalSettings.led;
     _fadeMode = globalSettings.fadeMode();
     _color1 = globalSettings.primaryColor();
     _color2 = globalSettings.secondaryColor();
@@ -66,18 +68,22 @@ public:
       if (isRainbow(_color1))
       {
         applyToLeds(
+            _led,
             [=](CRGB *leds, uint8_t index)
             { 
-            leds[_state] = CHSV((_state % 2 ? (_state + 127) : _state) * DEFAULT_DELTA_HUE, 255, 255);
-            Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode); });
+              leds[_state] = CHSV((_state % 2 ? (_state + 127) : _state) * DEFAULT_DELTA_HUE, 255, 255);
+              Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode);
+            });
       }
       else
       {
         applyToLeds(
+            _led,
             [=](CRGB *leds, uint8_t index)
             { 
-            leds[_state] = _state % 2 == 0 ? _color2 : _color1; 
-            Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode); });
+              leds[_state] = _state % 2 == 0 ? _color2 : _color1; 
+              Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode);
+            });
       }
 
       _state++;

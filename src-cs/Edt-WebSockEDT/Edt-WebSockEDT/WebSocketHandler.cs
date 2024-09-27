@@ -33,12 +33,13 @@ public class WebSocketHandler
 
         foreach (var uri in _outboundWebSocketUrls)
         {
-            if (!_webSockets.Any(x => x.uri == uri && (x.ws.State == WebSocketState.Open || x.ws.State == WebSocketState.Connecting)))
+            var socket = _webSockets.FirstOrDefault(x => x.uri == uri);
+
+            if (socket == default || (socket.ws.State != WebSocketState.Open && socket.ws.State != WebSocketState.Connecting))
             {
                 await AddOutboundWebSocketAsync(uri);
             }
         }
-
     }
 
     public async Task SendAsync(string type, string data)
@@ -81,10 +82,18 @@ public class WebSocketHandler
     private async Task AddOutboundWebSocketAsync(Uri uri)
     {
         var outbound = new ClientWebSocket();
-        await outbound.ConnectAsync(uri, CancellationToken.None);
+        outbound.Options.KeepAliveInterval = TimeSpan.FromSeconds(5);
+        try
+        {
+            await outbound.ConnectAsync(uri, CancellationToken.None);
 
-        Console.WriteLine($"New device of type led at address {uri} added");
+            Console.WriteLine($"New device of type led at address {uri} added");
 
-        _webSockets.Add(("led", uri, outbound));
+            _webSockets.Add(("led", uri, outbound));
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Adding outbound WebSocket encountered issue: {ex.Message}");
+        }
     }
 }

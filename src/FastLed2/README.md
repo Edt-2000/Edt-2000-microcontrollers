@@ -12,13 +12,13 @@
 
 - Stops all animations and blacks out all led bars.
 
-### `allSingle`
+### `single`
 
 - Lights up the entire led bar -- cannot be stacked.
 - Uses primary color.
 - Supports fade & speed.
 
-### `allDouble`
+### `double`
 
 - Lights up the entire led bar -- cannot be stacked.
 - Use black as secondary color to partially light up led bar.
@@ -31,13 +31,13 @@
 - Uses primary color.
 - Supports fade & speed.
 
-### `allSingleChase`
+### `singleChase`
 
 - Lights up chase across the led bar -- can be stacked.
 - Uses primary color.
 - Supports fade & speed.
 
-### `allDoubleChase`
+### `doubleChase`
 
 - Lights up chase across the led bar -- can be stacked.
 - User primary and secondary color.
@@ -46,16 +46,16 @@
 ## Pending ideas + todos
 
 - Rename Speed to intensity so it describes what it does
-- Find a good naming scheme for all animations (all and one, single bar multi-bar, etc, must be consistent)
-    -> "all": entire led bar overwritten --> should be removed as all and one should be same animation, just checking for led == 0 or led >=1
-    -> "partial": effect is added
-    -> "one": single led bar is used
+- Find a good naming scheme for all animations
     -> "single": uses one color
     -> "double": uses 2 colors
-- How to tackle the different colors?
-    -> KISS: 2 colors: primary + secondary.
-    -> 
-- Support one (as opposed to all) -- requires `ledIndex` setting.
+    -> "partial": effect is added to part of the led
+    -> "pulse": single change + optional fade
+    -> "chase": moving leds across led bar + optional fade
+    client only concepts:
+    -> "all": applies to all leds (leds = 255)
+    -> "one": applies to some led (leds = bit mask)
+
 - Support chases (vertical (on / all led bars) and sideways (always all led bars)) + directionality
 - Support fire
 - Support theatre chase (multiple repeating chases)

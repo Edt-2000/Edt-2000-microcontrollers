@@ -14,11 +14,13 @@ class AnimationRepeater extends AnimationElementBase {
 
         window.addEventListener("keydown", (e) => {
             if (!e.repeat && keys.includes(e.code)) {
+                e.preventDefault();
                 this.onKeyDown();
             }
         });
         window.addEventListener("keyup", (e) => {
             if (keys.includes(e.code)) {
+                e.preventDefault();
                 this.onKeyUp();
             }
         });

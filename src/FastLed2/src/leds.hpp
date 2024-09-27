@@ -27,6 +27,7 @@ void applyToLeds(std::function<void(CRGB[])> action)
     action(leds6);
     action(leds7);
 }
+
 void applyToLeds(std::function<void(CRGB[], uint8_t)> action)
 {
     action(leds0, 0);
@@ -39,38 +40,80 @@ void applyToLeds(std::function<void(CRGB[], uint8_t)> action)
     action(leds7, 7);
 }
 
-void applyToLed(uint8_t led, std::function<void(CRGB[])> action)
+void applyToLeds(uint8_t led, std::function<void(CRGB[])> action)
 {
-    switch (led)
+    if ((led & 1) != 0)
     {
-    case 7:
-        action(leds7);
-        break;
-    case 6:
-        action(leds6);
-        break;
-    case 5:
-        action(leds5);
-        break;
-    case 4:
-        action(leds4);
-        break;
-    case 3:
-        action(leds3);
-        break;
-    case 2:
-        action(leds2);
-        break;
-    case 1:
-        action(leds1);
-        break;
-    default:
         action(leds0);
-        break;
+    }
+    if ((led & 2) != 0)
+    {
+        action(leds1);
+    }
+    if ((led & 4) != 0)
+    {
+        action(leds2);
+    }
+    if ((led & 8) != 0)
+    {
+        action(leds3);
+    }
+    if ((led & 16) != 0)
+    {
+        action(leds4);
+    }
+    if ((led & 32) != 0)
+    {
+        action(leds5);
+    }
+    if ((led & 64) != 0)
+    {
+        action(leds6);
+    }
+    if ((led & 128) != 0)
+    {
+        action(leds7);
+    }
+}
+
+void applyToLeds(uint8_t led, std::function<void(CRGB[], uint8_t)> action)
+{
+    if ((led & 1) != 0)
+    {
+        action(leds0, 0);
+    }
+    if ((led & 2) != 0)
+    {
+        action(leds1, 1);
+    }
+    if ((led & 4) != 0)
+    {
+        action(leds2, 2);
+    }
+    if ((led & 8) != 0)
+    {
+        action(leds3, 3);
+    }
+    if ((led & 16) != 0)
+    {
+        action(leds4, 4);
+    }
+    if ((led & 32) != 0)
+    {
+        action(leds5, 5);
+    }
+    if ((led & 64) != 0)
+    {
+        action(leds6, 6);
+    }
+    if ((led & 128) != 0)
+    {
+        action(leds7, 7);
     }
 }
 
 // check for magic numbers to hide some functionality in HSVs
-bool isRainbow(CHSV color) {
+bool isRainbow(CHSV color)
+{
     return color.s == 10;
 }

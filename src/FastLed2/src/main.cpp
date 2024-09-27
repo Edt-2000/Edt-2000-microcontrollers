@@ -15,15 +15,13 @@
 #include "animations/stroboAnimation.hpp"
 #include "animations/stopAnimation.hpp"
 
-#include "animations/allSingleAnimation.hpp"
-#include "animations/allDoubleAnimation.hpp"
+#include "animations/singlePulseAnimation.hpp"
+#include "animations/doublePulseAnimation.hpp"
 
-#include "animations/oneSingleAnimation.hpp"
+#include "animations/singlePartialPulseAnimation.hpp"
 
-#include "animations/partialSingleAnimation.hpp"
-
-#include "animations/allSingleChaseAnimation.hpp"
-#include "animations/allDoubleChaseAnimation.hpp"
+#include "animations/singleChaseAnimation.hpp"
+#include "animations/doubleChaseAnimation.hpp"
 
 // expermental animations
 // /
@@ -64,44 +62,42 @@ void setup()
   Status.init();
 
   // these are all the animations the system knows
-  Animator.addAnimation(new AllSingleAnimation());
-  Animator.addAnimation(new AllDoubleAnimation());
+  Animator.addAnimation(new SinglePulseAnimation());
+  Animator.addAnimation(new DoublePulseAnimation());
 
-  Animator.addAnimation(new PartialSingleAnimation());
+  Animator.addAnimation(new SinglePartialPulseAnimation());
 
-  Animator.addAnimation(new OneSingleAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
 
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-  Animator.addAnimation(new AllSingleChaseAnimation());
-
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
-  Animator.addAnimation(new AllDoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
 
   Animator.addAnimation(new StopAnimation());
   Animator.addAnimation(new StroboAnimation());

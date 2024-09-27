@@ -64,6 +64,7 @@ class AnimationInvoker extends AnimationElementBase {
 
         window.addEventListener("keydown", (e) => {
             if (!e.repeat && e.code === key) {
+                e.preventDefault();
                 this.onKeyDown();
             }
         })
