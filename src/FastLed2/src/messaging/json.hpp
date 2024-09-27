@@ -142,6 +142,13 @@ public:
                 PrintDebug("Setting percentage set to ");
                 PrintLnDebug(globalSettings.percentage);
             }
+            if (deserializeDoc.containsKey("angle"))
+            {
+                globalSettings.angle = deserializeDoc["angle"];
+
+                PrintDebug("Setting angle set to ");
+                PrintLnDebug(globalSettings.angle);
+            }
         }
 
         if (isAnimation)

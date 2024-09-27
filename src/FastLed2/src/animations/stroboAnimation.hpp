@@ -36,10 +36,10 @@ public:
 
   void loop()
   {
-    auto color = globalSettings.primaryColor();
-
     do
     {
+      auto color = globalSettings.primaryColor();
+
       if (isRainbow(color)) {
         applyToLeds([](CRGB* leds) { fill_rainbow(leds, 59, 0, DEFAULT_DELTA_HUE); });
       }
@@ -52,7 +52,7 @@ public:
 
       uint8_t onDelay = 
         globalSettings.speed <= 5 ? 12 :
-        globalSettings.speed <= 10 ? 6 : 3;
+        globalSettings.speed <= 20 ? 6 : 3;
 
       uninterruptibleDelay(onDelay);
       

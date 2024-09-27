@@ -95,6 +95,14 @@ public:
         }
     }
 
+    inline void scheduleFade(uint8_t led, uint8_t begin, uint8_t length, uint8_t speed, FadeMode mode)
+    {
+        for (auto index = begin; index < begin + length; index++)
+        {
+            scheduleFade(led, index, speed, mode);
+        }
+    }
+
     inline void scheduleFade(uint8_t led, uint8_t index, uint8_t speed, FadeMode mode)
     {
         if (_leds[led][index] == CRGB::Black)

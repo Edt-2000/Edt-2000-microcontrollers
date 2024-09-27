@@ -18,6 +18,7 @@ private:
   FadeMode _fadeMode;
   CHSV _color;
   uint8_t _fadeSpeed;
+  uint8_t _angle;
 
 public:
   SingleChaseAnimation()
@@ -36,14 +37,19 @@ public:
 
   void start()
   {
+    auto isHorizontal = (_angle == 64 || _angle == 192);
+
     _isActive = true;
-    _state = 0;
-    _step = 0;
-    _stepSize = 1 + (globalSettings.speed / 5);
-    _led = globalSettings.led;
+    _step = 255;
+    _stepSize = 1 + (globalSettings.speed / (isHorizontal ? 10 : 5));
     _fadeMode = globalSettings.fadeMode();
     _color = globalSettings.primaryColor();
-    _fadeSpeed = globalSettings.speed / 2;
+    _fadeSpeed = globalSettings.speed / (isHorizontal ? 1 : 2);
+
+    _led = globalSettings.led;
+    _angle = globalSettings.angle;
+
+    _state = _angle == 64 ? 7 : _angle == 128 ? 58 : 0;
   }
 
   void stop()
@@ -63,33 +69,78 @@ public:
 
       _step = 0;
 
-      if (isRainbow(_color))
+      auto isUp = _angle == 128;
+      auto isLeft = _angle == 64;
+      auto isRight = _angle == 192;
+
+      if (isLeft || isRight)
       {
-        applyToLeds(
-            _led,
-            [=](CRGB *leds, uint8_t index)
-            {
-              leds[_state] = CHSV(_state * DEFAULT_DELTA_HUE, 255, 255);
-              Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode);
-            });
+        int startIndex = ledToStart(_led);
+        int length = ledToLength(_led);
+
+        if (isRainbow(_color))
+        {
+          applyToLeds(
+              1 << _state,
+              [=](CRGB *leds, uint8_t index)
+              {
+                fill_solid(leds + startIndex, length, CHSV(_state * DEFAULT_DELTA_HUE_SIDEWAYS, 255, 255));
+                Fader.scheduleFade(index, startIndex, length, _fadeSpeed, _fadeMode);
+              });
+        }
+        else
+        {
+          applyToLeds(
+              1 << _state,
+              [=](CRGB *leds, uint8_t index)
+              {
+                fill_solid(leds + startIndex, length, _color);
+                Fader.scheduleFade(index, startIndex, length, _fadeSpeed, _fadeMode);
+              });
+        }
+
+        _state += isLeft ? -1 : 1;
+
+        // when going right, the last led will be 7
+        // when going left, the last led will be 0 so 0 - 1 == 255 which is also > 7
+        if (_state > 7)
+        {
+          _isActive = false;
+          return;
+        }
       }
       else
       {
-        applyToLeds(
-            _led,
-            [=](CRGB *leds, uint8_t index)
-            {
-              leds[_state] = _color;
-              Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode);
-            });
-      }
+        if (isRainbow(_color))
+        {
+          applyToLeds(
+              _led,
+              [=](CRGB *leds, uint8_t index)
+              {
+                leds[_state] = CHSV(_state * DEFAULT_DELTA_HUE, 255, 255);
+                Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode);
+              });
+        }
+        else
+        {
+          applyToLeds(
+              _led,
+              [=](CRGB *leds, uint8_t index)
+              {
+                leds[_state] = _color;
+                Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode);
+              });
+        }
 
-      _state++;
+        _state += isUp ? -1 : 1;
 
-      if (_state > 58)
-      {
-        _isActive = false;
-        return;
+        // when going down, the last led will be 58
+        // when going up, the last led will be 0 so 0 - 1 == 255 which is also > 58
+        if (_state > 58)
+        {
+          _isActive = false;
+          return;
+        }
       }
     }
   }

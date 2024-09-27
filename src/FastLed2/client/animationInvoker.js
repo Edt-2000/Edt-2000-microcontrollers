@@ -69,6 +69,8 @@ class AnimationInvoker extends AnimationElementBase {
             }
         })
 
+        this.channel = parseInt(this.dataset.channel);
+
         this.drawState(false);
     }
 
@@ -82,7 +84,7 @@ class AnimationInvoker extends AnimationElementBase {
 
         if (this.animation) {
             if (message.bS) {
-                this.state.nextAnimation();
+                this.state.nextAnimation(this.channel);
             }
         }
 
@@ -143,19 +145,25 @@ class AnimationInvoker extends AnimationElementBase {
     }
 
     drawState() {
-        const animation = spaceCapitals(Constants.Animations[this.state.Animation].name);
+        const animation = Constants.Animations[this.state.Animation];
+        const allowedAnimations = Constants.Animations.filter(x => x.selectable.includes(this.channel));
+        const animationName = spaceCapitals(animation.name);
         const fade = spaceCapitals(Constants.Fades[this.state.Fade]);
 
-        let html = `<div>
-            <h2 class="type">${this.dataset.key}</h2>
-            ${this.createSettingHtml(animation, this.dataset.animation)}`;
+        let html = `<div><h2 class="type">${this.dataset.key}</h2>`;
+
+        if (!this.dataset.animation) {
+            html += `<h2 class="animation">${leftPad(allowedAnimations.indexOf(animation) + 1, 2)}/${allowedAnimations.length}</h2>`;
+        }
+
+        html += this.createSettingHtml(animationName, this.dataset.animation);
 
         if (this.dataset.speed !== "false") {
-            html += this.createValueHtml(this.state.Speed, "Speed", this.dataset.speed);
+            html += this.createValueHtml(this.state.Speed, spaceCapitals(animation.speedDescription ?? "&nbsp;"), this.dataset.speed || animation.speedDescription == null);
         }
 
         if (this.dataset.modifier !== "false") {
-            html += this.createValueHtml(this.state.Modifier, "Modifier", this.dataset.modifier);
+            html += this.createValueHtml(this.state.Modifier, spaceCapitals(animation.modifierDescription ?? "&nbsp;"), this.dataset.modifier);
         }
 
         if (this.dataset.color) {

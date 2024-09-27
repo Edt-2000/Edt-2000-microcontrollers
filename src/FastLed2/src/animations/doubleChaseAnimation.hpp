@@ -19,6 +19,7 @@ private:
   CHSV _color1;
   CHSV _color2;
   uint8_t _fadeSpeed;
+  uint8_t _angle;
 
 public:
   DoubleChaseAnimation()
@@ -41,11 +42,15 @@ public:
     _state = 0;
     _step = 0;
     _stepSize = 1 + (globalSettings.speed / 5);
-    _led = globalSettings.led;
     _fadeMode = globalSettings.fadeMode();
     _color1 = globalSettings.primaryColor();
     _color2 = globalSettings.secondaryColor();
     _fadeSpeed = globalSettings.speed / 2;
+    
+    _led = globalSettings.led;
+    _angle = globalSettings.angle;
+
+    _state = _angle == 128 ? 58 : 0;
   }
 
   void stop()
@@ -65,33 +70,41 @@ public:
 
       _step = 0;
 
-      if (isRainbow(_color1))
-      {
-        applyToLeds(
-            _led,
-            [=](CRGB *leds, uint8_t index)
-            { 
-              leds[_state] = CHSV((_state % 2 ? (_state + 127) : _state) * DEFAULT_DELTA_HUE, 255, 255);
-              Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode);
-            });
-      }
-      else
-      {
-        applyToLeds(
-            _led,
-            [=](CRGB *leds, uint8_t index)
-            { 
-              leds[_state] = _state % 2 == 0 ? _color2 : _color1; 
-              Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode);
-            });
-      }
+      auto isUp = _angle == 128;
+      auto isDown = !isUp;
 
-      _state++;
-
-      if (_state > 58)
+      if (isUp || isDown)
       {
-        _isActive = false;
-        return;
+        if (isRainbow(_color1))
+        {
+          applyToLeds(
+              _led,
+              [=](CRGB *leds, uint8_t index)
+              {
+                leds[_state] = CHSV(((_state / 3) % 2 == 0 ? (_state + 127) : _state) * DEFAULT_DELTA_HUE, 255, 255);
+                Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode);
+              });
+        }
+        else
+        {
+          applyToLeds(
+              _led,
+              [=](CRGB *leds, uint8_t index)
+              {
+                leds[_state] = (_state / 3) % 2 == 0 ? _color2 : _color1;
+                Fader.scheduleFade(index, _state, _fadeSpeed, _fadeMode);
+              });
+        }
+
+        _state += isDown ? 1 : -1;
+
+        // when going down, the last led will be 58
+        // when going up, the last led will be 0 so 0 - 1 == 255 which is also > 58
+        if (_state > 58)
+        {
+          _isActive = false;
+          return;
+        }
       }
     }
   }

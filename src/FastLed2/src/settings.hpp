@@ -7,13 +7,14 @@ struct Settings
 {
   
   // settings
-  uint8_t fade = FadeMode::fadeAll;
-  uint8_t speed = 50;
-  uint8_t percentage = 127;
   CHSV colors[2] = {CHSV(0, 255, 255), CHSV(158, 255, 255)};
+  uint8_t fade = FadeMode::fadeAll;
+  uint8_t led = 255;
+  uint8_t percentage = 127;
+  uint8_t speed = 50;
+  uint8_t angle = 0;
 
   // experimental settings
-  uint8_t led = 255;
   // uint8_t size = 10;
 
   inline CHSV primaryColor() { return colors[0]; }

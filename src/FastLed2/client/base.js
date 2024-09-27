@@ -30,7 +30,8 @@ class Leds {
 
     static random() {
         if (this._index == 8) {
-            this._leds.sort(() => Math.random() - 0.5);
+            // TODO: configurable?
+            // this._leds.sort(() => Math.random() - 0.5);
             this._index = 0;
         }
         
@@ -66,6 +67,25 @@ function getElement(array, index) {
 
 function spaceCapitals(text)  {
     return text.replace(/([A-Z])/g, ' $1').trim();
+}
+
+function leftPad(value, length) {
+    return value.toString().padStart(length, '0');
+}
+
+function getAngle(angle) {
+    if (angle == 0) {
+        return 'Down';
+    }
+    else if (angle == 64) {
+        return 'Left';
+    }
+    else if (angle == 128) {
+        return 'Up';
+    }
+    else {
+        return 'Right';
+    }
 }
 
 function arrayEquals(a, b) {
@@ -147,352 +167,5 @@ class WebSocketHandler {
         this.ws.send(JSON.stringify(message));
 
         this.previousMessage = messageClone;
-    }
-}
-
-class Animation {
-    name = "";
-    selectable = true;
-
-    generateMessage(state) {}
-}
-
-class AllSinglePulseAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "allSinglePulse";
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        let message = {
-            animation: "singlePulse",
-            led: Leds.All,
-            color1: getElement(colorSet, state.Tick).toArray(),
-            fade: state.getFade(),
-            speed: state.Modifier
-        };
-
-        return message;
-    }
-}
-
-class OneSinglePulseAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "oneSinglePulse";
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        let message = {
-            animation: "singlePulse",
-            led: Leds.random(),
-            color1: getElement(colorSet, state.Tick).toArray(),
-            fade: state.getFade(),
-            speed: state.Modifier
-        };
-
-        return message;
-    }
-}
-
-class AllSinglePartialPulseAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "allSinglePartialPulse";
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        let message = {
-            animation: 'singlePartialPulse',
-            led: Leds.All,
-            color1: getElement(colorSet, state.Tick).toArray(),
-            fade: state.getFade(),
-            speed: 30,
-            percentage: state.Modifier
-        };
-
-        return message;
-    }
-}
-
-class OneSinglePartialPulseAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "oneSinglePartialPulse";
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        let message = {
-            animation: 'singlePartialPulse',
-            led: Leds.random(),
-            color1: getElement(colorSet, state.Tick).toArray(),
-            fade: state.getFade(),
-            speed: 30,
-            percentage: state.Modifier
-        };
-
-        return message;
-    }
-}
-
-class AllDoublePulseAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "allDoublePulse";
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        // use the same colors every tick if there are only 2
-        let tick = colorSet.length == 2 ? 0 : state.Tick;
-
-        let message = {
-            animation: 'doublePulse',
-            led: Leds.All,
-            color1: getElement(colorSet, tick).toArray(),
-            color2: getElement(colorSet, tick + 1).toArray(),
-            fade: state.getFade(),
-            speed: Math.min(255, state.Modifier * 3),
-            percentage: state.Speed
-        };
-
-        return message;
-    }
-}
-
-class OneDoublePulseAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "oneDoublePulse";
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        // use the same colors every tick if there are only 2
-        let tick = colorSet.length == 2 ? 0 : state.Tick;
-
-        let message = {
-            animation: 'doublePulse',
-            led: Leds.random(),
-            color1: getElement(colorSet, tick).toArray(),
-            color2: getElement(colorSet, tick + 1).toArray(),
-            fade: state.getFade(),
-            speed: Math.min(255, state.Modifier * 3),
-            percentage: state.Speed
-        };
-
-        return message;
-    }
-}
-
-class AllSingleChaseAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "allSingleChase";
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        let message = {
-            animation: 'singleChase',
-            led: Leds.All,
-            color1: getElement(colorSet, state.Tick).toArray(),
-            fade: state.getFade(),
-            speed: state.Modifier
-        };
-
-        return message;
-    }
-}
-
-class OneSingleChaseAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "oneSingleChase";
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        let message = {
-            animation: 'singleChase',
-            led: Leds.random(),
-            color1: getElement(colorSet, state.Tick).toArray(),
-            fade: state.getFade(),
-            speed: state.Modifier
-        };
-
-        return message;
-    }
-}
-
-class AllDoubleChaseAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "allDoubleChase";
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        let tick = colorSet.length == 2 ? 0 : state.Tick;
-
-        let message = {
-            animation: 'doubleChase',
-            led: Leds.All,
-            color1: getElement(colorSet, tick).toArray(),
-            color2: getElement(colorSet, tick + 1).toArray(),
-            fade: state.getFade(),
-            speed: state.Modifier
-        };
-
-        return message;
-    }
-}
-
-class OneDoubleChaseAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "oneDoubleChase";
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        let tick = colorSet.length == 2 ? 0 : state.Tick;
-
-        let message = {
-            animation: 'doubleChase',
-            led: Leds.random(),
-            color1: getElement(colorSet, tick).toArray(),
-            color2: getElement(colorSet, tick + 1).toArray(),
-            fade: state.getFade(),
-            speed: state.Modifier
-        };
-
-        return message;
-    }
-}
-
-class StroboAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "strobo";
-        this.selectable = false;
-    }
-
-    generateMessage(state) {
-        let colorSet = state.getColorSet();
-
-        let message = {
-            animation: this.name,
-            color1: getElement(colorSet, state.Tick).toArray(),
-            speed: state.Modifier
-        };
-
-        return message;
-    }
-}
-
-class StopAnimation extends Animation {
-    constructor() {
-        super();
-        this.name = "stop";
-        this.selectable = false;
-    }
-
-    generateMessage(state) {
-        let message = {
-            animation: this.name
-        };
-
-        return message;
-    }
-}
-
-class Constants {
-    static Animations = [
-        new AllSinglePulseAnimation(), 
-        new AllSinglePartialPulseAnimation(),
-        new AllDoublePulseAnimation(), 
-        new OneSinglePulseAnimation(), 
-        new OneSinglePartialPulseAnimation(),
-        new OneDoublePulseAnimation(), 
-        new AllSingleChaseAnimation(),
-        new AllDoubleChaseAnimation(),
-        new OneSingleChaseAnimation(),
-        new OneDoubleChaseAnimation(),
-        new StroboAnimation(),
-        new StopAnimation()
-    ];
-    static ColorSets = [
-        [Colors.Red, Colors.White],
-        [Colors.Red, Colors.Blue],
-        [Colors.Turquoise, Colors.Pink],
-        [Colors.Pink],
-        [Colors.Green, Colors.Orange],
-        [Colors.Green, Colors.White],
-        [Colors.Red, Colors.Orange],
-        [Colors.Red, Colors.Orange, Colors.Yellow, Colors.Lime, Colors.Green, Colors.SeaGreen, Colors.Turquoise, Colors.Blue, Colors.Purple, Colors.Pink],
-        [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime],
-        [Colors.Rainbow],
-        [Colors.White]
-    ];
-    static Fades = ['none', 'fadeAll', 'oneByOne', 'sparkle'];
-}
-
-class AnimationState {
-    // animations
-    Modifier = 0;
-    Speed = 0;
-    Animation = 0;
-    Color = null;
-    ColorSet = 0;
-    Fade = 0;
-    
-    // timings
-    RepeatTime = 0;
-    Tick = -1;
-
-
-    getAnimation() { return Constants.Animations[this.Animation]; }
-    nextAnimation() {
-        this.Animation++;
-        if (this.Animation >= Constants.Animations.length) {
-            this.Animation = 0;
-        }
-        if (!this.getAnimation().selectable) {
-            this.nextAnimation();
-        }
-    }
-    getColorSet() { return this.Color ? [this.Color] : Constants.ColorSets[this.ColorSet]; }
-    nextColorSet() {
-        this.ColorSet++;
-        if (this.ColorSet >= Constants.ColorSets.length) {
-            this.ColorSet = 0;
-        }
-    }
-    getFade() { return this.Fade; }
-    nextFade() {
-        this.Fade++;
-        if (this.Fade >= Constants.Fades.length) {
-            this.Fade = 0;
-        }
-    }
-
-    updateTick() { this.Tick = this.Tick + 1; }
-    reset() {
-        this.Tick = -1;
     }
 }

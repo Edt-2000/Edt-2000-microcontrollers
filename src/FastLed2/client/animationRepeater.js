@@ -8,8 +8,6 @@ class AnimationRepeater extends AnimationElementBase {
     }
 
     connectedCallback() {
-        this.drawState();
-
         const keys = this.dataset.key.split(',');
 
         window.addEventListener("keydown", (e) => {
@@ -18,17 +16,22 @@ class AnimationRepeater extends AnimationElementBase {
                 this.onKeyDown();
             }
         });
+
         window.addEventListener("keyup", (e) => {
             if (keys.includes(e.code)) {
                 e.preventDefault();
                 this.onKeyUp();
             }
         });
+
+        this.channel = parseInt(this.dataset.channel);
+
+        this.drawState();
     }
 
     onMessage(message) {
         if (message.bS) {
-            this.state.nextAnimation();
+            this.state.nextAnimation(this.channel);
         }
         if (message.bM) {
             this.state.nextColorSet();
@@ -62,15 +65,17 @@ class AnimationRepeater extends AnimationElementBase {
     }
 
     drawState() {
-        const animation = spaceCapitals(Constants.Animations[this.state.Animation].name);
+        const animation = Constants.Animations[this.state.Animation];
+        const allowedAnimations = Constants.Animations.filter(x => x.selectable.includes(this.channel));
+        const animationName = spaceCapitals(animation.name);
         const fade = spaceCapitals(Constants.Fades[this.state.Fade]);
         
         this.innerHTML = `<div>
             <h2 class="type">Repeater ${this.dataset.channel}</h2>
-
-            ${this.createSettingHtml(animation)}
-            ${this.createValueHtml(this.state.Speed, "Speed")}
-            ${this.createValueHtml(this.state.Modifier, "Modifier")}
+            <h2 class="animation">${leftPad(allowedAnimations.indexOf(animation) + 1, 2)}/${allowedAnimations.length}</h2>
+            ${this.createSettingHtml(animationName)}
+            ${this.createValueHtml(this.state.Speed, "Repeat")}
+            ${this.createValueHtml(this.state.Modifier, spaceCapitals(animation.modifierDescription))}
             ${this.createColorSetHtml(this.state.ColorSet)}
             ${this.createSettingHtml(fade)}
         </div>`

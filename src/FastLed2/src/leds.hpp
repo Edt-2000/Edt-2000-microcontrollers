@@ -3,6 +3,7 @@
 #include <FastLED.h>
 
 #define DEFAULT_DELTA_HUE 5
+#define DEFAULT_DELTA_HUE_SIDEWAYS 32
 
 volatile bool doFastLed = true;
 volatile bool fastLedSuspended = false;
@@ -109,6 +110,58 @@ void applyToLeds(uint8_t led, std::function<void(CRGB[], uint8_t)> action)
     if ((led & 128) != 0)
     {
         action(leds7, 7);
+    }
+}
+
+uint8_t ledToStart(uint8_t led)
+{
+    if (led == 255 || (led & 1) != 0)
+    {
+        return 0;
+    }
+    else if ((led & 2) != 0)
+    {
+        return 7;
+    }
+    else if ((led & 4) != 0)
+    {
+        return 14;
+    }
+    else if ((led & 8) != 0)
+    {
+        return 21;
+    }
+    else if ((led & 16) != 0)
+    {
+        return 28;
+    }
+    else if ((led & 32) != 0)
+    {
+        return 35;
+    }
+    else if ((led & 64) != 0)
+    {
+        return 42;
+    }
+    else 
+    {
+        return 49;
+    }
+}
+
+uint8_t ledToLength(uint8_t led)
+{
+    if (led == 255)
+    {
+        return 59;
+    }
+    else if ((led & 128) != 0)
+    {
+        return 10;
+    }
+    else
+    {
+        return 7;
     }
 }
 
