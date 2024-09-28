@@ -67,6 +67,5 @@
     -> "one": applies to some led (leds = bit mask)
     -> "down", "up", "left", "right": applies to directionaly
 
-- Support theatre chase (multiple repeating chases)
 - Think about Led.random(), and whether it should be configurable
 - Message "compression" should be done by websocket dispatcher instead of frontend

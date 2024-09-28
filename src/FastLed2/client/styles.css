@@ -38,7 +38,7 @@ body>div {
     right: 0;
     bottom: 0;
     background: var(--connecting);
-    color: #000 !important;
+    color: var(--bg) !important;
     font-size: 14px;
     padding: 8px;
 }
@@ -98,6 +98,14 @@ p.text-setting.disabled {
 p.value-setting.disabled,
 p.color-setting.disabled {
     opacity: .5;
+}
+
+p.value-setting::before
+{
+    content: attr(data-value);
+    position: absolute;
+    left: 4px;
+    color: var(--bg);
 }
 
 p.color-setting {

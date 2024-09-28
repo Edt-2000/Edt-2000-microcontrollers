@@ -113,8 +113,8 @@ class AnimationElementBase extends HTMLElement {
     }
     
     createValueHtml(value, description, disabled) {
-        let setting = 100 * (value / 255.0);
-        return `<p class="value-setting${disabled ? ' disabled' : ''}" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${setting}%, var(--setting) ${setting}%, var(--setting) 100%);">${description}</p>`;
+        let setting = Math.round(100 * (value / 255.0));
+        return `<p class="value-setting${disabled ? ' disabled' : ''}" data-value="${value}" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${setting}%, var(--setting) ${setting}%, var(--setting) 100%);">${description}</p>`;
     }
 
     createColorSetHtml(colorSetIndex, disabled) {
