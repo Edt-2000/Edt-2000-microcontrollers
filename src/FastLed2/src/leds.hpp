@@ -17,6 +17,9 @@ CRGB leds5[59];
 CRGB leds6[59];
 CRGB leds7[59];
 
+// universal buffer to store state for animations
+uint8_t scratchpad[8][59];
+
 void applyToLeds(std::function<void(CRGB[])> action)
 {
     action(leds0);

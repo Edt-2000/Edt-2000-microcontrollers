@@ -157,8 +157,27 @@ class StroboAnimation extends Animation {
         let colorSet = state.getColorSet();
 
         let message = {
-            animation: this.name,
+            animation: 'strobo',
             color1: getElement(colorSet, state.Tick).toArray(),
+            speed: state.Modifier
+        };
+
+        return message;
+    }
+}
+
+class FireAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "fire";
+        this.selectable = [];
+        this.modifierDescription = "heat";
+        this.speedDescription = null;
+    }
+
+    generateMessage(state) {
+        let message = {
+            animation: 'fire',
             speed: state.Modifier
         };
 
@@ -205,6 +224,7 @@ class Constants {
         new DoubleChaseAnimation(false, 0),
         new DoubleChaseAnimation(false, 128),
         new StroboAnimation(),
+        new FireAnimation(),
         new StopAnimation()
     ];
     static ColorSets = [

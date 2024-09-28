@@ -57,8 +57,8 @@
     -> "one": applies to some led (leds = bit mask)
     -> "down", "up", "left", "right": applies to directionaly
 
-- Support fire
 - Support theatre chase (multiple repeating chases)
 - Support reconnecting network + websocket
 - Always save everything to local storage so refreshes are not painful
 - Think about Led.random(), and whether it should be configurable
+- Make web socket connectivity state visible on screen
