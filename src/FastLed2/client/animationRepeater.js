@@ -9,6 +9,13 @@ class AnimationRepeater extends AnimationElementBase {
 
     connectedCallback() {
         const keys = this.dataset.key.split(',');
+        
+        this.id = `invoker-${this.dataset.channel}-${this.dataset.key}`;
+
+        let state = localStorage.getItem(this.id);
+        if (state) {
+            Object.assign(this.state, JSON.parse(state));
+        }
 
         window.addEventListener("keydown", (e) => {
             if (!e.repeat && keys.includes(e.code)) {
@@ -44,6 +51,8 @@ class AnimationRepeater extends AnimationElementBase {
         this.state.RepeatTime = (145 - message.i) * 3;
 
         this.drawState();
+        
+        localStorage.setItem(this.id, JSON.stringify(this.state));
     }
 
     sendMessage(firstMessage) {

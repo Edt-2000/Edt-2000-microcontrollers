@@ -14,6 +14,7 @@
 // tested animations
 #include "animations/stroboAnimation.hpp"
 #include "animations/fireAnimation.hpp"
+#include "animations/noiseAnimation.hpp"
 #include "animations/stopAnimation.hpp"
 
 #include "animations/singlePulseAnimation.hpp"
@@ -103,6 +104,7 @@ void setup()
 
   Animator.addAnimation(new StroboAnimation());
   Animator.addAnimation(new FireAnimation());
+  Animator.addAnimation(new NoiseAnimation());
 
   Animator.addAnimation(new StopAnimation());
 

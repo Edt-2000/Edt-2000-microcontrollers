@@ -13,6 +13,15 @@ class AnimationInvoker extends AnimationElementBase {
     }
 
     connectedCallback() {
+        const key = this.dataset.key;
+
+        this.id = `invoker-${this.dataset.channel}-${key}`;
+
+        let state = localStorage.getItem(this.id);
+        if (state) {
+            Object.assign(this.state, JSON.parse(state));
+        }
+
         if (this.dataset.continuous) {
             this.singleShot = false;
         }
@@ -59,8 +68,6 @@ class AnimationInvoker extends AnimationElementBase {
                 this.state.Fade = parseInt(this.dataset.fade);
             }
         }
-
-        const key = this.dataset.key;
 
         window.addEventListener("keydown", (e) => {
             if (!e.repeat && e.code === key) {
@@ -118,6 +125,8 @@ class AnimationInvoker extends AnimationElementBase {
         }
 
         this.drawState();
+
+        localStorage.setItem(this.id, JSON.stringify(this.state));
     }
 
     sendMessage(sendAnimationName) {

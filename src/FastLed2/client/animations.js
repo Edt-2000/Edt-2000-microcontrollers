@@ -185,6 +185,25 @@ class FireAnimation extends Animation {
     }
 }
 
+class NoiseAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "noise";
+        this.selectable = [];
+        this.modifierDescription = "intensity";
+        this.speedDescription = null;
+    }
+
+    generateMessage(state) {
+        let message = {
+            animation: 'noise',
+            speed: state.Modifier
+        };
+
+        return message;
+    }
+}
+
 class StopAnimation extends Animation {
     constructor() {
         super();
@@ -225,6 +244,7 @@ class Constants {
         new DoubleChaseAnimation(false, 128),
         new StroboAnimation(),
         new FireAnimation(),
+        new NoiseAnimation(),
         new StopAnimation()
     ];
     static ColorSets = [

@@ -1,0 +1,40 @@
+let socket;
+
+let statusElement = document.querySelector('#networking');
+
+function setupSocket() {
+    socket = new WebSocket('ws://localhost:5151/control');
+
+    let handler = new WebSocketHandler(socket);
+
+    const animationElements = document.querySelectorAll("animation-invoker, animation-repeater");
+    for (let element of animationElements) {
+        element.setWebSocketHandler(handler);
+    }
+    socket.onopen = function (event) {
+        statusElement.className = "connected";
+    };
+
+    socket.onmessage = function (event) {
+        var eventData = JSON.parse(event.data);
+
+        if (eventData instanceof Array) {
+            for (let element of animationElements) {
+                if (element.dataset.channel) {
+                    var midiData = eventData[element.dataset.channel];
+                    element.onMessage(midiData);
+                }
+            }
+        }
+    };
+
+    socket.onclose = function (event) {
+        statusElement.className = "disconnnected";
+
+        setTimeout(setupSocket, 1000);
+    };
+
+    statusElement.className = "";
+}
+
+setupSocket();

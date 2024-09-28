@@ -11,7 +11,6 @@
 </head>
 
 <body>
-
     <div>
         <animation-invoker data-channel="0" data-key="KeyZ"></animation-invoker>
         <animation-invoker data-channel="0" data-key="Backquote" data-color="White"></animation-invoker>
@@ -29,8 +28,6 @@
     <div>
         <animation-invoker data-channel="1" data-key="KeyX"></animation-invoker>
     </div>
-
-    </div>
     <div>
 
     </div>
@@ -40,6 +37,8 @@
         <animation-invoker data-key="Escape" data-animation="stop" data-speed="false" data-color-set="false"
             data-modifier="false" data-fade="false"></animation-invoker>
         <animation-invoker data-channel="3" data-key="KeyB" data-animation="fire" data-continuous="true"
+            data-color-set="false" data-speed="false" data-fade="false"></animation-invoker>
+        <animation-invoker data-channel="3" data-key="KeyN" data-animation="noise" data-continuous="true"
             data-color-set="false" data-speed="false" data-fade="false"></animation-invoker>
     </div>
     <div>
@@ -54,119 +53,9 @@
     <div>
         <animation-repeater data-channel="7" data-key="KeyF,Semicolon"></animation-repeater>
     </div>
+    <div id="networking">status</div>
 
-    <script>
-        let socket;
-
-        function setupSocket() {
-            socket = new WebSocket('ws://localhost:5151/control');
-
-            let handler = new WebSocketHandler(socket);
-
-            const animationElements = document.querySelectorAll("animation-invoker, animation-repeater");
-            for (let element of animationElements) {
-                element.setWebSocketHandler(handler);
-            }
-            socket.onopen = function (event) {
-                console.log("WS open!");
-            };
-
-            socket.onmessage = function (event) {
-                var eventData = JSON.parse(event.data);
-
-                if (eventData instanceof Array) {
-                    for (let element of animationElements) {
-                        if (element.dataset.channel) {
-                            var midiData = eventData[element.dataset.channel];
-                            element.onMessage(midiData);
-                        }
-                    }
-                }
-            };
-
-            socket.onclose = function (event) {
-                console.log("WS borked!");
-
-                setTimeout(setupSocket, 1000);
-            };
-        }
-
-        setupSocket();
-
-        const hotKeys = {};
-
-        for (let button of document.getElementsByClassName("button")) {
-            hotKeys[button.dataset.key] = button;
-
-            button.onclick = function () {
-                let message = { ...button.dataset };
-                delete message.key;
-
-                if (!message.animation) {
-                    message.animation = document.querySelector('.setting[data-name="animation"]').value;
-                }
-
-                formatColor(message, "color1");
-                formatColor(message, "color2");
-                formatColor(message, "color3");
-                formatColor(message, "color4");
-                formatColor(message, "color5");
-
-                socket.send(JSON.stringify(message));
-
-                let keys = Object.keys(message);
-                for (let key of keys) {
-                    let value = message[key];
-
-                    if (key != "colorIndex" && key.startsWith("color")) {
-                        value = value.join(",");
-                    }
-
-                    let selector = `.setting[data-name="${key}"]`;
-                    let input = document.querySelector(selector);
-
-                    // only overwrite the current value if the input isn't being edited.
-                    if (input && document.activeElement != input) {
-                        input.value = value;
-                    }
-                }
-            };
-        };
-        for (let setting of document.getElementsByClassName("setting")) {
-            setting.onchange = function () {
-                let message = {};
-                message[setting.dataset.name] =
-                    setting.dataset.name.indexOf("color") == -1
-                        ? setting.value
-                        : setting.value.split(",");
-                socket.send(JSON.stringify(message));
-            };
-        };
-        window.onkeydown = function (e) {
-            if (hotKeys[e.code]) {
-                hotKeys[e.code].click();
-            }
-        }
-        function formatColor(message, name) {
-            if (message[name]) {
-                if (message[name] == "random") {
-                    message[name] = [Math.floor(Math.random() * 256), 255, 255];
-                }
-                else {
-                    message[name] = message[name].split(",").map(x => parseInt(x));
-                }
-            }
-        }
-        function stress() {
-            let interval = setInterval(() => {
-                let options = Object.keys(hotKeys);
-                let hotKey = options[Math.floor(Math.random() * options.length)];
-                console.log(hotKey);
-                hotKeys[hotKey].click();
-            }, 20);
-            setTimeout(() => { clearInterval(interval); }, 5000);
-        }
-    </script>
+    <script src="./networking.js"></script>
 </body>
 
 </html>

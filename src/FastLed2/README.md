@@ -8,6 +8,16 @@
 - Uses primary color.
 - Supports speed.
 
+### `fire`
+
+- Lights up the entire led bar -- cannot be stacked.
+- Supports speed.
+
+### `noise`
+
+- Lights up the entire led bar -- cannot be stacked.
+- Supports speed.
+
 ### `stop`
 
 - Stops all animations and blacks out all led bars.
@@ -58,7 +68,5 @@
     -> "down", "up", "left", "right": applies to directionaly
 
 - Support theatre chase (multiple repeating chases)
-- Support reconnecting network + websocket
-- Always save everything to local storage so refreshes are not painful
 - Think about Led.random(), and whether it should be configurable
-- Make web socket connectivity state visible on screen
+- Message "compression" should be done by websocket dispatcher instead of frontend

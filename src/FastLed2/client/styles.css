@@ -7,9 +7,13 @@
 :root {
     --bg: #000;
     --setting: #333;
+    --settingDisabled: #191919;
     --settingHighlight: #888;
     --heading: #070;
     --accent: #0f0;
+    --connecting: #ff0;
+    --connected: #0f0;
+    --disconnnected: #f00;
 }
 
 body {
@@ -17,7 +21,7 @@ body {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: auto 1fr;
-    grid-auto-flow:dense;
+    grid-auto-flow: dense;
     gap: 1rem;
     color: var(--accent);
     min-height: 0;
@@ -26,6 +30,25 @@ body {
 body>div {
     grid-column: auto;
     min-height: 0;
+}
+
+#networking {
+    display: block;
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    background: var(--connecting);
+    color: #000 !important;
+    font-size: 14px;
+    padding: 8px;
+}
+
+#networking.connected {
+    background: var(--connected);
+}
+
+#networking.disconnnected {
+    background: var(--disconnnected);
 }
 
 animation-invoker,
@@ -47,6 +70,7 @@ h2.type {
     background: var(--heading);
     color: var(--bg);
 }
+
 h2.animation {
     position: absolute;
     top: 0;
@@ -66,7 +90,11 @@ p.color-setting {
     text-transform: uppercase;
     margin: 4px -4px;
 }
-p.text-setting.disabled,
+
+p.text-setting.disabled {
+    background: var(--settingDisabled);
+}
+
 p.value-setting.disabled,
 p.color-setting.disabled {
     opacity: .5;
