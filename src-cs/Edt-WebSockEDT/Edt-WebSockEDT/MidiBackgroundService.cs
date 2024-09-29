@@ -25,7 +25,11 @@ public class MidiBackgroundService : BackgroundService
 
         await _kontrol.InitAsync(handler);
 
-        await Task.Delay(-1, stoppingToken);
+        do
+        {
+            await _kontrol.ManageConnectionsAsync();
+        }
+        while (!stoppingToken.IsCancellationRequested);
     }
 
     private async Task HandleMidiMessageAsync(Channel[] states)

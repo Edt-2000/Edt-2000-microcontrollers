@@ -5,6 +5,8 @@ namespace EdtWebSockEDT;
 
 public class WebSocketHandler
 {
+    private readonly MessageAnalyzer _messageAnalyzer = new();
+
     private readonly List<(string type, Uri? uri, WebSocket ws)> _webSockets = new();
     private readonly Uri[] _outboundWebSocketUrls = [new Uri("ws://10.0.0.25:80/ws")];
     private readonly bool _activelyOpenOutboundWebSocket;
@@ -44,7 +46,15 @@ public class WebSocketHandler
 
     public async Task SendAsync(string type, string data)
     {
-        var memory = new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(data));
+        var message = _messageAnalyzer.AnalyzeMessage(type, data);
+        Task? colorTask = null;
+
+        if (message.Colors.Length > 0)
+        {
+            colorTask = SendAsync("mainframe", message.Colors.ToJson());
+        }
+
+        var memory = new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(message.MessageToSend));
         var sockets = _webSockets.Where(x => x.type == type).ToArray();
 
         foreach (var socket in sockets)
@@ -76,6 +86,11 @@ public class WebSocketHandler
             {
                 Console.WriteLine($"WebSocketHandler encountered issue: {ex.Message}");
             }
+        }
+
+        if (colorTask != null)
+        {
+            await colorTask;
         }
     }
 

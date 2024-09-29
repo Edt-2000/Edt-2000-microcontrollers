@@ -13,7 +13,20 @@ public class Kontrol
     {
         _messageCallback = onMessage;
 
-        // TODO: reconnect when connection is lost
+        await ManageConnectionsAsync();
+    }
+
+    public async Task ManageConnectionsAsync()
+    {
+        if (!MidiAccessManager.Default.Inputs.Any() && _input != null)
+        {
+            _input = null;
+            Console.WriteLine("MIDI Input disconnected");
+
+            _output = null;
+            Console.WriteLine("MIDI Output disconnected");
+        }
+
         do
         {
             if (_input == null)
@@ -26,7 +39,9 @@ public class Kontrol
                     {
                         _input = await MidiAccessManager.Default.OpenInputAsync(inputDevice.Id);
 
-                        _input.MessageReceived += Input_MessageReceived;
+                        _input.MessageReceived += MessageReceived;
+
+                        Console.WriteLine("MIDI Input connected");
                     }
                 }
             }
@@ -40,6 +55,8 @@ public class Kontrol
                     if (outputDevice.Name.Contains("nanoKONTROL2", StringComparison.CurrentCultureIgnoreCase))
                     {
                         _output = await MidiAccessManager.Default.OpenOutputAsync(outputDevice.Id);
+
+                        Console.WriteLine("MIDI Output connected");
                     }
                 }
             }
@@ -49,7 +66,7 @@ public class Kontrol
         while (_input == null || _output == null);
     }
 
-    private void Input_MessageReceived(object? sender, MidiReceivedEventArgs e)
+    private void MessageReceived(object? sender, MidiReceivedEventArgs e)
     {
         if (e.Length != 3)
         {

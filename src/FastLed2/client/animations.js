@@ -23,6 +23,7 @@ class SinglePulseAnimation extends Animation {
             animation: "singlePulse",
             led: this.isAll ? Leds.All : Leds.random(),
             color1: getElement(colorSet, state.Tick).toArray(),
+            color2: getElement(colorSet, state.Tick + 1).toArray(),
             fade: state.getFade(),
             speed: state.Modifier
         };
@@ -47,6 +48,7 @@ class SinglePartialPulseAnimation extends Animation {
             animation: 'singlePartialPulse',
             led: this.isAll ? Leds.All : Leds.random(),
             color1: getElement(colorSet, state.Tick).toArray(),
+            color2: getElement(colorSet, state.Tick + 1).toArray(),
             fade: state.getFade(),
             speed: 30,
             percentage: state.Modifier
@@ -105,6 +107,7 @@ class SingleChaseAnimation extends Animation {
             led: this.isAll ? Leds.All : Leds.random(),
             angle: this.angle,
             color1: getElement(colorSet, state.Tick).toArray(),
+            color2: getElement(colorSet, state.Tick + 1).toArray(),
             fade: state.getFade(),
             speed: state.Modifier
         };
@@ -159,6 +162,7 @@ class StroboAnimation extends Animation {
         let message = {
             animation: 'strobo',
             color1: getElement(colorSet, state.Tick).toArray(),
+            color2: getElement(colorSet, state.Tick + 1).toArray(),
             speed: state.Modifier
         };
 

@@ -139,7 +139,6 @@ class AnimationElementBase extends HTMLElement {
 }
 
 class WebSocketHandler {
-    previousMessage = {};
     previousSender = null;
 
     constructor(ws) {
@@ -148,24 +147,6 @@ class WebSocketHandler {
 
     send(sender, message) {
         this.previousSender = sender;
-
-        let previousMessageLocal = structuredClone(this.previousMessage);
-        let messageClone = structuredClone(message);
-
-        let keys = Object.keys(message).filter(x => x !== "animation");
-        for (let key of keys) {
-            if (message[key] === previousMessageLocal[key] ||
-                (message[key] instanceof Array && arrayEquals(message[key], previousMessageLocal[key]))) {
-                delete message[key];
-            }
-        }
-
-        if (Object.keys(message).length == 0) {
-            return;
-        }
-
         this.ws.send(JSON.stringify(message));
-
-        this.previousMessage = messageClone;
     }
 }
