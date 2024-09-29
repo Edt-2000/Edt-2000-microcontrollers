@@ -55,7 +55,13 @@
 
 ## Pending ideas + todos
 
-- Rename Speed to intensity so it describes what it does
+- Snake animation
+- Theater chase that change position upon animation event so can be timed perfectly
+- Pong animation (escalates and becomes incredibly fast)
+- Outrun / lotus road animation
+- Wave chase / eminating circle chase
+- Sectional horizontal chase (already kinda implemented -- just need a way to configure the led-mask)
+
 - Find a good naming scheme for all animations
     -> "single": uses one color
     -> "double": uses 2 colors
