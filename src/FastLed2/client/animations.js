@@ -21,7 +21,7 @@ class SinglePulseAnimation extends Animation {
 
         let message = {
             animation: "singlePulse",
-            led: this.isAll ? Leds.All : Leds.random(),
+            led: this.isAll ? Leds.All : Leds.getLeds(),
             color1: getElement(colorSet, state.Tick).toArray(),
             color2: getElement(colorSet, state.Tick + 1).toArray(),
             fade: state.getFade(),
@@ -46,7 +46,7 @@ class SinglePartialPulseAnimation extends Animation {
 
         let message = {
             animation: 'singlePartialPulse',
-            led: this.isAll ? Leds.All : Leds.random(),
+            led: this.isAll ? Leds.All : Leds.getLeds(),
             color1: getElement(colorSet, state.Tick).toArray(),
             color2: getElement(colorSet, state.Tick + 1).toArray(),
             fade: state.getFade(),
@@ -75,7 +75,7 @@ class DoublePulseAnimation extends Animation {
 
         let message = {
             animation: 'doublePulse',
-            led: this.isAll ? Leds.All : Leds.random(),
+            led: this.isAll ? Leds.All : Leds.getLeds(),
             color1: getElement(colorSet, tick).toArray(),
             color2: getElement(colorSet, tick + 1).toArray(),
             fade: state.getFade(),
@@ -104,7 +104,7 @@ class SingleChaseAnimation extends Animation {
 
         let message = {
             animation: 'singleChase',
-            led: this.isAll ? Leds.All : Leds.random(),
+            led: this.isAll ? Leds.All : Leds.getLeds(),
             angle: this.angle,
             color1: getElement(colorSet, state.Tick).toArray(),
             color2: getElement(colorSet, state.Tick + 1).toArray(),
@@ -135,7 +135,7 @@ class DoubleChaseAnimation extends Animation {
 
         let message = {
             animation: 'doubleChase',
-            led: this.isAll ? Leds.All : Leds.random(),
+            led: this.isAll ? Leds.All : Leds.getLeds(),
             angle: this.angle,
             color1: getElement(colorSet, tick).toArray(),
             color2: getElement(colorSet, tick + 1).toArray(),

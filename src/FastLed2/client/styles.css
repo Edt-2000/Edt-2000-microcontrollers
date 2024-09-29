@@ -51,6 +51,7 @@ body>div {
     background: var(--disconnnected);
 }
 
+animation-configurator,
 animation-invoker,
 animation-repeater {
     display: block;

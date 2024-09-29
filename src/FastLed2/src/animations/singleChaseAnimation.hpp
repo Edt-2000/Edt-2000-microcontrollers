@@ -49,7 +49,8 @@ public:
     _led = globalSettings.led;
     _angle = globalSettings.angle;
 
-    _state = _angle == 64 ? 7 : _angle == 128 ? 58 : 0;
+    _state = _angle == 64 ? 7 : _angle == 128 ? 58
+                                              : 0;
   }
 
   void stop()
@@ -75,28 +76,35 @@ public:
 
       if (isLeft || isRight)
       {
-        int startIndex = ledToStart(_led);
-        int length = ledToLength(_led);
+        for (uint8_t i = 1; i != 0; i <<= 1)
+        {
+          if ((i & _led) == 0) {
+            continue;
+          }
+          
+          uint8_t startIndex = ledToStart(i);
+          uint8_t length = ledToLength(i);
 
-        if (isRainbow(_color))
-        {
-          applyToLeds(
-              1 << _state,
-              [=](CRGB *leds, uint8_t index)
-              {
-                fill_solid(leds + startIndex, length, CHSV(_state * DEFAULT_DELTA_HUE_SIDEWAYS, 255, 255));
-                Fader.scheduleFade(index, startIndex, length, _fadeSpeed, _fadeMode);
-              });
-        }
-        else
-        {
-          applyToLeds(
-              1 << _state,
-              [=](CRGB *leds, uint8_t index)
-              {
-                fill_solid(leds + startIndex, length, _color);
-                Fader.scheduleFade(index, startIndex, length, _fadeSpeed, _fadeMode);
-              });
+          if (isRainbow(_color))
+          {
+            applyToLeds(
+                1 << _state,
+                [=](CRGB *leds, uint8_t index)
+                {
+                  fill_solid(leds + startIndex, length, CHSV(_state * DEFAULT_DELTA_HUE_SIDEWAYS, 255, 255));
+                  Fader.scheduleFade(index, startIndex, length, _fadeSpeed, _fadeMode);
+                });
+          }
+          else
+          {
+            applyToLeds(
+                1 << _state,
+                [=](CRGB *leds, uint8_t index)
+                {
+                  fill_solid(leds + startIndex, length, _color);
+                  Fader.scheduleFade(index, startIndex, length, _fadeSpeed, _fadeMode);
+                });
+          }
         }
 
         _state += isLeft ? -1 : 1;

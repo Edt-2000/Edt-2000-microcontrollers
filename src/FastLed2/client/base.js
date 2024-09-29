@@ -23,19 +23,51 @@ class HSV {
 
 class Leds {
     static All = 255;
+    static Config = 0;
 
+    static _modes = ['linear-1', 'random-1', 'linear-2', 'random-2', 'linear-3', 'random-3'];
     static _leds = [1, 2, 4, 8, 16, 32, 64, 128];
-
+    static _activeLeds = [... this._leds];
     static _index = 8;
 
-    static random() {
+    static getLeds() {
+        return this._getLeds(1 + Math.floor(this.Config / 2));
+    }
+
+    static _getLeds(amount) {
+        if (amount == 0) {
+            return 0;
+        }
+
+        let isRandom = this.Config % 2 == 1;
+
         if (this._index == 8) {
-            // TODO: configurable?
-            // this._leds.sort(() => Math.random() - 0.5);
+            if (isRandom) {
+                this._activeLeds.sort(() => Math.random() - 0.5); 
+            }
             this._index = 0;
         }
         
-        return this._leds[this._index++];
+        let array = isRandom ? this._activeLeds : this._leds;
+
+        if (this.Config < 2) {
+            return array[this._index++];
+        }
+        else if (this.Config < 4) {
+            return array[this._index++] + this._getLeds(amount - 1);
+        }
+        else {
+            return array[this._index++] + this._getLeds(amount - 1);
+        }
+    }
+
+    static getConfig() { return this._modes[this.Config]; }
+    static nextConfig() {
+        this.Config++;
+        this._index = 8;
+        if (this.Config >= this._modes.length) {
+            this.Config = 0;
+        }
     }
 }
 

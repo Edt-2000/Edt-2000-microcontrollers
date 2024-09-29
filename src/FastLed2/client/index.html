@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="./styles.css">
     <script src="./base.js"></script>
     <script src="./animations.js"></script>
+    <script src="./animationConfigurator.js"></script>
     <script src="./animationInvoker.js"></script>
     <script src="./animationRepeater.js"></script>
 </head>
@@ -41,16 +42,17 @@
     </div>
     <div>
         <animation-invoker data-channel="2" data-key="KeyC"></animation-invoker>
-    </div>
-    <div>
         <animation-invoker data-key="Escape" data-animation="stop" data-speed="false" data-color-set="false"
             data-modifier="false" data-fade="false"></animation-invoker>
-        <animation-invoker data-channel="3" data-key="Space" data-animation="strobo" data-continuous="true"
+        <animation-invoker data-channel="2" data-key="Space" data-animation="strobo" data-continuous="true"
             data-speed="false" data-fade="false"></animation-invoker>
-        <animation-invoker data-channel="3" data-key="KeyB" data-animation="fire" data-continuous="true"
+        <animation-invoker data-channel="2" data-key="KeyB" data-animation="fire" data-continuous="true"
             data-color-set="false" data-speed="false" data-fade="false"></animation-invoker>
-        <animation-invoker data-channel="3" data-key="KeyN" data-animation="noise" data-continuous="true"
+        <animation-invoker data-channel="2" data-key="KeyN" data-animation="noise" data-continuous="true"
             data-color-set="false" data-speed="false" data-fade="false"></animation-invoker>
+    </div>
+    <div>
+        <animation-configurator data-channel="3" />
     </div>
     <div>
         <animation-repeater data-channel="4" data-key="KeyA,KeyJ"></animation-repeater>

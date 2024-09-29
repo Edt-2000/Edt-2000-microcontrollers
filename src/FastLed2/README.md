@@ -55,6 +55,10 @@
 
 ## Pending ideas + todos
 
+- Move animations etc to channel 3 
+- Use channel 4 as led mask configurator 
+    - dictate randomness
+    - dictate amount of leds at the same time
 - Snake animation
 - Theater chase that change position upon animation event so can be timed perfectly
 - Pong animation (escalates and becomes incredibly fast)
