@@ -116,33 +116,33 @@ void applyToLeds(uint8_t led, std::function<void(CRGB[], uint8_t)> action)
     }
 }
 
-uint8_t ledToStart(uint8_t led)
+uint8_t ledToStart(uint8_t section)
 {
-    if (led == 255 || (led & 1) != 0)
+    if (section == 255 || (section & 1) != 0)
     {
         return 0;
     }
-    else if ((led & 2) != 0)
+    else if ((section & 2) != 0)
     {
         return 7;
     }
-    else if ((led & 4) != 0)
+    else if ((section & 4) != 0)
     {
         return 14;
     }
-    else if ((led & 8) != 0)
+    else if ((section & 8) != 0)
     {
         return 21;
     }
-    else if ((led & 16) != 0)
+    else if ((section & 16) != 0)
     {
         return 28;
     }
-    else if ((led & 32) != 0)
+    else if ((section & 32) != 0)
     {
         return 35;
     }
-    else if ((led & 64) != 0)
+    else if ((section & 64) != 0)
     {
         return 42;
     }
@@ -152,13 +152,13 @@ uint8_t ledToStart(uint8_t led)
     }
 }
 
-uint8_t ledToLength(uint8_t led)
+uint8_t ledToLength(uint8_t section)
 {
-    if (led == 255)
+    if (section == 255)
     {
         return 59;
     }
-    else if ((led & 128) != 0)
+    else if ((section & 128) != 0)
     {
         return 10;
     }

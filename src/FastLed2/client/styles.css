@@ -103,7 +103,7 @@ p.color-setting {
     padding: 0px 2px;
     margin: 1px;
     border: 1px solid var(--heading);
-    color: var(--heading);
+    color: var(--accent);
     background: var(--setting);
 }
 .disabled[data-button]::after {

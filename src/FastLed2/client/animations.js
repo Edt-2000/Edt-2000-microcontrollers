@@ -116,6 +116,38 @@ class SingleChaseAnimation extends Animation {
     }
 }
 
+class SingleSteppedChaseAnimation extends Animation {
+    constructor(isAll, angle) {
+        super();
+        this.isAll = isAll;
+        this.angle = angle;
+        this.name = `${isAll ? "all" : "one"}SingleSteppedChase${getAngle(angle)}`;
+        this.modifierDescription = 'fadeSpeed';
+        this.speedDescription = null;
+
+        this.selectable = angle == 128 ? [0, 2, 4, 6] : [1, 3, 5, 7];
+    }
+
+    generateMessage(state) {
+        let colorSet = state.getColorSet();
+
+        // use the same colors every tick if there are only 2
+        let tick = colorSet.length == 2 ? 0 : state.Tick;
+
+        let message = {
+            animation: 'singleSteppedChase',
+            led: this.isAll ? Leds.All : Leds.getLeds(),
+            angle: this.angle,
+            color1: getElement(colorSet, tick).toArray(),
+            color2: getElement(colorSet, tick + 1).toArray(),
+            fade: state.getFade(),
+            speed: state.Modifier
+        };
+
+        return message;
+    }
+}
+
 class DoubleChaseAnimation extends Animation {
     constructor(isAll, angle) {
         super();
@@ -246,6 +278,10 @@ class Constants {
         new SingleChaseAnimation(false, 192),
         new DoubleChaseAnimation(false, 0),
         new DoubleChaseAnimation(false, 128),
+        new SingleSteppedChaseAnimation(true, 0),
+        new SingleSteppedChaseAnimation(true, 128),
+        new SingleSteppedChaseAnimation(false, 0),
+        new SingleSteppedChaseAnimation(false, 128),
         new StroboAnimation(),
         new FireAnimation(),
         new NoiseAnimation(),

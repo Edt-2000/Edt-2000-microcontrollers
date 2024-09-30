@@ -32,6 +32,8 @@ public:
 
   inline void loop()
   {
+    _isActive = false;
+
     auto const color = globalSettings.primaryColor();
     auto const rainbow = isRainbow(color);
 
@@ -56,7 +58,5 @@ public:
             }
           }
         });
-
-    _isActive = false;
   }
 };

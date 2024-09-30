@@ -26,6 +26,7 @@
 #include "animations/doubleChaseAnimation.hpp"
 
 // expermental animations
+#include "animations/singleSteppedChaseAnimation.hpp"
 
 // /
 
@@ -101,6 +102,8 @@ void setup()
   Animator.addAnimation(new DoubleChaseAnimation());
   Animator.addAnimation(new DoubleChaseAnimation());
   Animator.addAnimation(new DoubleChaseAnimation());
+
+  Animator.addAnimation(new SingleSteppedChaseAnimation());
 
   Animator.addAnimation(new StroboAnimation());
   Animator.addAnimation(new FireAnimation());

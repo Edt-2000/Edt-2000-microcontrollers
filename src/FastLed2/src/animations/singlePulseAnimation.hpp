@@ -32,6 +32,8 @@ public:
 
   inline void loop()
   {
+    _isActive = false;
+
     auto const color = globalSettings.primaryColor();
 
     if (isRainbow(color))
@@ -54,7 +56,5 @@ public:
             Fader.scheduleFade(index, globalSettings.speed / 2, globalSettings.fadeMode());
           });
     }
-
-    _isActive = false;
   }
 };

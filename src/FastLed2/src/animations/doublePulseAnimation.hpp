@@ -69,8 +69,6 @@ public:
           Fader.scheduleFade(index, globalSettings.speed / 2, globalSettings.fadeMode());
         });
 
-    ;
-
     _isActive = false;
   }
 };
