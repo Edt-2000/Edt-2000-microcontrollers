@@ -140,21 +140,21 @@ class AnimationElementBase extends HTMLElement {
         this.webSocketHandler = webSocketHandler;
     }
 
-    createSettingHtml(value, disabled) {
-        return `<p class="text-setting${disabled ? ' disabled' : ''}">${value}</p>`;
+    createSettingHtml(value, disabled, button) {
+        return `<p class="text-setting${disabled ? ' disabled' : ''}" ${this.createButtonHtml(button)}>${value}</p>`;
     }
     
-    createValueHtml(value, description, disabled) {
+    createValueHtml(value, description, disabled, button) {
         let setting = Math.round(100 * (value / 255.0));
-        return `<p class="value-setting${disabled ? ' disabled' : ''}" data-value="${value}" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${setting}%, var(--setting) ${setting}%, var(--setting) 100%);">${description}</p>`;
+        return `<p class="value-setting${disabled ? ' disabled' : ''}" ${this.createButtonHtml(button)} data-value="${value}" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${setting}%, var(--setting) ${setting}%, var(--setting) 100%);">${description}</p>`;
     }
 
-    createColorSetHtml(colorSetIndex, disabled) {
+    createColorSetHtml(colorSetIndex, disabled, button) {
         let colorSet = Constants.ColorSets[colorSetIndex];
-        return this.createColorsHtml(colorSet, disabled);
+        return this.createColorsHtml(colorSet, disabled, button);
     }
 
-    createColorsHtml(colors, disabled) {
+    createColorsHtml(colors, disabled, button) {
         let colorStyle = '';
 
         if (colors.length == 1 && colors[0].isRainbow())  {
@@ -166,7 +166,11 @@ class AnimationElementBase extends HTMLElement {
             colorStyle = `background: linear-gradient(90deg, ${gradient});`;
         }
 
-        return `<p class="color-setting${disabled ? ' disabled' : ''}" style="${colorStyle}">&nbsp;</p>`;
+        return `<p class="color-setting${disabled ? ' disabled' : ''}" ${this.createButtonHtml(button)} style="${colorStyle}">&nbsp;</p>`;
+    }
+
+    createButtonHtml(button) {
+        return button == null ? "" : `data-button="${button}"`;
     }
 }
 

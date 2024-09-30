@@ -165,7 +165,7 @@ class AnimationInvoker extends AnimationElementBase {
             html += `<h2 class="animation">${leftPad(allowedAnimations.indexOf(animation) + 1, 2)}/${allowedAnimations.length}</h2>`;
         }
 
-        html += this.createSettingHtml(animationName, this.dataset.animation);
+        html += this.createSettingHtml(animationName, this.dataset.animation, 's');
 
         if (this.dataset.speed !== "false") {
             html += this.createValueHtml(this.state.Speed, spaceCapitals(animation.speedDescription ?? "&nbsp;"), this.dataset.speed || animation.speedDescription == null);
@@ -176,14 +176,14 @@ class AnimationInvoker extends AnimationElementBase {
         }
 
         if (this.dataset.color) {
-            html += this.createColorsHtml([this.state.Color]);
+            html += this.createColorsHtml([this.state.Color], true, 'm');
         }
         else if (this.dataset.colorSet !== "false") {
-            html += this.createColorSetHtml(this.state.ColorSet, this.dataset.colorSet);
+            html += this.createColorSetHtml(this.state.ColorSet, this.dataset.colorSet, 'm');
         }
 
         if (this.dataset.fade !== "false") {
-            html += this.createSettingHtml(fade, this.dataset.fade);
+            html += this.createSettingHtml(fade, this.dataset.fade, 'r');
         }
 
         html += '</div>';

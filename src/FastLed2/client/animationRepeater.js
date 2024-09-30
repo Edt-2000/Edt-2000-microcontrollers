@@ -82,11 +82,11 @@ class AnimationRepeater extends AnimationElementBase {
         this.innerHTML = `<div>
             <h2 class="type">Repeater ${this.dataset.channel}</h2>
             <h2 class="animation">${leftPad(allowedAnimations.indexOf(animation) + 1, 2)}/${allowedAnimations.length}</h2>
-            ${this.createSettingHtml(animationName)}
+            ${this.createSettingHtml(animationName, false, 's')}
             ${this.createValueHtml(this.state.Speed, "Repeat")}
             ${this.createValueHtml(this.state.Modifier, spaceCapitals(animation.modifierDescription))}
-            ${this.createColorSetHtml(this.state.ColorSet)}
-            ${this.createSettingHtml(fade)}
+            ${this.createColorSetHtml(this.state.ColorSet, false, 'm')}
+            ${this.createSettingHtml(fade, false, 'r')}
         </div>`
     }
 

@@ -6,7 +6,9 @@ class AnimationConfigurator extends AnimationElementBase {
     connectedCallback() {
         this.id = `configurator-${this.dataset.channel}`;
 
-        
+        this.hue = 0;
+        this.outputHue = 0;
+        this.output = 1;
 
         this.channel = parseInt(this.dataset.channel);
 
@@ -18,6 +20,30 @@ class AnimationConfigurator extends AnimationElementBase {
             Leds.nextConfig();
         }
 
+        let newHue = (message.s * 2);
+        let hueChanged = newHue != this.outputHue;
+        if (hueChanged) {
+            this.output = 1;
+        }
+        this.hue = newHue;
+
+        if (message.bM) {
+            if (!hueChanged) {
+                this.output = (this.output % 5) + 1;
+            }
+
+            this.outputHue = this.hue;
+            let color = new HSV(this.hue, 255, this.output * 50);
+            this.webSocketHandler.send(this, {
+                animation: 'singlePulse',
+                led: 255,
+                fade: 0,
+                color1: color.toArray(),
+                color2: color.toArray(),
+                speed: 0
+            });
+        }
+
         this.drawState();
     }
 
@@ -25,6 +51,10 @@ class AnimationConfigurator extends AnimationElementBase {
         let html = `<div><h2 class="type">Config</h2>`;
 
         html += this.createSettingHtml(Leds.getConfig());
+
+        let colorStyle = `background: hsl(${360.0 * (this.hue / 255.0)} 100% 50%);`;
+
+        html += `<p class="color-setting" style="${colorStyle}" data-button="m">${this.output * 20}% color</p>`;
 
         html += '</div>';
 
