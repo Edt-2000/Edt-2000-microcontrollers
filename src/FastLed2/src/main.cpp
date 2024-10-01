@@ -27,6 +27,7 @@
 
 // expermental animations
 #include "animations/singleSteppedChaseAnimation.hpp"
+#include "animations/pongAnimation.hpp"
 
 // /
 
@@ -108,6 +109,7 @@ void setup()
   Animator.addAnimation(new StroboAnimation());
   Animator.addAnimation(new FireAnimation());
   Animator.addAnimation(new NoiseAnimation());
+  Animator.addAnimation(new PongAnimation());
 
   Animator.addAnimation(new StopAnimation());
 

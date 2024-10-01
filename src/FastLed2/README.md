@@ -18,6 +18,11 @@
 - Lights up the entire led bar -- cannot be stacked.
 - Supports speed.
 
+### `pong`
+
+- Lights up all led bars -- cannot be stacked.
+- Supports speed - will stop when speed == 255.
+
 ### `stop`
 
 - Stops all animations and blacks out all led bars.
@@ -56,8 +61,6 @@
 ## Pending ideas + todos
 
 - Snake animation
-- Theater chase that change position upon animation event so can be timed perfectly
-- Pong animation (escalates and becomes incredibly fast)
 - Outrun / lotus road animation
 - Wave chase / eminating circle chase
 - Sectional horizontal chase (already kinda implemented -- just need a way to configure the led-mask)

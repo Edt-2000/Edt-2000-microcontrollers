@@ -240,6 +240,25 @@ class NoiseAnimation extends Animation {
     }
 }
 
+class PongAnimation extends Animation {
+    constructor() {
+        super();
+        this.name = "pong";
+        this.selectable = [];
+        this.modifierDescription = "speed";
+        this.speedDescription = null;
+    }
+
+    generateMessage(state) {
+        let message = {
+            animation: 'pong',
+            speed: state.Modifier
+        };
+
+        return message;
+    }
+}
+
 class StopAnimation extends Animation {
     constructor() {
         super();
@@ -285,6 +304,7 @@ class Constants {
         new StroboAnimation(),
         new FireAnimation(),
         new NoiseAnimation(),
+        new PongAnimation(),
         new StopAnimation()
     ];
     static ColorSets = [
