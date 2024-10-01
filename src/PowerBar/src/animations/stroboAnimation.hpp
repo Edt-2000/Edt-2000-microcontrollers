@@ -20,7 +20,7 @@ public:
 
   void start()
   {
-    takeFastLedControl();
+    show();
     _isActive = true;
   }
 
@@ -29,8 +29,7 @@ public:
     _isActive = false;
 
     fill_solid(leds, LEDS, CRGB::Black);
-
-    yieldFastLedControl();
+    show();
   }
 
   void loop()
@@ -45,13 +44,13 @@ private:
     {
       fill_solid(leds, LEDS, globalSettings.colors[0]);
 
-      uninterruptibleShow();
+      show();
 
-      uninterruptibleDelay(5);
+      delay(10);
 
       fill_solid(leds, LEDS, CRGB::Black);
       
-      uninterruptibleShow();
+      show();
 
       delay(1000.0 / globalSettings.speed);
 

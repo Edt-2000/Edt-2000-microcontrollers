@@ -21,7 +21,6 @@
 #include "animator.hpp"
 #include "time.hpp"
 #include "settings.hpp"
-#include "fastLedTask.hpp"
 
 #include "debugging/logger.hpp"
 #include "debugging/status.hpp"
@@ -44,8 +43,6 @@ void setup()
   FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, LEDS).setCorrection(TypicalLEDStrip);
   // TODO: remove
   FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
-
-  xTaskCreate(&fastLedTask, "FL", 5120, NULL, 1, NULL);
 
   Status.init();
 

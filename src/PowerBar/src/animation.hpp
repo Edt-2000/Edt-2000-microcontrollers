@@ -18,48 +18,12 @@ protected:
   bool every(unsigned int interval) {
     return Time.every(interval);
   }
-
-  // delay the animation uninterrupted
-  // all other processing must wait until this is finished
-  // NOTE: use sparingly
-  inline void uninterruptibleDelay(unsigned int ms) {
-    ::delay(ms);
-  }
-
+  
   // calls FastLED.show() after checking if the animation should be interrupted
   // if the animation does not delay() the animation can call FastLED.show() directly 
   inline void show() {
     Time.yield();
     FastLED.show();
-  }
-
-  // calls FastLED.show() no matter what
-  // NOTE: use sparingly
-  inline void uninterruptibleShow() {
-    FastLED.show();
-  }
-
-  // suspends the fastLed thread so the animation can gain fastLed control
-  inline void takeFastLedControl() {
-    doFastLed = false;
-
-    uint8_t max = 50;
-    while (!fastLedSuspended) {
-      Time.delay(1);
-
-      // do not wait for too long -- we don't want to hang
-      if (--max == 0) {
-        break;
-      }
-    }
-
-    // no matter how we got here, the fastLed thread should be considered stopped
-    fastLedSuspended = true;
-  }
-
-  // yields fastLed control back to the fastLed thread
-  inline void yieldFastLedControl() {
-    doFastLed = true;
   }
 
 public:

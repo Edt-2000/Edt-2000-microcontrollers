@@ -28,6 +28,7 @@ public:
     globalSettings.colors[1] = CHSV(0, 255, 255);
 
     fill_solid(leds, LEDS, globalSettings.colors[1]);
+    show();
   }
 
   void stop()
@@ -35,6 +36,7 @@ public:
     _isActive = false;
     
     fill_solid(leds, LEDS, CRGB::Black);
+    show();
   }
 
   void loop()
@@ -55,5 +57,6 @@ private:
     _on = !_on;
 
     fill_solid(leds, LEDS, _on ? globalSettings.colors[0] : globalSettings.colors[1]);
+    show();
   }
 };
