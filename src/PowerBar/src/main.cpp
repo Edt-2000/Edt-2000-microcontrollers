@@ -6,6 +6,10 @@
 #include <stdio.h>
 #include <setjmp.h>
 
+#define LEDS 640
+
+#include "leds.hpp"
+
 #include "animation.hpp"
 #include "animations/blinkAnimation.hpp"
 #include "animations/stroboAnimation.hpp"
@@ -17,11 +21,10 @@
 #include "animator.hpp"
 #include "time.hpp"
 #include "settings.hpp"
+#include "fastLedTask.hpp"
 
 #include "debugging/logger.hpp"
 #include "debugging/status.hpp"
-
-CRGB *leds = new CRGB[640];
 
 auto animationCallback = [](std::string animation)
 {
@@ -37,8 +40,12 @@ auto stateChangeCallback = []()
 
 void setup()
 {
-  // FastLED.addLeds<WS2812B, 5, GRB>(leds, 640).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<WS2812B, 5, GRB>(leds, LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, LEDS).setCorrection(TypicalLEDStrip);
+  // TODO: remove
+  FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
+
+  xTaskCreate(&fastLedTask, "FL", 5120, NULL, 1, NULL);
 
   Status.init();
 
@@ -88,10 +95,13 @@ void loop()
     Animator.loop();
 
     // run maintenance logic + send state to clients
-    if (Time.t1000ms)
+    if (Time.t12000ms)
     {
       WebSocket.cleanUp();
+    }
 
+    if (Time.t1000ms)
+    {
       stateChangeCallback();
     }
   } while (true);

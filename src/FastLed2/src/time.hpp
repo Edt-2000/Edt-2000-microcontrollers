@@ -43,7 +43,6 @@ private:
                 auto diff = now - _next20ms;
 
                 _next20ms = now + 20 - diff;
-                ms += 20 + diff;
 
                 t20ms = true;
 
@@ -66,7 +65,6 @@ private:
                         // reset ms after 12s
                         if (_count1000ms > 12)
                         {
-                            ms = 0;
                             t12000ms = true;
                             _count1000ms = 0;
                         }
@@ -77,10 +75,6 @@ private:
     }
 
 public:
-    // current milliseconds of the current second
-    // resets after 12k
-    unsigned int ms = 0;
-
     bool t1ms;
     bool t20ms;
     bool t100ms;

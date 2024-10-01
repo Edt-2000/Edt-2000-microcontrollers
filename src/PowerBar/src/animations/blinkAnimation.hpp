@@ -27,16 +27,14 @@ public:
     globalSettings.colors[0] = CHSV(158, 255, 255);
     globalSettings.colors[1] = CHSV(0, 255, 255);
 
-    fill_solid(leds, 640, globalSettings.colors[1]);
-    FastLED.show(globalSettings.brightness);
+    fill_solid(leds, LEDS, globalSettings.colors[1]);
   }
 
   void stop()
   {
     _isActive = false;
     
-    fill_solid(leds, 640, CRGB::Black);
-    FastLED.show();
+    fill_solid(leds, LEDS, CRGB::Black);
   }
 
   void loop()
@@ -56,7 +54,6 @@ private:
   {
     _on = !_on;
 
-    fill_solid(leds, 640, _on ? globalSettings.colors[0] : globalSettings.colors[1]);
-    FastLED.show(globalSettings.brightness);
+    fill_solid(leds, LEDS, _on ? globalSettings.colors[0] : globalSettings.colors[1]);
   }
 };

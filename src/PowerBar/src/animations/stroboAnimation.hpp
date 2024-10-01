@@ -20,45 +20,41 @@ public:
 
   void start()
   {
+    takeFastLedControl();
     _isActive = true;
   }
 
   void stop()
   {
     _isActive = false;
-    
-    fill_solid(leds, 640, CRGB::Black);
-    FastLED.show();
+
+    fill_solid(leds, LEDS, CRGB::Black);
+
+    yieldFastLedControl();
   }
 
   void loop()
   {
-    // the animate function takes about 2000/speed ms (200ms if speed is 10) to complete
-    // animate will be interrupted if another animation should be running
     animate();
   }
 
 private:
   void animate()
   {
-    fill_solid(leds, 640, globalSettings.colors[0]);
-    FastLED.show();
+    do
+    {
+      fill_solid(leds, LEDS, globalSettings.colors[0]);
 
-    delay(1);
+      uninterruptibleShow();
 
-    fill_solid(leds, 640, CRGB::Black);
-    FastLED.show();
+      uninterruptibleDelay(5);
 
-    delay(1000.0 / globalSettings.speed);
+      fill_solid(leds, LEDS, CRGB::Black);
+      
+      uninterruptibleShow();
 
-    fill_solid(leds, 640, globalSettings.colors[1]);
-    FastLED.show();
+      delay(1000.0 / globalSettings.speed);
 
-    delay(1);
-
-    fill_solid(leds, 640, CRGB::Black);
-    FastLED.show();
-
-    delay(1000.0 / globalSettings.speed);
+    } while (_isActive);
   }
 };

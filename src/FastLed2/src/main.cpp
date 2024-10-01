@@ -61,7 +61,7 @@ void setup()
   FastLED.addLeds<APA102, 4, 32, BGR, DATA_RATE_KHZ(500)>(leds6, 59).setCorrection(TypicalLEDStrip);
   FastLED.addLeds<APA102, 2, 32, BGR, DATA_RATE_KHZ(500)>(leds7, 59).setCorrection(TypicalLEDStrip);
 
-  xTaskCreate(&fastLedTask, "OSC", 5120, NULL, 1, NULL);
+  xTaskCreate(&fastLedTask, "FL", 5120, NULL, 1, NULL);
 
   Status.init();
 
