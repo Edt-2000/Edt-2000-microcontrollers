@@ -60,6 +60,8 @@
 
 ## Pending ideas + todos
 
+- Socket io fixup
+
 - Snake animation
 - Outrun / lotus road animation
 - Wave chase / eminating circle chase

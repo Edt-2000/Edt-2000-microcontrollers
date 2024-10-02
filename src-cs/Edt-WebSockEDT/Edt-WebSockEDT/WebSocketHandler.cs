@@ -1,5 +1,6 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
+using H.Socket.IO;
 
 namespace EdtWebSockEDT;
 
@@ -8,7 +9,11 @@ public class WebSocketHandler
     private readonly MessageAnalyzer _messageAnalyzer = new();
 
     private readonly List<(string type, Uri? uri, WebSocket ws)> _webSockets = new();
-    private readonly Uri[] _outboundWebSocketUrls = [new Uri("ws://10.0.0.25:80/ws")];
+    private readonly Uri[] _ledWebSocketUrls = [new Uri("ws://10.0.0.25:80/ws")];
+    private readonly Uri _mainframeWebSocketUrl = new Uri("ws://10.0.0.202:8898");
+
+    private SocketIoClient? _socketIoClient = null;
+
     private readonly bool _activelyOpenOutboundWebSocket;
 
     public WebSocketHandler(bool activelyOpenOutboundWebSocket)
@@ -33,15 +38,47 @@ public class WebSocketHandler
             return;
         }
 
-        foreach (var uri in _outboundWebSocketUrls)
+        foreach (var uri in _ledWebSocketUrls)
         {
             var socket = _webSockets.FirstOrDefault(x => x.uri == uri);
 
             if (socket == default || (socket.ws.State != WebSocketState.Open && socket.ws.State != WebSocketState.Connecting))
             {
-                await AddOutboundWebSocketAsync(uri);
+                await AddOutboundWebSocketAsync("led", uri);
             }
         }
+
+        if (_socketIoClient == null)
+        {
+            _socketIoClient = new SocketIoClient();
+            await _socketIoClient.ConnectAsync(_mainframeWebSocketUrl, CancellationToken.None, "thomas");
+        }
+
+        //foreach (var uri in _mainframeWebSocketUrls)
+        //{
+        //    var socket = new SocketIoClient();
+        //    try
+        //    {
+        //        await socket.ConnectAsync(uri, CancellationToken.None, "thomas");
+
+        //        _socketIoClient = socket;
+
+        //        await socket.SendEventAsync("MESSAGE");
+
+        //        await socket.Emit("thomas", new { Hi = "Pannekoek" });
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ;
+        //    }
+        //    //var socket = _webSockets.FirstOrDefault(x => x.uri == uri);
+
+        //    //if (socket == default || (socket.ws.State != WebSocketState.Open && socket.ws.State != WebSocketState.Connecting))
+        //    //{
+        //    //    await AddOutboundWebSocketAsync("mainframe", uri);
+        //    //}
+        //}
     }
 
     public async Task SendAsync(string type, string data)
@@ -49,9 +86,10 @@ public class WebSocketHandler
         var message = _messageAnalyzer.AnalyzeMessage(type, data);
         Task? colorTask = null;
 
-        if (message.Colors.Length > 0)
+        if (message.Colors.Length > 0 && _socketIoClient != null)
         {
-            colorTask = SendAsync("mainframe", message.Colors.ToJson());
+            colorTask = _socketIoClient.Emit("fromThomas", message.Colors.ToMainframeMessage(), "thomas");
+            //colorTask = SendAsync("mainframe", message.Colors.ToMainframeMessage());
         }
 
         var memory = new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(message.MessageToSend));
@@ -59,7 +97,7 @@ public class WebSocketHandler
 
         foreach (var socket in sockets)
         {
-            var (_, _, ws) = socket;
+            var (socketType, _, ws) = socket;
 
             try
             {
@@ -71,7 +109,7 @@ public class WebSocketHandler
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"WebSocket encountered issue: {ex.Message}");
+                        Console.WriteLine($"WebSocket {socketType} encountered issue: {ex.Message}");
 
                         _webSockets.Remove(socket);
                     }
@@ -84,7 +122,7 @@ public class WebSocketHandler
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"WebSocketHandler encountered issue: {ex.Message}");
+                Console.WriteLine($"WebSocketHandler {socketType} encountered issue: {ex.Message}");
             }
         }
 
@@ -94,7 +132,7 @@ public class WebSocketHandler
         }
     }
 
-    private async Task AddOutboundWebSocketAsync(Uri uri)
+    private async Task AddOutboundWebSocketAsync(string type, Uri uri)
     {
         var outbound = new ClientWebSocket();
         outbound.Options.KeepAliveInterval = TimeSpan.FromSeconds(5);
@@ -102,13 +140,13 @@ public class WebSocketHandler
         {
             await outbound.ConnectAsync(uri, CancellationToken.None);
 
-            Console.WriteLine($"New device of type led at address {uri} added");
+            Console.WriteLine($"New device of type {type} at address {uri} added");
 
-            _webSockets.Add(("led", uri, outbound));
+            _webSockets.Add((type, uri, outbound));
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Adding outbound WebSocket encountered issue: {ex.Message}");
+            Console.WriteLine($"Adding outbound {type} WebSocket encountered issue: {ex.Message}");
         }
     }
 }

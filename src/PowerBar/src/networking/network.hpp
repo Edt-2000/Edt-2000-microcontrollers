@@ -31,7 +31,7 @@ class NetworkHelper
 public:
     void startWifi()
     {
-        WiFi.begin("xxx", "xxx");
+        WiFi.begin("STROBOOS", "80208044111");
         WiFi.onEvent(ethernetEventHandler);
 
         auto staticIP = IPAddress(192, 168, 142, 100);

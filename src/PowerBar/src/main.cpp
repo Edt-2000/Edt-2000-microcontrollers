@@ -39,10 +39,10 @@ auto stateChangeCallback = []()
 
 void setup()
 {
-  // FastLED.addLeds<WS2812B, 5, GRB>(leds, LEDS).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<WS2812B, 5, GRB>(leds, LEDS).setCorrection(TypicalLEDStrip);
+  //FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, LEDS).setCorrection(TypicalLEDStrip);
   // TODO: remove
-  FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
+  //FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
 
   Status.init();
 
@@ -52,7 +52,7 @@ void setup()
 
   Serial.begin(115200);
 
-  Network.startEthernet();
+  Network.startWifi();
 
   Status.setup();
 

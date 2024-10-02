@@ -26,7 +26,7 @@
     <input class="setting" data-name="size" placeholder="size"><br>
 
     <script>
-        const socket = new WebSocket('ws://10.0.0.25:80/ws');
+        const socket = new WebSocket('ws://192.168.142.100:80/ws');
 
         socket.onopen = function (event) {
             console.log("WS open!");

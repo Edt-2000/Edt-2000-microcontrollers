@@ -15,7 +15,7 @@ var app = builder.Build();
 
 app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromSeconds(10) });
 
-app.Map("/{type:regex(^led|control$)}", async (string type, HttpContext context, WebSocketHandler handler) =>
+app.Map("/{type:regex(^led|control|mainframe$)}", async (string type, HttpContext context, WebSocketHandler handler) =>
 {
     if (context.WebSockets.IsWebSocketRequest)
     {
