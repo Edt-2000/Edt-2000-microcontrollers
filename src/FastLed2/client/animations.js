@@ -22,10 +22,8 @@ class SinglePulseAnimation extends Animation {
         let message = {
             animation: "singlePulse",
             led: this.isAll ? Leds.All : Leds.getLeds(),
-            colorSet: colorSet.map(c => c.toArray()),
-            colorIndex: state.Tick,
-            // color1: getElement(colorSet, state.Tick).toArray(),
-            // color2: getElement(colorSet, state.Tick + 1).toArray(),
+            color1: getElement(colorSet, state.Tick).toArray(),
+            color2: getElement(colorSet, state.Tick + 1).toArray(),
             fade: state.getFade(),
             speed: state.Modifier
         };

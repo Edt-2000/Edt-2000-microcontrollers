@@ -13,6 +13,8 @@ public class MessageAnalyzer
 
     public MessageAnalysis AnalyzeMessage(string type, string data)
     {
+        throw new Exception("Test again");
+
         if (type != Constants.WebSocketLed)
         {
             return new MessageAnalysis(data, []);
@@ -20,63 +22,57 @@ public class MessageAnalyzer
 
         var colors = new List<Color>();
 
-        var message = JsonSerializer.Deserialize<Message>(data, _jsonOptions);
-        if (message == null)
-        {
-            return new MessageAnalysis(data, []);
-        }
-
-        if (message.ColorSet is int[][] colorSet)
-        {
-            foreach (var color in colorSet)
-            {
-                colors.Add(new Color(color[0], color[1], color[2]));
-            }
-
-            if (message.ColorIndex is int colorIndex)
-            {
-                message.ExtraProperties["color1"] = message.ColorSet.GetElement(colorIndex);
-                message.ExtraProperties["color2"] = message.ColorSet.GetElement(colorIndex + 1);
-
-                message.ColorIndex = null;
-            }
-
-            message.ColorSet = null;
-        }
-
-        //var json = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(data);
-        //if (json == null)
+        //var message = JsonSerializer.Deserialize<Message>(data, _jsonOptions);
+        //if (message == null)
         //{
         //    return new MessageAnalysis(data, []);
         //}
 
-        foreach (var key in message.ExtraProperties.Keys.ToArray())
-        {
-            // TODO: this should handle object too
-            if (message.ExtraProperties[key] is JsonElement jsonElement)
-            {
-                object? value = jsonElement switch
-                {
-                    { ValueKind: JsonValueKind.String } @string => @string.GetString(),
-                    { ValueKind: JsonValueKind.Number } number => number.GetInt32(),
-                    { ValueKind: JsonValueKind.Array } array => array.Deserialize<int[][]>(),
-                    _ => null
-                };
+        //if (message.ColorSet is int[][] colorSet)
+        //{
+        //    foreach (var color in colorSet)
+        //    {
+        //        colors.Add(new Color(color[0], color[1], color[2]));
+        //    }
 
-                if (value == null || (_previousMessage.TryGetValue(key, out var previousValue) && IsEqual(previousValue, value)))
-                {
-                    message.ExtraProperties.Remove(key);
-                }
-                else
-                {
-                    _previousMessage[key] = value;
-                }
+        //    if (message.ColorIndex is int colorIndex)
+        //    {
+        //        message.ExtraProperties["color1"] = message.ColorSet.GetElement(colorIndex);
+        //        message.ExtraProperties["color2"] = message.ColorSet.GetElement(colorIndex + 1);
+
+        //        message.ColorIndex = null;
+        //    }
+
+        //    message.ColorSet = null;
+        //}
+
+        var json = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(data);
+        if (json == null)
+        {
+            return new MessageAnalysis(data, []);
+        }
+
+        foreach (var key in json.Keys.ToArray())
+        {
+            object? value = json[key] switch
+            {
+                JsonElement { ValueKind: JsonValueKind.String } @string => @string.GetString(),
+                JsonElement { ValueKind: JsonValueKind.Number } number => number.GetInt32(),
+                JsonElement { ValueKind: JsonValueKind.Array } array => array.Deserialize<int[][]>(),
+                _ => null
+            };
+
+            if (value == null || (_previousMessage.TryGetValue(key, out var previousValue) && IsEqual(previousValue, value)))
+            {
+                json.Remove(key);
+            }
+            else
+            {
+                _previousMessage[key] = value;
             }
         }
 
-        var newMessage = JsonSerializer.Serialize(message, _jsonOptions);
-
-        return new MessageAnalysis(newMessage, [.. colors]);
+        return new MessageAnalysis(data, [.. colors]);
     }
 
     private static bool IsEqual(object a, object b)
