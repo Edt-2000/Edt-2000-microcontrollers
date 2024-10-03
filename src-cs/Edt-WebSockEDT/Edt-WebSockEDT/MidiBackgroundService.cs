@@ -38,7 +38,7 @@ public class MidiBackgroundService : BackgroundService
         {
             var data = JsonSerializer.Serialize(states, _options);
 
-            await _webSocketHandler.SendAsync("control", data);
+            await _webSocketHandler.SendAsync(Constants.WebSocketControl, data);
 
             _semaphore.Release();
         }

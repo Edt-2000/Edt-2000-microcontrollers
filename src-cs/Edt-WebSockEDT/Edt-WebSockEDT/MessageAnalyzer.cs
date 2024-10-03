@@ -1,55 +1,85 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace EdtWebSockEDT;
 
 public class MessageAnalyzer
 {
     private readonly Dictionary<string, object> _previousMessage = new();
+    private readonly JsonSerializerOptions _jsonOptions = new JsonSerializerOptions
+    {
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+    };
 
     public MessageAnalysis AnalyzeMessage(string type, string data)
     {
-        if (type != "led")
+        if (type != Constants.WebSocketLed)
         {
             return new MessageAnalysis(data, []);
         }
 
-        var json = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(data);
-        if (json == null)
+        var colors = new List<Color>();
+
+        var message = JsonSerializer.Deserialize<Message>(data, _jsonOptions);
+        if (message == null)
         {
             return new MessageAnalysis(data, []);
         }
 
-        var colors = new List<(string, Color)>();
-
-        foreach (var key in json.Keys.Where(x => x != "animation").ToArray())
+        if (message.ColorSet is int[][] colorSet)
         {
-            object? value = json[key] switch
+            foreach (var color in colorSet)
             {
-                { ValueKind: JsonValueKind.String } @string => @string.GetString(),
-                { ValueKind: JsonValueKind.Number } number => number.GetInt32(),
-                { ValueKind: JsonValueKind.Array } array => array.Deserialize<int[]>(),
-                _ => null
-            };
-
-            if (key.StartsWith("color") && value is int[] { Length: 3 } colorArray)
-            {
-                colors.Add((key, new Color(colorArray[0], colorArray[1], colorArray[2])));
+                colors.Add(new Color(color[0], color[1], color[2]));
             }
 
-            if (value == null || (_previousMessage.TryGetValue(key, out var previousValue) && IsEqual(previousValue, value)))
+            if (message.ColorIndex is int colorIndex)
             {
-                json.Remove(key);
+                message.ExtraProperties["color1"] = message.ColorSet.GetElement(colorIndex);
+                message.ExtraProperties["color2"] = message.ColorSet.GetElement(colorIndex + 1);
+
+                message.ColorIndex = null;
             }
-            else
+
+            message.ColorSet = null;
+        }
+
+        //var json = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(data);
+        //if (json == null)
+        //{
+        //    return new MessageAnalysis(data, []);
+        //}
+
+        foreach (var key in message.ExtraProperties.Keys.ToArray())
+        {
+            // TODO: this should handle object too
+            if (message.ExtraProperties[key] is JsonElement jsonElement)
             {
-                _previousMessage[key] = value;
+                object? value = jsonElement switch
+                {
+                    { ValueKind: JsonValueKind.String } @string => @string.GetString(),
+                    { ValueKind: JsonValueKind.Number } number => number.GetInt32(),
+                    { ValueKind: JsonValueKind.Array } array => array.Deserialize<int[][]>(),
+                    _ => null
+                };
+
+                if (value == null || (_previousMessage.TryGetValue(key, out var previousValue) && IsEqual(previousValue, value)))
+                {
+                    message.ExtraProperties.Remove(key);
+                }
+                else
+                {
+                    _previousMessage[key] = value;
+                }
             }
         }
 
-        return new MessageAnalysis(data, [.. colors]);
+        var newMessage = JsonSerializer.Serialize(message, _jsonOptions);
+
+        return new MessageAnalysis(newMessage, [.. colors]);
     }
 
-    private bool IsEqual(object a, object b)
+    private static bool IsEqual(object a, object b)
         => (a, b) switch
         {
             (string string1, string string2) => string1.Equals(string2),
@@ -58,7 +88,24 @@ public class MessageAnalyzer
             _ => false
         };
 
-    public record MessageAnalysis(string MessageToSend, (string colorId, Color color)[] Colors);
+    public record MessageAnalysis(
+        string MessageToSend,
+        Color[] Colors);
 
     public record Color(int H, int S, int V);
+
+    public record Message
+    {
+        [JsonPropertyName("animation")]
+        public string? Animation { get; set; }
+
+        [JsonPropertyName("colorSet")]
+        public int[][]? ColorSet { get; set; }
+
+        [JsonPropertyName("colorIndex")]
+        public int? ColorIndex { get; set; }
+
+        [JsonExtensionData]
+        public Dictionary<string, object?> ExtraProperties { get; set; } = [];
+    }
 }

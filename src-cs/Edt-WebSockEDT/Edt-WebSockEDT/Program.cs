@@ -34,13 +34,13 @@ app.Map("/{type:regex(^led|control|mainframe$)}", async (string type, HttpContex
             {
                 var result = await ws.ReceiveAsync(memory, CancellationToken.None);
 
-                if (type == "control" && result.Count > 0)
+                if (type == Constants.WebSocketControl && result.Count > 0)
                 {
                     var data = memory[..result.Count];
 
                     var @string = Encoding.UTF8.GetString(data.Span);
 
-                    await handler.SendAsync("led", @string);
+                    await handler.SendAsync(Constants.WebSocketLed, @string);
                 }
             }
         }

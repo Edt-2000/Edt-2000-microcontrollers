@@ -2,27 +2,20 @@
 
 public static class Extensions
 {
-    public static object ToMainframeMessage(this (string colorId, MessageAnalyzer.Color color)[] colors)
-    {
-        /*
-         * {
-         *      "type": "colorPalette",
-         *      "payload": [
-         *          {
-         *              "h": 0-255,
-         *              "s": 0-255,
-         *              "b": 0-255
-         *          }
-         *      ]
-         * }
-         * 
-         * 
-         */
-
-        return new
+    public static object ToMainframeMessage(this MessageAnalyzer.Color[] colors)
+        => new
         {
             type = "fastLedMultiColor",
-            payload = colors.Select(x => new { h = x.color.H, s = x.color.S, b = x.color.V }).ToArray()
+            payload = colors.Select(x => new { h = x.H, s = x.S, b = x.V }).ToArray()
         };
+
+    public static T? GetElement<T>(this T[] values, int index)
+    {
+        if (values.Length == 0)
+        {
+            return default;
+        }
+
+        return values[index % values.Length];
     }
 }
