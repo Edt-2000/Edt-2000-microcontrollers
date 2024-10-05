@@ -31,7 +31,7 @@
 
 // /
 
-#include "networking/ethernet.hpp"
+#include "networking/network.hpp"
 #ifdef SERVER
 #include "networking/websocketServer.hpp"
 #else
@@ -115,7 +115,7 @@ void setup()
 
   Serial.begin(115200);
 
-  Network.startEthernet();
+  Network.startEthernet(2);
 
   Status.setup();
 

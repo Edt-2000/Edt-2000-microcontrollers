@@ -226,9 +226,12 @@ public:
             }
 
             fill_solid(leds0 + _leftBatVerticalPosition, batLength, CRGB::White);
-            Fader.scheduleFade(0, _leftBatVerticalPosition, batLength, 30, FadeMode::fadeAll);
+            Fader.scheduleFade(0, _leftBatVerticalPosition, batLength, 50, FadeMode::fadeAll);
 
-            auto color = HeatColor(130 + speed);
+            fill_solid(leds7 + _rightBatVerticalPosition, batLength, CRGB::White);
+            Fader.scheduleFade(7, _rightBatVerticalPosition, batLength, 50, FadeMode::fadeAll);
+
+            auto color = HeatColor(100 + (speed * 2));
 
             applyToLeds(
                 1 << _position, 
@@ -237,9 +240,6 @@ public:
                     leds[_verticalPosition] = color;
                     Fader.scheduleFade(index, _verticalPosition, 1, 20, FadeMode::fadeAll); 
                 });
-
-            fill_solid(leds7 + _rightBatVerticalPosition, batLength, CRGB::White);
-            Fader.scheduleFade(7, _rightBatVerticalPosition, batLength, 30, FadeMode::fadeAll);
         }
     }
 };

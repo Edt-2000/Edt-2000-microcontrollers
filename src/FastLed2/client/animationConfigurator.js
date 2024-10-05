@@ -9,6 +9,7 @@ class AnimationConfigurator extends AnimationElementBase {
         this.hue = 0;
         this.outputHue = 0;
         this.output = 1;
+        this.fastLedUnit = 3;
 
         this.channel = parseInt(this.dataset.channel);
 
@@ -19,6 +20,11 @@ class AnimationConfigurator extends AnimationElementBase {
         if (message.bS) {
             Leds.nextConfig();
         }
+
+        if (message.bR) {
+            FastLedUnits.nextConfig();
+        }
+
 
         let newHue = (message.s * 2);
         let hueChanged = newHue != this.outputHue;
@@ -50,11 +56,15 @@ class AnimationConfigurator extends AnimationElementBase {
     drawState() {
         let html = `<div><h2 class="type">Config</h2>`;
 
-        html += this.createSettingHtml(Leds.getConfig());
+        html += this.createSettingHtml(Leds.getConfig(), false, 's');
 
         let colorStyle = `background: hsl(${360.0 * (this.hue / 255.0)} 100% 50%);`;
 
         html += `<p class="color-setting" style="${colorStyle}" data-button="m">${this.output * 20}% color</p>`;
+
+        let fastLedColorStyle = FastLedUnits.getConfig() == 3 ? '' : 'background: red';
+
+        html += `<p class="text-setting" style="${fastLedColorStyle}" ${this.createButtonHtml('r')}>${FastLedUnits.getUnit()}</p>`;
 
         html += '</div>';
 

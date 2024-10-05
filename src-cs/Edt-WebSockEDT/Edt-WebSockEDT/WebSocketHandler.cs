@@ -8,8 +8,13 @@ public class WebSocketHandler
 {
     private readonly MessageAnalyzer _messageAnalyzer = new();
 
-    private readonly List<(string type, Uri? uri, WebSocket ws)> _webSockets = new();
-    private readonly Uri[] _ledWebSocketUrls = [new Uri("ws://10.0.0.25:80/ws")];
+    private readonly List<(string type, string unit, Uri? uri, WebSocket ws)> _webSockets = new();
+    private readonly (string unit, Uri uri)[] _ledWebSocketUrls =
+    [
+        //("unit1", new Uri("ws://10.0.0.21:80/ws")),
+        //("unit2", new Uri("ws://10.0.0.22:80/ws")),
+        ("spectacle", new Uri("ws://10.0.0.99:80"))
+    ];
     private readonly Uri _mainframeWebSocketUrl = new("ws://10.0.0.202:8898");
 
     private SocketIoClient? _socketIoClient = null;
@@ -23,7 +28,7 @@ public class WebSocketHandler
 
     public void AddWebSocket(string type, WebSocket ws)
     {
-        _webSockets.Add((type, null, ws));
+        _webSockets.Add((type, type, null, ws));
     }
 
     public void RemoveWebSocket(WebSocket ws)
@@ -38,13 +43,13 @@ public class WebSocketHandler
             return;
         }
 
-        foreach (var uri in _ledWebSocketUrls)
+        foreach (var (unit, uri) in _ledWebSocketUrls)
         {
             var socket = _webSockets.FirstOrDefault(x => x.uri == uri);
 
             if (socket == default || (socket.ws.State != WebSocketState.Open && socket.ws.State != WebSocketState.Connecting))
             {
-                await AddOutboundWebSocketAsync(Constants.WebSocketLed, uri);
+                await AddOutboundWebSocketAsync(Constants.WebSocketLed, unit, uri);
             }
         }
 
@@ -84,11 +89,11 @@ public class WebSocketHandler
         }
 
         var memory = new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(message.MessageToSend));
-        var sockets = _webSockets.Where(x => x.type == type).ToArray();
+        var sockets = _webSockets.Where(x => x.type == type && message.UnitToSentTo.Contains(x.unit)).ToArray();
 
         foreach (var socket in sockets)
         {
-            var (socketType, _, ws) = socket;
+            var (socketType, unit, _, ws) = socket;
 
             try
             {
@@ -123,7 +128,7 @@ public class WebSocketHandler
         }
     }
 
-    private async Task AddOutboundWebSocketAsync(string type, Uri uri)
+    private async Task AddOutboundWebSocketAsync(string type, string unit, Uri uri)
     {
         var outbound = new ClientWebSocket();
         outbound.Options.KeepAliveInterval = TimeSpan.FromSeconds(5);
@@ -131,13 +136,13 @@ public class WebSocketHandler
         {
             await outbound.ConnectAsync(uri, CancellationToken.None);
 
-            Console.WriteLine($"New device of type {type} at address {uri} added");
+            Console.WriteLine($"New device of type {type} ({unit}) at address {uri} added");
 
-            _webSockets.Add((type, uri, outbound));
+            _webSockets.Add((type, unit, uri, outbound));
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Adding outbound {type} WebSocket encountered issue: {ex.Message}");
+            Console.WriteLine($"Adding outbound {type} ({unit}) WebSocket encountered issue: {ex.Message}");
         }
     }
 }

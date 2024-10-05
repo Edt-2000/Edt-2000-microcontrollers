@@ -3,6 +3,8 @@ let socket;
 let statusElement = document.querySelector('#networking');
 
 function setupSocket() {
+    console.log("Starting WebSocket..");
+
     socket = new WebSocket('ws://localhost:5151/control');
 
     let handler = new WebSocketHandler(socket);
@@ -12,6 +14,7 @@ function setupSocket() {
         element.setWebSocketHandler(handler);
     }
     socket.onopen = function (event) {
+        console.log("WebSocket connected!");
         statusElement.className = "connected";
     };
 
@@ -29,6 +32,8 @@ function setupSocket() {
     };
 
     socket.onclose = function (event) {
+        console.log("WebSocket disconnected!");
+        
         statusElement.className = "disconnnected";
 
         setTimeout(setupSocket, 1000);

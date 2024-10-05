@@ -60,12 +60,12 @@
 
 ## Pending ideas + todos
 
-- Socket io fixup
+- APA101 speed
+- Remove web socket client code
 
 - Snake animation
 - Outrun / lotus road animation
 - Wave chase / eminating circle chase
-- Sectional horizontal chase (already kinda implemented -- just need a way to configure the led-mask)
 
 - Find a good naming scheme for all animations
     -> "single": uses one color

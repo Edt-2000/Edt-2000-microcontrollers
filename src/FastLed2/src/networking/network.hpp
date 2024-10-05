@@ -34,23 +34,11 @@ void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
 class NetworkHelper
 {
 public:
-    // void startWifi()
-    // {
-    //     WiFi.begin("xxx", "xxx");
-    //     WiFi.onEvent(ethernetEventHandler);
-
-    //     auto staticIP = IPAddress(192, 168, 142, 100);
-    //     auto gatewayIP = IPAddress(192, 168, 142, 1);
-    //     auto subnet = IPAddress(255, 255, 255, 0);
-
-    //     WiFi.config(staticIP, gatewayIP, subnet);
-    // }
-
-    void startEthernet()
+    void startEthernet(uint8_t unit)
     {
         WiFi.onEvent(ethernetEventHandler);
 
-        auto staticIP = IPAddress(10, 0, 0, 25);
+        auto staticIP = IPAddress(10, 0, 0, 20 + unit);
         auto gatewayIP = IPAddress(10, 0, 0, 1);
         auto subnet = IPAddress(255, 0, 0, 0);
 

@@ -21,6 +21,20 @@ class HSV {
     }
 }
 
+class FastLedUnits {
+    static _modes = [null, 'unit1', 'unit2', 'unit1 + unit2'];
+    static _activeMode = 3;
+
+    static getUnit() { return this._modes[this._activeMode]; }
+    static getConfig() { return this._activeMode; }
+    static nextConfig() { 
+        this._activeMode++;
+        if (this._activeMode >= this._modes.length) {
+            this._activeMode = 1;
+        }
+    }
+}
+
 class Leds {
     static All = 255;
     static Config = 0;
@@ -182,6 +196,8 @@ class WebSocketHandler {
     }
 
     send(sender, message) {
+        message.units = FastLedUnits.getConfig();
+
         this.previousSender = sender;
         this.ws.send(JSON.stringify(message));
     }
