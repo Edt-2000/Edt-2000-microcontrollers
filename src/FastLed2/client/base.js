@@ -22,7 +22,7 @@ class HSV {
 }
 
 class FastLedUnits {
-    static _modes = [null, 'unit1', 'unit2', 'unit1 + unit2'];
+    static _modes = [null, 'unit1', 'unit2', 'unit1 + unit2 + spectacle'];
     static _activeMode = 3;
 
     static getUnit() { return this._modes[this._activeMode]; }

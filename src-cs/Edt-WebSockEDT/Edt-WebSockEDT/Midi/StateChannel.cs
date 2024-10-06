@@ -34,6 +34,7 @@ public class StateChannel : Channel
         {
             Select += delta.Value;
         }
+        Select = Math.Clamp(Select, 0, 127);
     }
 
     public override Mode GetMode()

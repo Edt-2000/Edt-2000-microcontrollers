@@ -55,13 +55,16 @@ public class MessageAnalyzer
                 {
                     units.Add("unit1");
                 }
+
                 if (unit == 2 || unit == 3)
                 {
                     units.Add("unit2");
                 }
 
-                // TODO: this should be part of units
-                units.Add("spectacle");
+                if (unit == 3)
+                {
+                    units.Add("spectacle");
+                }
             }
         }
 

@@ -62,7 +62,7 @@
 
 - APA101 speed
 - Remove web socket client code
-- Rate limit spectacle
+- Implement custom rate limit spectacle
 
 - Snake animation
 - Outrun / lotus road animation

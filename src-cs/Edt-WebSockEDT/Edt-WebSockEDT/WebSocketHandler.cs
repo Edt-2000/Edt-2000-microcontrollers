@@ -1,5 +1,6 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
+using System.Threading.RateLimiting;
 using H.Socket.IO;
 
 namespace EdtWebSockEDT;
@@ -8,7 +9,7 @@ public class WebSocketHandler
 {
     private readonly MessageAnalyzer _messageAnalyzer = new();
 
-    private readonly List<(string type, string unit, Uri? uri, WebSocket ws)> _webSockets = new();
+    private readonly List<WebSocketRegistration> _webSockets = new();
     private readonly (string unit, Uri uri)[] _ledWebSocketUrls =
     [
         ("unit1", new Uri("ws://10.0.0.21:80/ws")),
@@ -27,12 +28,12 @@ public class WebSocketHandler
 
     public void AddWebSocket(string type, string unit, WebSocket ws)
     {
-        _webSockets.Add((type, unit, null, ws));
+        _webSockets.Add(new(type, unit, null, ws, CreateRateLimiter(unit)));
     }
 
     public void RemoveWebSocket(WebSocket ws)
     {
-        _webSockets.RemoveAll(x => x.ws == ws);
+        _webSockets.RemoveAll(x => x.WebSocket == ws);
     }
 
     public async Task MaintainOutboundWebSocketsAsync()
@@ -44,9 +45,9 @@ public class WebSocketHandler
 
         foreach (var (unit, uri) in _ledWebSocketUrls)
         {
-            var socket = _webSockets.FirstOrDefault(x => x.uri == uri);
+            var socket = _webSockets.FirstOrDefault(x => x.Uri == uri);
 
-            if (socket == default || (socket.ws.State != WebSocketState.Open && socket.ws.State != WebSocketState.Connecting))
+            if (socket == default || (socket.WebSocket.State != WebSocketState.Open && socket.WebSocket.State != WebSocketState.Connecting))
             {
                 await AddOutboundWebSocketAsync(Constants.WebSocketLed, unit, uri);
             }
@@ -88,23 +89,27 @@ public class WebSocketHandler
         }
 
         var memory = new ReadOnlyMemory<byte>(Encoding.UTF8.GetBytes(message.MessageToSend));
-        var sockets = _webSockets.Where(x => x.type == type && message.UnitToSentTo.Contains(x.unit)).ToArray();
+        var sockets = _webSockets.Where(x => x.Type == type && message.UnitToSentTo.Contains(x.Unit)).ToArray();
 
         foreach (var socket in sockets)
         {
-            var (socketType, unit, _, ws) = socket;
+            var rateLimit = socket.RateLimiter.AttemptAcquire(1);
+            if (rateLimit?.IsAcquired == false)
+            {
+                continue;
+            }
 
             try
             {
-                if (ws.State == WebSocketState.Open)
+                if (socket.WebSocket.State == WebSocketState.Open)
                 {
                     try
                     {
-                        await ws.SendAsync(memory, WebSocketMessageType.Text, true, CancellationToken.None);
+                        await socket.WebSocket.SendAsync(memory, WebSocketMessageType.Text, true, CancellationToken.None);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"WebSocket {socketType} encountered issue: {ex.Message}");
+                        Console.WriteLine($"WebSocket {socket.Type} ({socket.Unit}) encountered issue: {ex.Message}");
 
                         _webSockets.Remove(socket);
                     }
@@ -112,13 +117,15 @@ public class WebSocketHandler
                 else
                 {
                     _webSockets.Remove(socket);
-                    ws.Dispose();
+                    socket.WebSocket.Dispose();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"WebSocketHandler {socketType} encountered issue: {ex.Message}");
+                Console.WriteLine($"WebSocketHandler {socket.Type} ({socket.Unit}) encountered issue: {ex.Message}");
             }
+
+            rateLimit?.Dispose();
         }
 
         if (colorTask != null)
@@ -137,11 +144,63 @@ public class WebSocketHandler
 
             Console.WriteLine($"New device of type {type} ({unit}) at address {uri} added");
 
-            _webSockets.Add((type, unit, uri, outbound));
+            _webSockets.Add(new(type, unit, uri, outbound, CreateRateLimiter(unit)));
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Adding outbound {type} ({unit}) WebSocket encountered issue: {ex.Message}");
         }
+    }
+
+    private static RateLimiter CreateRateLimiter(string unit)
+    {
+        if (unit == "spectacle")
+        {
+            // TODO: this should become custom one that only allows the latest queue to go through and cancel the rest
+            // https://github.com/dotnet/runtime/blob/main/src/libraries/System.Threading.RateLimiting/src/System/Threading/RateLimiting/SlidingWindowRateLimiter.cs
+            return new SlidingWindowRateLimiter(new()
+            {
+                Window = TimeSpan.FromMilliseconds(100),
+                SegmentsPerWindow = 1,
+                PermitLimit = 1,
+                AutoReplenishment = true,
+                QueueLimit = 0,
+                QueueProcessingOrder = QueueProcessingOrder.NewestFirst
+            });
+        }
+        return new AllowAllRateLimiter();
+    }
+
+    private sealed record WebSocketRegistration(
+        string Type,
+        string Unit,
+        Uri? Uri,
+        WebSocket WebSocket,
+        RateLimiter RateLimiter);
+
+    private sealed class AllowAllRateLimiter : RateLimiter
+    {
+        private sealed class AllowAllRateLimitLease : RateLimitLease
+        {
+            public override bool IsAcquired => true;
+
+            public override IEnumerable<string> MetadataNames => [];
+
+            public override bool TryGetMetadata(string metadataName, out object? metadata)
+            {
+                metadata = null;
+                return false;
+            }
+        }
+
+        private readonly RateLimitLease _lease = new AllowAllRateLimitLease();
+
+        public override TimeSpan? IdleDuration => null;
+
+        public override RateLimiterStatistics? GetStatistics() => null;
+
+        protected override ValueTask<RateLimitLease> AcquireAsyncCore(int permitCount, CancellationToken cancellationToken) => new ValueTask<RateLimitLease>(_lease);
+
+        protected override RateLimitLease AttemptAcquireCore(int permitCount) => _lease;
     }
 }
