@@ -23,6 +23,11 @@ public class MessageAnalyzer
             return new MessageAnalysis(data, [], []);
         }
 
+        if (json.TryGetValue("animation", out var animationName) && animationName.GetString() == "stop")
+        {
+            _previousMessage.Clear();
+        }
+
         foreach (var key in json.Keys.Where(x => x != "animation").ToArray())
         {
             object? value = json[key] switch

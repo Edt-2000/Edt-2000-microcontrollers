@@ -24,42 +24,40 @@ public:
 
     void start()
     {
-        takeFastLedControl();
         _isActive = true;
     }
 
     void stop()
     {
-        yieldFastLedControl();
         _isActive = false;
     }
 
     void loop()
     {
-        do
+        if (Time.t1ms)
         {
-            applyToLeds(
-                [](CRGB *leds, uint8_t index)
+            Fader.disableFade();
+
+            for (uint8_t i = 0; i < 24; i++)
+            {
+                if (globalSettings.speed / 2 > random8())
                 {
-                    for (uint8_t i = 0; i < 59; i++) {
-                        if (globalSettings.speed > random8()) {
-                            auto s = random8(180, 255);
+                    auto s = random8(180, 255);
 
-                            if (s > 220) {
-                                leds[i] = CRGB::White;
-                            }
-                            else {
-                                leds[i] = CHSV(158, s, 255);
-                            }
-                        }
-                        else {
-                            leds[i] = CRGB::Black;
-                        }
+                    if (s > 220)
+                    {
+                        leds[i] = CRGB::White;
                     }
-                });
-
-            show();
-
-        } while (_isActive);
+                    else
+                    {
+                        leds[i] = CHSV(158, s, 255);
+                    }
+                }
+                else
+                {
+                    leds[i] = CRGB::Black;
+                }
+            }
+        }
     }
 };

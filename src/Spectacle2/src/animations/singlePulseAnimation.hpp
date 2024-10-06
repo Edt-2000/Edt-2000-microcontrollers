@@ -38,12 +38,12 @@ public:
 
     if (isRainbow(color))
     {
-      fill_rainbow(leds, LEDS, 0, DEFAULT_DELTA_HUE);
+      fill_rainbow(leds, 24, 0, DEFAULT_DELTA_HUE);
       Fader.scheduleFade(globalSettings.speed / 2, globalSettings.fadeMode());
     }
     else
     {
-      fill_solid(leds, LEDS, color);
+      fill_solid(leds, 24, color);
       Fader.scheduleFade(globalSettings.speed / 2, globalSettings.fadeMode());
     }
   }

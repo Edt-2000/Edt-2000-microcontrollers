@@ -35,7 +35,7 @@ public:
 
   void loop()
   {
-    fill_solid(leds, LEDS, CRGB::Black);
+    fill_solid(leds, 24, CRGB::Black);
     Fader.disableFade();
 
     _isActive = false;

@@ -11,9 +11,8 @@ public class WebSocketHandler
     private readonly List<(string type, string unit, Uri? uri, WebSocket ws)> _webSockets = new();
     private readonly (string unit, Uri uri)[] _ledWebSocketUrls =
     [
-        //("unit1", new Uri("ws://10.0.0.21:80/ws")),
-        //("unit2", new Uri("ws://10.0.0.22:80/ws")),
-        ("spectacle", new Uri("ws://10.0.0.99:80"))
+        ("unit1", new Uri("ws://10.0.0.21:80/ws")),
+        ("unit2", new Uri("ws://10.0.0.22:80/ws"))
     ];
     private readonly Uri _mainframeWebSocketUrl = new("ws://10.0.0.202:8898");
 
@@ -26,9 +25,9 @@ public class WebSocketHandler
         _activelyOpenOutboundWebSocket = activelyOpenOutboundWebSocket;
     }
 
-    public void AddWebSocket(string type, WebSocket ws)
+    public void AddWebSocket(string type, string unit, WebSocket ws)
     {
-        _webSockets.Add((type, type, null, ws));
+        _webSockets.Add((type, unit, null, ws));
     }
 
     public void RemoveWebSocket(WebSocket ws)

@@ -26,7 +26,7 @@ public:
 private:
     void setColor(CRGB color) {
         // reset all leds
-        fill_solid(leds, LEDS, CRGB::Black);
+        fill_solid(leds, 24, CRGB::Black);
         
         // set colors
         fill_solid(leds, 1, color);

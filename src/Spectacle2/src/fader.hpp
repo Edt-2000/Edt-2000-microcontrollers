@@ -27,7 +27,7 @@ struct FadeState
 class FaderHelper
 {
 private:
-    std::vector<FadeState> _fades = std::vector<FadeState>(LEDS);
+    std::vector<FadeState> _fades = std::vector<FadeState>(24);
 
 public:
     FaderHelper()

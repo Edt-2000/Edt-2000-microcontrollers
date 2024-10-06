@@ -1,26 +1,23 @@
 #pragma once
 
-#include <WebSocketsServer.h>
+#include <WiFiNINA.h>
+#include <WebSocketsClient.h>
 #include <ArduinoJson.h>
 
 #include "../debugging/logger.hpp"
 #include "../debugging/status.hpp"
 #include "../messaging/json.hpp"
 
-WebSocketsServer ws(80);
+WebSocketsClient ws;
 
 using StateChangedHandler = std::function<void()>;
 StateChangedHandler stateChangedCallback;
 
 void onEvent(
-    uint8_t num, 
-    WStype_t type, 
-    uint8_t * data, 
-    size_t lengthh)
+    WStype_t type,
+    uint8_t *data,
+    size_t length)
 {
-    PrintInfo("MESSAGE ");
-    PrintLnInfo(type);
-
     if (type == WStype_TEXT)
     {
         JsonHandler.deserialize(data);
@@ -42,7 +39,7 @@ public:
     {
         PrintLnDebug("Starting web socket");
 
-        ws.begin();
+        ws.begin("10.0.0.201", 5151, "/led/spectacle");
         ws.onEvent(onEvent);
 
         PrintLnDebug("Started web socket");

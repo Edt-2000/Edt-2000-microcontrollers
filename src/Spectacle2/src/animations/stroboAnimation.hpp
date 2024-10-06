@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../animation.hpp"
+#include "../fader.hpp"
 #include "../settings.hpp"
 
 #include "../leds.hpp"
@@ -24,45 +25,41 @@ public:
 
   void start()
   {
-    takeFastLedControl();
     _isActive = true;
   }
 
   void stop()
   {
-    yieldFastLedControl();
     _isActive = false;
   }
 
   void loop()
   {
-    do
+    if (every(1000.0 / globalSettings.speed))
     {
-      auto color = globalSettings.primaryColor();
+      auto const color = globalSettings.primaryColor();
 
-      if (isRainbow(color)) {
-        applyToLeds([](CRGB* leds) { fill_rainbow(leds, 59, 0, DEFAULT_DELTA_HUE); });
+      if (isRainbow(color))
+      {
+        fill_rainbow(leds, 24, 0, DEFAULT_DELTA_HUE);
+        Fader.disableFade();
       }
-      else {
-        applyToLeds([&](CRGB* leds) { fill_solid(leds, 59, color); });
+      else
+      {
+        fill_solid(leds, 24, color);
+        Fader.disableFade();
       }
 
-      // going back to black is uninterruptible, otherwise the leds might stay on full blast
-      uninterruptibleShow();
+      show();
 
-      uint8_t onDelay = 
-        globalSettings.speed <= 5 ? 12 :
-        globalSettings.speed <= 20 ? 6 : 3;
+      delay(10);
 
-      uninterruptibleDelay(onDelay);
-      
-      applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
-      
-      uninterruptibleShow();
+      fill_solid(leds, 24, CRGB::Black);
+      Fader.disableFade();
 
-      // from this point the animation is interruptable
-      delay(1000.0 / globalSettings.speed);
+      show();
 
-    } while (_isActive);
+      delay(10);
+    }
   }
 };

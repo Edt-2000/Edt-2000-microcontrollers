@@ -15,17 +15,17 @@ var app = builder.Build();
 
 app.UseWebSockets(new() { KeepAliveInterval = TimeSpan.FromSeconds(10) });
 
-app.Map("/{type:regex(^led|control|mainframe$)}", async (string type, HttpContext context, WebSocketHandler handler) =>
+app.Map("/{type}/{unit?}", async (string type, string? unit, HttpContext context, WebSocketHandler handler) =>
 {
     if (context.WebSockets.IsWebSocketRequest)
     {
-        Console.WriteLine($"New device of type {type} joined");
+        Console.WriteLine($"New device of type {type} ({unit}) joined");
 
         using var ws = await context.WebSockets.AcceptWebSocketAsync();
 
         try
         {
-            handler.AddWebSocket(type, ws);
+            handler.AddWebSocket(type, unit ?? type, ws);
 
             var buffer = new byte[1024 * 4];
             var memory = new Memory<byte>(buffer);
@@ -51,7 +51,7 @@ app.Map("/{type:regex(^led|control|mainframe$)}", async (string type, HttpContex
             handler.RemoveWebSocket(ws);
         }
 
-        Console.WriteLine($"Device of type {type} left");
+        Console.WriteLine($"Device of type {type} ({unit}) left");
     }
     else
     {
