@@ -34,13 +34,13 @@ public class MidiBackgroundService : BackgroundService
 
     private async Task HandleMidiMessageAsync(Channel[] states)
     {
-        if (await _semaphore.WaitAsync(0))
-        {
-            var data = JsonSerializer.Serialize(states, _options);
+        //if (await _semaphore.WaitAsync(0))
+        //{
+        var data = JsonSerializer.Serialize(states, _options);
 
-            await _webSocketHandler.SendAsync(Constants.WebSocketControl, data);
+        await _webSocketHandler.SendAsync(Constants.WebSocketControl, data);
 
-            _semaphore.Release();
-        }
+        //_semaphore.Release();
+        //}
     }
 }

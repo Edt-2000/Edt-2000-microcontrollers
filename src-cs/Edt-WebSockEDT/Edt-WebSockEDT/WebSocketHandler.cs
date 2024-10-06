@@ -1,6 +1,7 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
 using System.Threading.RateLimiting;
+using EdtWebSockEDT.RateLimiters;
 using H.Socket.IO;
 
 namespace EdtWebSockEDT;
@@ -93,7 +94,7 @@ public class WebSocketHandler
 
         foreach (var socket in sockets)
         {
-            var rateLimit = socket.RateLimiter.AttemptAcquire(1);
+            var rateLimit = await socket.RateLimiter.AcquireAsync(1);
             if (rateLimit?.IsAcquired == false)
             {
                 continue;
@@ -156,8 +157,6 @@ public class WebSocketHandler
     {
         if (unit == "spectacle")
         {
-            // TODO: this should become custom one that only allows the latest queue to go through and cancel the rest
-            // https://github.com/dotnet/runtime/blob/main/src/libraries/System.Threading.RateLimiting/src/System/Threading/RateLimiting/SlidingWindowRateLimiter.cs
             return new SlidingWindowRateLimiter(new()
             {
                 Window = TimeSpan.FromMilliseconds(100),
@@ -168,7 +167,9 @@ public class WebSocketHandler
                 QueueProcessingOrder = QueueProcessingOrder.NewestFirst
             });
         }
-        return new AllowAllRateLimiter();
+
+        // TODO: test this and add it to spectacle
+        return new LastInQueueRateLimiter(TimeSpan.FromMilliseconds(10));
     }
 
     private sealed record WebSocketRegistration(
@@ -177,30 +178,4 @@ public class WebSocketHandler
         Uri? Uri,
         WebSocket WebSocket,
         RateLimiter RateLimiter);
-
-    private sealed class AllowAllRateLimiter : RateLimiter
-    {
-        private sealed class AllowAllRateLimitLease : RateLimitLease
-        {
-            public override bool IsAcquired => true;
-
-            public override IEnumerable<string> MetadataNames => [];
-
-            public override bool TryGetMetadata(string metadataName, out object? metadata)
-            {
-                metadata = null;
-                return false;
-            }
-        }
-
-        private readonly RateLimitLease _lease = new AllowAllRateLimitLease();
-
-        public override TimeSpan? IdleDuration => null;
-
-        public override RateLimiterStatistics? GetStatistics() => null;
-
-        protected override ValueTask<RateLimitLease> AcquireAsyncCore(int permitCount, CancellationToken cancellationToken) => new ValueTask<RateLimitLease>(_lease);
-
-        protected override RateLimitLease AttemptAcquireCore(int permitCount) => _lease;
-    }
 }
