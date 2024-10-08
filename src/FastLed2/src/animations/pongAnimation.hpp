@@ -94,7 +94,7 @@ public:
                     return;
                 }
 
-                _verticalSpeed = random8(4, 6);
+                _verticalSpeed = random8(1, 6);
                 if (isUp)
                 {
                     _direction = rightUp;
@@ -120,7 +120,7 @@ public:
                     return;
                 }
 
-                _verticalSpeed = random8(4, 6);
+                _verticalSpeed = random8(1, 6);
                 if (isUp)
                 {
                     _direction = leftUp;

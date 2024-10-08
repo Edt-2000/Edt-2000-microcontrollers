@@ -7,10 +7,9 @@ public sealed class LastInQueueRateLimiter : RateLimiter
     private readonly object _lock = new();
     private readonly TimeSpan _waitTimeBetween;
 
+    private CancellationTokenSource _cts = new();
     private TaskCompletionSource? _tcs;
     private DateTime _previousCompletion;
-
-    private static int _currentTicketNumber = 0;
 
     public LastInQueueRateLimiter(
         TimeSpan waitTimeBetween)
@@ -29,42 +28,60 @@ public sealed class LastInQueueRateLimiter : RateLimiter
             throw new ArgumentException("Permit count can only be 1");
         }
 
-        int ticketNumber;
         Task waitTask;
+        CancellationToken nextInLineToken;
 
         lock (_lock)
         {
+            // cancel the previous one
+            _cts.Cancel();
+
+            // create a new source for this attempt
+            _cts = new();
+
+            // if no other call has made it through, always allow it
             if (_tcs == null)
             {
                 return AllowThrough();
             }
-            else
-            {
-                ticketNumber = ++_currentTicketNumber;
-            }
 
             waitTask = _tcs.Task;
+            nextInLineToken = _cts.Token;
         }
 
+        // rate limit ourselves a bit
         var diff = DateTime.UtcNow - _previousCompletion;
         if (diff < _waitTimeBetween)
         {
-            await Task.Delay(diff, cancellationToken);
-        }
-
-        await waitTask;
-
-        // no new calls are waiting
-        if (ticketNumber == _currentTicketNumber)
-        {
-            lock (_lock)
+            try
             {
-                return AllowThrough();
+                await Task.Delay(_waitTimeBetween - diff, cancellationToken).WaitAsync(nextInLineToken);
+            }
+            catch (TaskCanceledException)
+            {
+                return Bounce();
             }
         }
-        else
+
+        // make sure the previous call is completely finished
+        try
+        {
+            await waitTask.WaitAsync(nextInLineToken);
+        }
+        catch (TaskCanceledException)
         {
             return Bounce();
+        }
+
+        // lock so we're 100% sure that we are allowed through
+        lock (_lock)
+        {
+            if (nextInLineToken.IsCancellationRequested)
+            {
+                return Bounce();
+            }
+
+            return AllowThrough();
         }
 
         RateLimitLease AllowThrough()

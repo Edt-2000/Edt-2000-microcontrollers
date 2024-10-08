@@ -13,7 +13,7 @@ public class WebSocketBackgroundService : BackgroundService
     {
         do
         {
-            await _handler.MaintainOutboundWebSocketsAsync();
+            await _handler.MaintainWebSocketsAsync();
 
             await Task.Delay(1000, stoppingToken);
         }

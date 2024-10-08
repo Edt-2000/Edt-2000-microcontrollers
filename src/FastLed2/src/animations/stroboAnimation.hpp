@@ -61,7 +61,17 @@ public:
       uninterruptibleShow();
 
       // from this point the animation is interruptable
-      delay(1000.0 / globalSettings.speed);
+      // by delaying 10x 1/10th large delays can be shortened by updating the setting
+      delay(100.0 / globalSettings.speed);
+      delay(100.0 / globalSettings.speed);
+      delay(100.0 / globalSettings.speed);
+      delay(100.0 / globalSettings.speed);
+      delay(100.0 / globalSettings.speed);
+      delay(100.0 / globalSettings.speed);
+      delay(100.0 / globalSettings.speed);
+      delay(100.0 / globalSettings.speed);
+      delay(100.0 / globalSettings.speed);
+      delay(100.0 / globalSettings.speed);
 
     } while (_isActive);
   }

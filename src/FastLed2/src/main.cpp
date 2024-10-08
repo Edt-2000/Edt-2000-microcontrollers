@@ -53,14 +53,14 @@ auto animationCallback = [](std::string animation)
 
 void setup()
 {
-  FastLED.addLeds<APA102, 16, 32, BGR, DATA_RATE_KHZ(500)>(leds0, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds1, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds2, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 15, 32, BGR, DATA_RATE_KHZ(500)>(leds3, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 5, 32, BGR, DATA_RATE_KHZ(500)>(leds4, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 3, 32, BGR, DATA_RATE_KHZ(500)>(leds5, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 4, 32, BGR, DATA_RATE_KHZ(500)>(leds6, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 2, 32, BGR, DATA_RATE_KHZ(500)>(leds7, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 16, 32, BGR>(leds0, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 13, 32, BGR>(leds1, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 14, 32, BGR>(leds2, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 15, 32, BGR>(leds3, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 5, 32, BGR>(leds4, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 3, 32, BGR>(leds5, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 4, 32, BGR>(leds6, 59).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 2, 32, BGR>(leds7, 59).setCorrection(TypicalLEDStrip);
 
   xTaskCreate(&fastLedTask, "FL", 5120, NULL, 1, NULL);
 

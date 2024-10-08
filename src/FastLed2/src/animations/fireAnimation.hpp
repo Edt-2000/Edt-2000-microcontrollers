@@ -70,6 +70,8 @@ public:
 
             show();
 
+            delay(16);
+
         } while (_isActive);
     }
 };

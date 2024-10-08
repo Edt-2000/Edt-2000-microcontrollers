@@ -113,6 +113,10 @@ p.color-setting {
 p.text-setting.disabled {
     background: var(--settingDisabled);
 }
+p.text-setting.active {
+    border: 2px solid var(--accent);
+    padding: 2px;
+}
 
 p.value-setting.disabled,
 p.color-setting.disabled {

@@ -9,6 +9,7 @@ namespace EdtWebSockEDT;
 public class WebSocketHandler
 {
     private readonly MessageAnalyzer _messageAnalyzer = new();
+    private readonly List<Task> _sendingTasks = new();
 
     private readonly List<WebSocketRegistration> _webSockets = new();
     private readonly (string unit, Uri uri)[] _ledWebSocketUrls =
@@ -20,13 +21,6 @@ public class WebSocketHandler
 
     private SocketIoClient? _socketIoClient = null;
 
-    private readonly bool _activelyOpenOutboundWebSocket;
-
-    public WebSocketHandler(bool activelyOpenOutboundWebSocket)
-    {
-        _activelyOpenOutboundWebSocket = activelyOpenOutboundWebSocket;
-    }
-
     public void AddWebSocket(string type, string unit, WebSocket ws)
     {
         _webSockets.Add(new(type, unit, null, ws, CreateRateLimiter(unit)));
@@ -37,13 +31,8 @@ public class WebSocketHandler
         _webSockets.RemoveAll(x => x.WebSocket == ws);
     }
 
-    public async Task MaintainOutboundWebSocketsAsync()
+    public async Task MaintainWebSocketsAsync()
     {
-        if (!_activelyOpenOutboundWebSocket)
-        {
-            return;
-        }
-
         foreach (var (unit, uri) in _ledWebSocketUrls)
         {
             var socket = _webSockets.FirstOrDefault(x => x.Uri == uri);
@@ -77,9 +66,17 @@ public class WebSocketHandler
                 _socketIoClient = null;
             }
         }
+
+        // clean up all tasks that have ran
+        _sendingTasks.RemoveAll(task => task.IsCompleted);
     }
 
-    public async Task SendAsync(string type, string data)
+    public void Send(string type, string data)
+    {
+        _sendingTasks.Add(SendAsync(type, data));
+    }
+
+    private async Task SendAsync(string type, string data)
     {
         var message = _messageAnalyzer.AnalyzeMessage(type, data);
         Task? colorTask = null;
@@ -94,7 +91,7 @@ public class WebSocketHandler
 
         foreach (var socket in sockets)
         {
-            var rateLimit = await socket.RateLimiter.AcquireAsync(1);
+            using var rateLimit = await socket.RateLimiter.AcquireAsync(1);
             if (rateLimit?.IsAcquired == false)
             {
                 continue;
@@ -125,8 +122,6 @@ public class WebSocketHandler
             {
                 Console.WriteLine($"WebSocketHandler {socket.Type} ({socket.Unit}) encountered issue: {ex.Message}");
             }
-
-            rateLimit?.Dispose();
         }
 
         if (colorTask != null)
@@ -157,19 +152,10 @@ public class WebSocketHandler
     {
         if (unit == "spectacle")
         {
-            return new SlidingWindowRateLimiter(new()
-            {
-                Window = TimeSpan.FromMilliseconds(100),
-                SegmentsPerWindow = 1,
-                PermitLimit = 1,
-                AutoReplenishment = true,
-                QueueLimit = 0,
-                QueueProcessingOrder = QueueProcessingOrder.NewestFirst
-            });
+            return new LastInQueueRateLimiter(TimeSpan.FromMilliseconds(100));
         }
 
-        // TODO: test this and add it to spectacle
-        return new LastInQueueRateLimiter(TimeSpan.FromMilliseconds(10));
+        return new LastInQueueRateLimiter(TimeSpan.FromMilliseconds(1));
     }
 
     private sealed record WebSocketRegistration(

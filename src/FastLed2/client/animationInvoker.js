@@ -24,6 +24,7 @@ class AnimationInvoker extends AnimationElementBase {
 
         if (this.dataset.continuous) {
             this.singleShot = false;
+            this.animationProbablyActive = false;
         }
 
         if (this.dataset.modifier) {
@@ -70,6 +71,11 @@ class AnimationInvoker extends AnimationElementBase {
         }
 
         window.addEventListener("keydown", (e) => {
+            if (!this.singleShot && this.animationProbablyActive && e.code !== key) {
+                this.animationProbablyActive = false;
+                this.drawState();
+            }
+
             if (!e.repeat && e.code === key) {
                 e.preventDefault();
                 this.onKeyDown();
@@ -85,9 +91,9 @@ class AnimationInvoker extends AnimationElementBase {
         let newModifier = 1 + (message.s * 2);
         let newSpeed = 1 + (message.i * 2);
 
-        let animationProbablyActive = !this.singleShot && this.webSocketHandler.previousSender == this;
+        this.animationProbablyActive = !this.singleShot && this.webSocketHandler.previousSender == this;
 
-        let shouldSend = animationProbablyActive;
+        let shouldSend = this.animationProbablyActive;
 
         if (this.animation) {
             if (message.bS) {
@@ -97,7 +103,7 @@ class AnimationInvoker extends AnimationElementBase {
 
         if (this.colorSet) {
             if (message.bM) {
-                if (animationProbablyActive) {
+                if (this.animationProbablyActive) {
                     this.state.updateTick();
                 }
                 else {
@@ -138,6 +144,8 @@ class AnimationInvoker extends AnimationElementBase {
             delete message['animation'];
         }
 
+        this.drawState();
+
         this.webSocketHandler.send(this, message);
     }
 
@@ -165,7 +173,7 @@ class AnimationInvoker extends AnimationElementBase {
             html += `<h2 class="animation">${leftPad(allowedAnimations.indexOf(animation) + 1, 2)}/${allowedAnimations.length}</h2>`;
         }
 
-        html += this.createSettingHtml(animationName, this.dataset.animation, 's');
+        html += this.createSettingHtml(animationName, this.dataset.animation, 's', !this.singleShot && this.animationProbablyActive);
 
         if (this.dataset.speed !== "false") {
             html += this.createValueHtml(this.state.Speed, spaceCapitals(animation.speedDescription ?? "&nbsp;"), this.dataset.speed || animation.speedDescription == null);

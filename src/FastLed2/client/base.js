@@ -154,8 +154,8 @@ class AnimationElementBase extends HTMLElement {
         this.webSocketHandler = webSocketHandler;
     }
 
-    createSettingHtml(value, disabled, button) {
-        return `<p class="text-setting${disabled ? ' disabled' : ''}" ${this.createButtonHtml(button)}>${value}</p>`;
+    createSettingHtml(value, disabled, button, active) {
+        return `<p class="text-setting${disabled ? ' disabled' : ''}${active ? ' active' : ''}" ${this.createButtonHtml(button)}>${value}</p>`;
     }
     
     createValueHtml(value, description, disabled, button) {

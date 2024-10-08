@@ -7,9 +7,9 @@ public class Kontrol
     private IMidiInput? _input;
     private IMidiOutput? _output;
 
-    private Func<Channel[], Task>? _messageCallback = null;
+    private Action<Channel[]>? _messageCallback = null;
 
-    public async Task InitAsync(Func<Channel[], Task> onMessage)
+    public async Task InitAsync(Action<Channel[]> onMessage)
     {
         _messageCallback = onMessage;
 
