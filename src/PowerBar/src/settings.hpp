@@ -9,6 +9,13 @@ struct Settings
   int speed = 5;
   int brightness = 50;
   int size = 1;
+
+  inline CRGB foregroundColor() { return colors[0]; }
+  inline CRGB backgroundColor() { return colors[1]; }
+
+  inline CHSV primaryColor() { return colors[0]; }
+  inline CHSV secondaryColor() { return colors[1]; }
+  
 } globalSettings;
 
 extern Settings globalSettings;

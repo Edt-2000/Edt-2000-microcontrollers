@@ -62,9 +62,9 @@ class AnimationConfigurator extends AnimationElementBase {
 
         html += `<p class="color-setting" style="${colorStyle}" data-button="m">${this.output * 20}% color</p>`;
 
-        let fastLedColorStyle = FastLedUnits.getConfig() == 3 ? '' : 'background: red';
+        let fastLedColorStyle = FastLedUnits._activeMode + 1 == FastLedUnits._modes.length ? '' : 'background: red';
 
-        html += `<p class="text-setting" style="${fastLedColorStyle}" ${this.createButtonHtml('r')}>${FastLedUnits.getUnit()}</p>`;
+        html += `<p class="text-setting" style="${fastLedColorStyle}" ${this.createButtonHtml('r')}>${FastLedUnits.getUnits().join(', ')}</p>`;
 
         html += '</div>';
 

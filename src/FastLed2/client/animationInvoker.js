@@ -70,6 +70,10 @@ class AnimationInvoker extends AnimationElementBase {
             }
         }
 
+        if (this.dataset.deviceType) {
+            this.state.Units = [this.dataset.deviceType];
+        }
+
         window.addEventListener("keydown", (e) => {
             if (!this.singleShot && this.animationProbablyActive && e.code !== key) {
                 this.animationProbablyActive = false;

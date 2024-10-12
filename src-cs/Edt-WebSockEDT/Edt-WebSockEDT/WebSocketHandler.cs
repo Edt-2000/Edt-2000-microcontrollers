@@ -12,10 +12,11 @@ public class WebSocketHandler
     private readonly List<Task> _sendingTasks = new();
 
     private readonly List<WebSocketRegistration> _webSockets = new();
-    private readonly (string unit, Uri uri)[] _ledWebSocketUrls =
+    private readonly (string unit, Uri uri, ConnectionType connectionType)[] _ledWebSocketUrls =
     [
-        ("unit1", new Uri("ws://10.0.0.21:80/ws")),
-        ("unit2", new Uri("ws://10.0.0.22:80/ws"))
+        //("unit1", new Uri("ws://10.0.0.21:80/ws"), ConnectionType.Wired),
+        //("unit2", new Uri("ws://10.0.0.22:80/ws"), ConnectionType.Wired),
+        ("powerbar", new Uri("ws://10.0.0.30:80/ws"), ConnectionType.Wireless)
     ];
     private readonly Uri _mainframeWebSocketUrl = new("ws://10.0.0.202:8898");
 
@@ -23,7 +24,9 @@ public class WebSocketHandler
 
     public void AddWebSocket(string type, string unit, WebSocket ws)
     {
-        _webSockets.Add(new(type, unit, null, ws, CreateRateLimiter(unit)));
+        var connectionType = unit == "spectacle" ? ConnectionType.Wireless : ConnectionType.Wired;
+
+        _webSockets.Add(new(type, unit, null, ws, CreateRateLimiter(connectionType)));
     }
 
     public void RemoveWebSocket(WebSocket ws)
@@ -33,13 +36,13 @@ public class WebSocketHandler
 
     public async Task MaintainWebSocketsAsync()
     {
-        foreach (var (unit, uri) in _ledWebSocketUrls)
+        foreach (var (unit, uri, connectionType) in _ledWebSocketUrls)
         {
             var socket = _webSockets.FirstOrDefault(x => x.Uri == uri);
 
             if (socket == default || (socket.WebSocket.State != WebSocketState.Open && socket.WebSocket.State != WebSocketState.Connecting))
             {
-                await AddOutboundWebSocketAsync(Constants.WebSocketLed, unit, uri);
+                await AddOutboundWebSocketAsync(Constants.WebSocketLed, unit, uri, connectionType);
             }
         }
 
@@ -130,7 +133,7 @@ public class WebSocketHandler
         }
     }
 
-    private async Task AddOutboundWebSocketAsync(string type, string unit, Uri uri)
+    private async Task AddOutboundWebSocketAsync(string type, string unit, Uri uri, ConnectionType connectionType)
     {
         var outbound = new ClientWebSocket();
         outbound.Options.KeepAliveInterval = TimeSpan.FromSeconds(5);
@@ -140,7 +143,7 @@ public class WebSocketHandler
 
             Console.WriteLine($"New device of type {type} ({unit}) at address {uri} added");
 
-            _webSockets.Add(new(type, unit, uri, outbound, CreateRateLimiter(unit)));
+            _webSockets.Add(new(type, unit, uri, outbound, CreateRateLimiter(connectionType)));
         }
         catch (Exception ex)
         {
@@ -148,14 +151,20 @@ public class WebSocketHandler
         }
     }
 
-    private static RateLimiter CreateRateLimiter(string unit)
+    private static RateLimiter CreateRateLimiter(ConnectionType type)
     {
-        if (unit == "spectacle")
+        if (type == ConnectionType.Wireless)
         {
             return new LastInQueueRateLimiter(TimeSpan.FromMilliseconds(100));
         }
 
         return new LastInQueueRateLimiter(TimeSpan.FromMilliseconds(1));
+    }
+
+    public enum ConnectionType
+    {
+        Wired,
+        Wireless
     }
 
     private sealed record WebSocketRegistration(

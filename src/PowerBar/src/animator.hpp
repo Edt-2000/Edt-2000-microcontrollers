@@ -26,7 +26,14 @@ public:
         PrintDebug("Animation requested: ");
         PrintLnDebug(animationName.c_str());
 
-        auto animation = animations[animationName];
+        auto foundAnimation = animations.find(animationName);
+        if (foundAnimation == animations.end())
+        {
+            PrintLnDebug("Animation not found.");
+            return;
+        }
+
+        auto animation = foundAnimation->second;
 
         if (currentAnimation == animation)
         {

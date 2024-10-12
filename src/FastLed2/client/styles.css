@@ -2,6 +2,7 @@
     font-family: 'Consolas', monospace;
     font-size: 12px !important;
     font-weight: normal !important;
+    box-sizing: border-box;
 }
 
 :root {
@@ -10,6 +11,8 @@
     --settingDisabled: #191919;
     --settingHighlight: #888;
     --heading: #070;
+    --ledDevice: #0f0;
+    --powerBarDevice: #f00;
     --accent: #0f0;
     --connecting: #ff0;
     --connected: #0f0;
@@ -56,10 +59,14 @@ animation-invoker,
 animation-repeater {
     display: block;
     position: relative;
-    border: 1px solid var(--accent);
     padding: 25px 5px 5px;
     min-height: 0;
     margin-bottom: 1rem;
+    border: 1px solid var(--ledDevice);
+}
+
+[data-device-type="powerbar"] {
+    border: 1px solid var(--powerBarDevice);
 }
 
 h2.type {
@@ -106,6 +113,7 @@ p.color-setting {
     color: var(--accent);
     background: var(--setting);
 }
+
 .disabled[data-button]::after {
     display: none;
 }
@@ -113,18 +121,17 @@ p.color-setting {
 p.text-setting.disabled {
     background: var(--settingDisabled);
 }
+
 p.text-setting.active {
     border: 2px solid var(--accent);
     padding: 2px;
 }
 
-p.value-setting.disabled,
-p.color-setting.disabled {
+p.value-setting.disabled {
     opacity: .5;
 }
 
-p.value-setting::before
-{
+p.value-setting::before {
     content: attr(data-value);
     position: absolute;
     left: 4px;
@@ -136,4 +143,21 @@ p.color-setting {
     border-bottom: 2px solid var(--setting);
     padding: 2px;
     color: var(--bg);
+    position: relative;
+}
+
+p.color-setting.disabled::after {
+    content: '';
+    border: 0;
+    width: calc(100% - 4px);
+    height: 100%;
+    display: block;
+    position: absolute;
+    top: -1px;
+    left:-1px;
+    background: repeating-linear-gradient(-45deg,
+            rgba(50, 50, 50, .5) 0px,
+            rgba(50, 50, 50, .5) 4px,
+            rgba(50, 50, 50, 0) 4px,
+            rgba(50, 50, 50, 0) 8px);
 }

@@ -23,16 +23,13 @@ public:
 
         Time.delay(1000);
 
-        fill_solid(leds, 1, CRGB::Black);
+        setColor(CRGB::Black);
     }
 private:
     void setColor(CRGB color) {
-        // reset all leds
-        fill_solid(leds, LEDS, CRGB::Black);
-        
-        // set colors
+        fill_solid(leds, NUM_LEDS, CRGB::Black);
         fill_solid(leds, 1, color);
-        fadeToBlackBy(leds, 1, 220);
+        FastLED.show();
     }
 } Status;
 

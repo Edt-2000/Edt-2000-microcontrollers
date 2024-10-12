@@ -1,12 +1,9 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace EdtWebSockEDT;
 
 public class MessageAnalyzer
 {
-    private readonly Dictionary<string, object> _previousMessage = new();
-
     public MessageAnalysis AnalyzeMessage(string type, string data)
     {
         if (type != Constants.WebSocketLed)
@@ -23,48 +20,30 @@ public class MessageAnalyzer
             return new MessageAnalysis(data, [], []);
         }
 
-        if (json.TryGetValue("animation", out var animationName) && animationName.GetString() == "stop")
-        {
-            _previousMessage.Clear();
-        }
-
-        foreach (var key in json.Keys.Where(x => x != "animation").ToArray())
+        foreach (var key in json.Keys.Where(x => x != "animation").OrderBy(x => x).ToArray())
         {
             object? value = json[key] switch
             {
                 JsonElement { ValueKind: JsonValueKind.String } @string => @string.GetString(),
                 JsonElement { ValueKind: JsonValueKind.Number } number => number.GetInt32(),
-                JsonElement { ValueKind: JsonValueKind.Array } array => array.Deserialize<int[]>(),
+                JsonElement { ValueKind: JsonValueKind.Array } array when array.GetArrayLength() > 0 => array switch
+                {
+                    _ when array[0].ValueKind == JsonValueKind.Number => array.Deserialize<int[]>(),
+                    _ => array.Deserialize<string[]>()
+                },
                 _ => null
             };
 
-            if (value == null || (_previousMessage.TryGetValue(key, out var previousValue) && IsEqual(previousValue, value)))
+            if (key.StartsWith("color") && value is int[] { Length: 3 } color)
             {
-                json.Remove(key);
-            }
-            else
-            {
-                _previousMessage[key] = value;
+                colors.Add(new Color(color[0], color[1], color[2]));
             }
 
-            if (key == "units" && value is int unit)
+            if (key == "units" && value is string[] jsonUnits)
             {
                 json.Remove("units");
 
-                if (unit == 1 || unit == 3)
-                {
-                    units.Add("unit1");
-                }
-
-                if (unit == 2 || unit == 3)
-                {
-                    units.Add("unit2");
-                }
-
-                if (unit == 3)
-                {
-                    units.Add("spectacle");
-                }
+                units.AddRange(jsonUnits);
             }
         }
 
@@ -88,19 +67,4 @@ public class MessageAnalyzer
         Color[] Colors);
 
     public record Color(int H, int S, int V);
-
-    public record Message
-    {
-        [JsonPropertyName("animation")]
-        public string? Animation { get; set; }
-
-        [JsonPropertyName("colorSet")]
-        public int[][]? ColorSet { get; set; }
-
-        [JsonPropertyName("colorIndex")]
-        public int? ColorIndex { get; set; }
-
-        [JsonExtensionData]
-        public Dictionary<string, object?> ExtraProperties { get; set; } = [];
-    }
 }

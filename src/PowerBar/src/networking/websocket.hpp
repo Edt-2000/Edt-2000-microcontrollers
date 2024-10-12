@@ -4,6 +4,7 @@
 #include <ArduinoJson.h>
 
 #include "../debugging/logger.hpp"
+#include "../debugging/status.hpp"
 #include "../messaging/json.hpp"
 
 AsyncWebServer server(80);
@@ -27,10 +28,12 @@ void onEvent(
     else if (type == WS_EVT_CONNECT)
     {
         PrintLnDebug("Client connected");
+        Status.allOk();
     }
     else if (type == WS_EVT_DISCONNECT)
     {
         PrintLnDebug("Client disconnected");
+        Status.setup();
     }
 }
 

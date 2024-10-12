@@ -1,6 +1,7 @@
 class Animation {
     name = "";
     selectable = [0, 1, 2, 3, 4, 5, 6, 7];
+    deviceTypes = [ "led" ];
     modifierDescription = "Modifier";
     speedDescription = "Speed";
 
@@ -25,7 +26,8 @@ class SinglePulseAnimation extends Animation {
             color1: getElement(colorSet, state.Tick).toArray(),
             color2: getElement(colorSet, state.Tick + 1).toArray(),
             fade: state.getFade(),
-            speed: state.Modifier
+            speed: state.Modifier,
+            units: state.getUnits()
         };
 
         return message;
@@ -51,7 +53,8 @@ class SinglePartialPulseAnimation extends Animation {
             color2: getElement(colorSet, state.Tick + 1).toArray(),
             fade: state.getFade(),
             speed: 30,
-            percentage: state.Modifier
+            percentage: state.Modifier,
+            units: state.getUnits()
         };
 
         return message;
@@ -80,7 +83,8 @@ class DoublePulseAnimation extends Animation {
             color2: getElement(colorSet, tick + 1).toArray(),
             fade: state.getFade(),
             speed: Math.min(255, state.Speed * 3),
-            percentage: state.Modifier
+            percentage: state.Modifier,
+            units: state.getUnits()
         };
 
         return message;
@@ -109,7 +113,8 @@ class SingleChaseAnimation extends Animation {
             color1: getElement(colorSet, state.Tick).toArray(),
             color2: getElement(colorSet, state.Tick + 1).toArray(),
             fade: state.getFade(),
-            speed: state.Modifier
+            speed: state.Modifier,
+            units: state.getUnits()
         };
 
         return message;
@@ -141,7 +146,8 @@ class SingleSteppedChaseAnimation extends Animation {
             color1: getElement(colorSet, tick).toArray(),
             color2: getElement(colorSet, tick + 1).toArray(),
             fade: state.getFade(),
-            speed: state.Modifier
+            speed: state.Modifier,
+            units: state.getUnits()
         };
 
         return message;
@@ -172,7 +178,8 @@ class DoubleChaseAnimation extends Animation {
             color1: getElement(colorSet, tick).toArray(),
             color2: getElement(colorSet, tick + 1).toArray(),
             fade: state.getFade(),
-            speed: state.Modifier
+            speed: state.Modifier,
+            units: state.getUnits()
         };
 
         return message;
@@ -195,7 +202,8 @@ class StroboAnimation extends Animation {
             animation: 'strobo',
             color1: getElement(colorSet, state.Tick).toArray(),
             color2: getElement(colorSet, state.Tick + 1).toArray(),
-            speed: state.Modifier
+            speed: state.Modifier,
+            units: state.getUnits()
         };
 
         return message;
@@ -233,7 +241,8 @@ class NoiseAnimation extends Animation {
     generateMessage(state) {
         let message = {
             animation: 'noise',
-            speed: state.Modifier
+            speed: state.Modifier,
+            units: state.getUnits()
         };
 
         return message;
@@ -252,7 +261,8 @@ class PongAnimation extends Animation {
     generateMessage(state) {
         let message = {
             animation: 'pong',
-            speed: state.Modifier
+            speed: state.Modifier,
+            units: state.getUnits()
         };
 
         return message;
@@ -270,7 +280,8 @@ class StopAnimation extends Animation {
 
     generateMessage(state) {
         let message = {
-            animation: this.name
+            animation: this.name,
+            units: state.getUnits()
         };
 
         return message;
@@ -332,6 +343,9 @@ class AnimationState {
     ColorSet = 0;
     Fade = 0;
 
+    // units
+    Units = null;
+
     // timings
     RepeatTime = 0;
     Tick = -1;
@@ -358,6 +372,15 @@ class AnimationState {
         this.Fade++;
         if (this.Fade >= Constants.Fades.length) {
             this.Fade = 0;
+        }
+    }
+
+    getUnits() {
+        if (this.Units == null) {
+            return FastLedUnits.getUnits();
+        }
+        else {
+            return this.Units;
         }
     }
 

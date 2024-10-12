@@ -22,15 +22,19 @@ class HSV {
 }
 
 class FastLedUnits {
-    static _modes = [null, 'unit1', 'unit2', 'unit1 + unit2 + spectacle'];
-    static _activeMode = 3;
+    static _modes = [
+        [ 'unit1' ],
+        [ 'unit2' ],
+        [ 'spectacle' ],
+        [ 'unit1', 'unit2', 'spectacle' ]
+    ];
+    static _activeMode = 2;
 
-    static getUnit() { return this._modes[this._activeMode]; }
-    static getConfig() { return this._activeMode; }
-    static nextConfig() { 
+    static getUnits() { return this._modes[this._activeMode]; }
+    static nextConfig() {
         this._activeMode++;
         if (this._activeMode >= this._modes.length) {
-            this._activeMode = 1;
+            this._activeMode = 0;
         }
     }
 }
@@ -57,11 +61,11 @@ class Leds {
 
         if (this._index == 8) {
             if (isRandom) {
-                this._activeLeds.sort(() => Math.random() - 0.5); 
+                this._activeLeds.sort(() => Math.random() - 0.5);
             }
             this._index = 0;
         }
-        
+
         let array = isRandom ? this._activeLeds : this._leds;
 
         if (this.Config < 2) {
@@ -111,7 +115,7 @@ function getElement(array, index) {
     return array[index % array.length];
 }
 
-function spaceCapitals(text)  {
+function spaceCapitals(text) {
     return text.replace(/([A-Z])/g, ' $1').trim();
 }
 
@@ -157,7 +161,7 @@ class AnimationElementBase extends HTMLElement {
     createSettingHtml(value, disabled, button, active) {
         return `<p class="text-setting${disabled ? ' disabled' : ''}${active ? ' active' : ''}" ${this.createButtonHtml(button)}>${value}</p>`;
     }
-    
+
     createValueHtml(value, description, disabled, button) {
         let setting = Math.round(100 * (value / 255.0));
         return `<p class="value-setting${disabled ? ' disabled' : ''}" ${this.createButtonHtml(button)} data-value="${value}" style="background: linear-gradient(90deg, var(--settingHighlight) 0%, var(--settingHighlight) ${setting}%, var(--setting) ${setting}%, var(--setting) 100%);">${description}</p>`;
@@ -171,7 +175,7 @@ class AnimationElementBase extends HTMLElement {
     createColorsHtml(colors, disabled, button) {
         let colorStyle = '';
 
-        if (colors.length == 1 && colors[0].isRainbow())  {
+        if (colors.length == 1 && colors[0].isRainbow()) {
             colorStyle = `background: linear-gradient(in hsl longer hue 90deg, red 0 0);`;
         }
         else {
@@ -196,8 +200,6 @@ class WebSocketHandler {
     }
 
     send(sender, message) {
-        message.units = FastLedUnits.getConfig();
-
         this.previousSender = sender;
         this.ws.send(JSON.stringify(message));
     }

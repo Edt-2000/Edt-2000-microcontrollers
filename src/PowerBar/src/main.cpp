@@ -6,13 +6,17 @@
 #include <stdio.h>
 #include <setjmp.h>
 
-#define LEDS 640
+#define NUM_LEDS 640
+#define MAX_WIDTH 80
 
 #include "leds.hpp"
+#include "font.hpp"
 
 #include "animation.hpp"
-#include "animations/blinkAnimation.hpp"
+#include "animations/singlePulseAnimation.hpp"
 #include "animations/stroboAnimation.hpp"
+#include "animations/textAnimation.hpp"
+#include "animations/stopAnimation.hpp"
 
 #include "networking/network.hpp"
 #include "networking/websocket.hpp"
@@ -39,20 +43,28 @@ auto stateChangeCallback = []()
 
 void setup()
 {
-  FastLED.addLeds<WS2812B, 5, GRB>(leds, LEDS).setCorrection(TypicalLEDStrip);
-  //FastLED.addLeds<APA102, 13, 32, BGR, DATA_RATE_KHZ(500)>(leds, LEDS).setCorrection(TypicalLEDStrip);
-  // TODO: remove
-  //FastLED.addLeds<APA102, 14, 32, BGR, DATA_RATE_KHZ(500)>(leds, 1).setCorrection(TypicalLEDStrip);
+  // real bar
+  //FastLED.addLeds<WS2812B, 5, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  
+  // test board
+  FastLED.addLeds<APA102, 13, 32, BGR>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<APA102, 14, 32, BGR>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+
+  // TODO: find optimum value
+  FastLED.setMaxPowerInMilliWatts(30000);
+
 
   Status.init();
 
   // these are all the animations the system knows
-  Animator.addAnimation(new BlinkAnimation());
+  Animator.addAnimation(new SinglePulseAnimation());
   Animator.addAnimation(new StroboAnimation());
+  Animator.addAnimation(new TextAnimation());
+  Animator.addAnimation(new StopAnimation());
 
   Serial.begin(115200);
 
-  Network.startWifi();
+  Network.startEthernet();
 
   Status.setup();
 
@@ -65,15 +77,13 @@ void setup()
   PrintLnInfo("Network started!");
 
   JsonHandler.onAnimation(animationCallback);
-  JsonHandler.onStateChange(stateChangeCallback);
+  //JsonHandler.onStateChange(stateChangeCallback);
 
   // Udp.begin();
-  WebSocket.onStateChange(stateChangeCallback);
+  //WebSocket.onStateChange(stateChangeCallback);
   WebSocket.begin();
 
   PrintLnInfo("App started!");
-  
-  Status.allOk();
 }
 
 // this buffer saves the start of the loop, which allows the time class
@@ -99,7 +109,7 @@ void loop()
 
     if (Time.t1000ms)
     {
-      stateChangeCallback();
+      //stateChangeCallback();
     }
   } while (true);
 }
