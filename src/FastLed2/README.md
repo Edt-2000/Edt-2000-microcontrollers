@@ -60,9 +60,14 @@
 
 ## Pending ideas + todos
 
-- APA101 speed
+- Bust local storage
+- Default unit must be unit1+2+s
+- Cycle units as effect
 - Remove web socket client code
-- Implement custom rate limit spectacle
+- Fade effect: strobofade out (part of the curve = 100% fade)
+- Mirror led mode (mirror-2 -> in to out / out to in led effects)
+- Pong ball more emphasis
+- Reconnect multi-threaded instead of awaits
 
 - Snake animation
 - Outrun / lotus road animation

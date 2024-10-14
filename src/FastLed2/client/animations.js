@@ -222,7 +222,8 @@ class FireAnimation extends Animation {
     generateMessage(state) {
         let message = {
             animation: 'fire',
-            speed: state.Modifier
+            speed: state.Modifier,
+            units: state.getUnits()
         };
 
         return message;

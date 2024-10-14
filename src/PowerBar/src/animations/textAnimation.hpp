@@ -59,6 +59,8 @@ public:
       if (isAnimating)
       {
         offset--;
+
+        // check offset and stop / restart
       }
       else
       {

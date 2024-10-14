@@ -46,7 +46,8 @@ class AnimationConfigurator extends AnimationElementBase {
                 fade: 0,
                 color1: color.toArray(),
                 color2: color.toArray(),
-                speed: 0
+                speed: 0,
+                units: FastLedUnits.getUnits()
             });
         }
 

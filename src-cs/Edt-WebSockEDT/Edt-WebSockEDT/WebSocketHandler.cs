@@ -14,8 +14,8 @@ public class WebSocketHandler
     private readonly List<WebSocketRegistration> _webSockets = new();
     private readonly (string unit, Uri uri, ConnectionType connectionType)[] _ledWebSocketUrls =
     [
-        //("unit1", new Uri("ws://10.0.0.21:80/ws"), ConnectionType.Wired),
-        //("unit2", new Uri("ws://10.0.0.22:80/ws"), ConnectionType.Wired),
+        ("unit1", new Uri("ws://10.0.0.21:80/ws"), ConnectionType.Wired),
+        ("unit2", new Uri("ws://10.0.0.22:80/ws"), ConnectionType.Wired),
         ("powerbar", new Uri("ws://10.0.0.30:80/ws"), ConnectionType.Wireless)
     ];
     private readonly Uri _mainframeWebSocketUrl = new("ws://10.0.0.202:8898");

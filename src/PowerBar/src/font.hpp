@@ -139,7 +139,7 @@ private:
         {
             uint8_t column = font[letter][i];
 
-            for (uint8_t j = 0; j < 7; j++)
+            for (uint8_t j = 0; j < 8; j++)
             {
                 if (column & (1 << j))
                 {
