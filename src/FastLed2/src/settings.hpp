@@ -22,7 +22,7 @@ struct Settings
 
   inline FadeMode fadeMode()
   {
-    if (fade >= (uint8_t)FadeMode::none && fade <= (uint8_t)FadeMode::sparkle) {
+    if (fade >= (uint8_t)FadeMode::none && fade <= (uint8_t)FadeMode::pulse) {
       return (FadeMode)fade;
     }
     else {

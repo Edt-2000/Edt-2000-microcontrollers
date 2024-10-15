@@ -23,12 +23,13 @@ class HSV {
 
 class FastLedUnits {
     static _modes = [
-        [ 'unit1' ],
-        [ 'unit2' ],
-        [ 'spectacle' ],
-        [ 'unit1', 'unit2', 'spectacle' ]
+        ['unit1', 'unit2', 'spectacle'],
+        ['unit1'],
+        ['unit2'],
+        ['spectacle'],
+        ['unit1', 'unit2']
     ];
-    static _activeMode = 2;
+    static _activeMode = 0;
 
     static getUnits() { return this._modes[this._activeMode]; }
     static nextConfig() {
@@ -43,22 +44,27 @@ class Leds {
     static All = 255;
     static Config = 0;
 
-    static _modes = ['linear-1', 'random-1', 'linear-2', 'random-2', 'linear-3', 'random-3'];
+    static _modes = ['linear-1', 'random-1', 'linear-2', 'center-2', 'random-2', 'linear-3', 'random-3', 'center-4'];
     static _leds = [1, 2, 4, 8, 16, 32, 64, 128];
     static _activeLeds = [... this._leds];
+    static _centerLeds = [8, 16, 4, 32, 2, 64, 1, 128];
     static _index = 8;
 
     static getLeds() {
-        return this._getLeds(1 + Math.floor(this.Config / 2));
+        return this._getLeds(1);
     }
 
-    static _getLeds(amount) {
-        if (amount == 0) {
+    static _getLeds(currentCount) {
+        let type = this._modes[this.Config].split('-');
+
+        let ledCount = parseInt(type[1]);
+        if (currentCount > ledCount) {
             return 0;
         }
-
-        let isRandom = this.Config % 2 == 1;
-
+        
+        let isRandom = type[0] === 'random';
+        let isCenter = type[0] === 'center';
+        
         if (this._index == 8) {
             if (isRandom) {
                 this._activeLeds.sort(() => Math.random() - 0.5);
@@ -66,17 +72,9 @@ class Leds {
             this._index = 0;
         }
 
-        let array = isRandom ? this._activeLeds : this._leds;
+        let array = isRandom ? this._activeLeds : isCenter ? this._centerLeds : this._leds;
 
-        if (this.Config < 2) {
-            return array[this._index++];
-        }
-        else if (this.Config < 4) {
-            return array[this._index++] + this._getLeds(amount - 1);
-        }
-        else {
-            return array[this._index++] + this._getLeds(amount - 1);
-        }
+        return array[this._index++] + this._getLeds(currentCount + 1);
     }
 
     static getConfig() { return this._modes[this.Config]; }

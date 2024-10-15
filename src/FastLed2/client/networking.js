@@ -1,6 +1,13 @@
 let socket;
 
 let statusElement = document.querySelector('#networking');
+let resetElement = document.querySelector('#storage');
+resetElement.onclick = function () {
+    if (confirm('Reset?')) {
+        localStorage.clear();
+        location.reload();
+    }
+}
 
 function setupSocket() {
     console.log("Starting WebSocket..");
@@ -33,7 +40,7 @@ function setupSocket() {
 
     socket.onclose = function (event) {
         console.log("WebSocket disconnected!");
-        
+
         statusElement.className = "disconnnected";
 
         setTimeout(setupSocket, 1000);

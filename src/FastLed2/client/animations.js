@@ -332,7 +332,7 @@ class Constants {
         [Colors.Rainbow],
         [Colors.White]
     ];
-    static Fades = ['none', 'fadeAll', 'oneByOne', 'sparkle'];
+    static Fades = ['none', 'fadeAll', 'oneByOne', 'sparkle', 'pulse'];
 }
 
 class AnimationState {

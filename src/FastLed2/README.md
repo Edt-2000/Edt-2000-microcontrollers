@@ -60,15 +60,10 @@
 
 ## Pending ideas + todos
 
-- Bust local storage
-- Default unit must be unit1+2+s
-- Cycle units as effect
-- Remove web socket client code
 - Fade effect: strobofade out (part of the curve = 100% fade)
-- Mirror led mode (mirror-2 -> in to out / out to in led effects)
-- Pong ball more emphasis
-- Reconnect multi-threaded instead of awaits
+- Fix fader logic
 
+- Cycle units as effect
 - Snake animation
 - Outrun / lotus road animation
 - Wave chase / eminating circle chase

@@ -12,11 +12,11 @@ public class WebSocketHandler
     private readonly List<Task> _sendingTasks = new();
 
     private readonly List<WebSocketRegistration> _webSockets = new();
-    private readonly (string unit, Uri uri, ConnectionType connectionType)[] _ledWebSocketUrls =
+    private readonly WebSocketConfig[] _ledWebSocketUrls =
     [
-        ("unit1", new Uri("ws://10.0.0.21:80/ws"), ConnectionType.Wired),
-        ("unit2", new Uri("ws://10.0.0.22:80/ws"), ConnectionType.Wired),
-        ("powerbar", new Uri("ws://10.0.0.30:80/ws"), ConnectionType.Wireless)
+        new("unit1", new Uri("ws://10.0.0.21:80/ws"), ConnectionType.Wired),
+        new("unit2", new Uri("ws://10.0.0.22:80/ws"), ConnectionType.Wired),
+        new("powerbar", new Uri("ws://10.0.0.30:80/ws"), ConnectionType.Wireless)
     ];
     private readonly Uri _mainframeWebSocketUrl = new("ws://10.0.0.202:8898");
 
@@ -36,15 +36,7 @@ public class WebSocketHandler
 
     public async Task MaintainWebSocketsAsync()
     {
-        foreach (var (unit, uri, connectionType) in _ledWebSocketUrls)
-        {
-            var socket = _webSockets.FirstOrDefault(x => x.Uri == uri);
-
-            if (socket == default || (socket.WebSocket.State != WebSocketState.Open && socket.WebSocket.State != WebSocketState.Connecting))
-            {
-                await AddOutboundWebSocketAsync(Constants.WebSocketLed, unit, uri, connectionType);
-            }
-        }
+        var registerTasks = Task.WhenAll(_ledWebSocketUrls.Select(CreateWebSocketRegistrationAsync));
 
         if (_socketIoClient == null)
         {
@@ -69,6 +61,8 @@ public class WebSocketHandler
                 _socketIoClient = null;
             }
         }
+
+        await registerTasks;
 
         // clean up all tasks that have ran
         _sendingTasks.RemoveAll(task => task.IsCompleted);
@@ -133,6 +127,16 @@ public class WebSocketHandler
         }
     }
 
+    private async Task CreateWebSocketRegistrationAsync(WebSocketConfig config)
+    {
+        var socket = _webSockets.FirstOrDefault(x => x.Uri == config.Uri);
+
+        if (socket == default || (socket.WebSocket.State != WebSocketState.Open && socket.WebSocket.State != WebSocketState.Connecting))
+        {
+            await AddOutboundWebSocketAsync(Constants.WebSocketLed, config.Unit, config.Uri, config.ConnectionType);
+        }
+    }
+
     private async Task AddOutboundWebSocketAsync(string type, string unit, Uri uri, ConnectionType connectionType)
     {
         var outbound = new ClientWebSocket();
@@ -173,4 +177,9 @@ public class WebSocketHandler
         Uri? Uri,
         WebSocket WebSocket,
         RateLimiter RateLimiter);
+
+    private sealed record WebSocketConfig(
+        string Unit,
+        Uri Uri,
+        ConnectionType ConnectionType);
 }
