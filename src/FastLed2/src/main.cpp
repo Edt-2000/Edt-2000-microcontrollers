@@ -115,7 +115,7 @@ void setup()
 
   Serial.begin(115200);
 
-  Network.startEthernet(2);
+  Network.startEthernet(1);
 
   Status.setup();
 
