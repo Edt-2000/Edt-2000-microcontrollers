@@ -53,25 +53,23 @@ public:
 
     void loop()
     {
-        uint8_t ledMax = _fades.size();
-        for (uint8_t led = 0; led < ledMax; led++)
+        uint8_t led = 0;
+        
+        for (auto & states : _fades)
         {
-            auto states = _fades[led];
-            uint8_t iMax = states.size();
-            for (uint8_t i = 0; i < iMax; i++)
+            uint8_t i = 0;
+            
+            for (auto & state : states)
             {
-                // TODO: this should be use via for (auto & event : states)
-                auto state = &states[i];
-
-                if (state->speed > 0)
+                if (state.speed > 0)
                 {
-                    if (state->mode == FadeMode::fadeAll || state->mode == FadeMode::pulse5)
+                    if (state.mode == FadeMode::fadeAll || state.mode == FadeMode::pulse5)
                     {
-                        fadeToBlackBy(_leds[led] + i, 1, state->speed);
+                        fadeToBlackBy(_leds[led] + i, 1, state.speed);
                     }
-                    else if (state->mode == FadeMode::oneByOne)
+                    else if (state.mode == FadeMode::oneByOne)
                     {
-                        if (random8() < state->speed)
+                        if (random8() < state.speed)
                         {
                             _leds[led][i] = CRGB::Black;
                         }
@@ -80,16 +78,18 @@ public:
                             fadeToBlackBy(_leds[led] + i, 1, 1);
                         }
                     }
-                    else if (state->mode == FadeMode::sparkle)
+                    else if (state.mode == FadeMode::sparkle)
                     {
-                        if (state->speed == 255)
+                        if (state.speed == 255)
                         {
-                            _fades[led][i].speed = 0;
+                            state.speed = 0;
+                            //_fades[led][i].speed = 0;
                             _leds[led][i] = CRGB::Black;
                         }
-                        else if (random8() < state->speed)
+                        else if (random8() < state.speed)
                         {
-                            _fades[led][i].speed = 255;
+                            state.speed = 255;
+                            //_fades[led][i].speed = 255;
                             _leds[led][i] = CRGB::White;
                         }
                         else
@@ -97,29 +97,38 @@ public:
                             fadeToBlackBy(_leds[led] + i, 1, 1);
                         }
                     }
-                    else if (state->mode == FadeMode::pulse)
+                    else if (state.mode == FadeMode::pulse)
                     {
-                        _fades[led][i].color = _leds[led][i];
+                        state.color = _leds[led][i];
+                        //_fades[led][i].color = _leds[led][i];
                         _leds[led][i] = CRGB::Black;
-                        _fades[led][i].mode = FadeMode::pulse2;
+                        state.mode = FadeMode::pulse2;
+                        //_fades[led][i].mode = FadeMode::pulse2;
                     }
-                    else if (state->mode == FadeMode::pulse2)
+                    else if (state.mode == FadeMode::pulse2)
                     {
-                        _leds[led][i] = state->color;
-                        _fades[led][i].mode = FadeMode::pulse3;
+                        _leds[led][i] = state.color;
+                        state.mode = FadeMode::pulse3;
+                        //_fades[led][i].mode = FadeMode::pulse3;
                     }
-                    else if (state->mode == FadeMode::pulse3)
+                    else if (state.mode == FadeMode::pulse3)
                     {
                         _leds[led][i] = CRGB::Black;
-                        _fades[led][i].mode = FadeMode::pulse4;
+                        state.mode = FadeMode::pulse4;
+                        //_fades[led][i].mode = FadeMode::pulse4;
                     }
-                    else if (state->mode == FadeMode::pulse4)
+                    else if (state.mode == FadeMode::pulse4)
                     {
-                        _leds[led][i] = state->color;
-                        _fades[led][i].mode = FadeMode::pulse5;
+                        _leds[led][i] = state.color;
+                        state.mode = FadeMode::pulse5;
+                        //_fades[led][i].mode = FadeMode::pulse5;
                     }
                 }
+
+                i++;
             }
+
+            led++;
         }
     }
 

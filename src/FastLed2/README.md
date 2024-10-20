@@ -60,9 +60,6 @@
 
 ## Pending ideas + todos
 
-- Fade effect: strobofade out (part of the curve = 100% fade)
-- Fix fader logic
-
 - Cycle units as effect
 - Snake animation
 - Outrun / lotus road animation
@@ -78,5 +75,3 @@
     -> "all": applies to all leds (leds = 255)
     -> "one": applies to some led (leds = bit mask)
     -> "down", "up", "left", "right": applies to directionaly
-
-- Think about Led.random(), and whether it should be configurable
