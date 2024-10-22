@@ -20,9 +20,9 @@
 
 #include "networking/network.hpp"
 #include "networking/websocket.hpp"
-// #include "networking/udp.hpp"
 
 #include "animator.hpp"
+#include "fader.hpp"
 #include "time.hpp"
 #include "settings.hpp"
 
@@ -44,11 +44,11 @@ auto stateChangeCallback = []()
 void setup()
 {
   // real bar
-  //FastLED.addLeds<WS2812B, 5, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<WS2812B, 5, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   
   // test board
-  FastLED.addLeds<APA102, 13, 32, BGR>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 14, 32, BGR>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  //FastLED.addLeds<APA102, 13, 32, BGR>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  //FastLED.addLeds<APA102, 14, 32, BGR>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
 
   // TODO: find optimum value
   FastLED.setMaxPowerInMilliWatts(30000);
@@ -64,7 +64,7 @@ void setup()
 
   Serial.begin(115200);
 
-  Network.startEthernet();
+  Network.startWifi();
 
   Status.setup();
 

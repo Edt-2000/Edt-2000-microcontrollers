@@ -36,6 +36,12 @@ public:
   // as the stopping animation might have a running loop during the interrupt
   virtual void stop() = 0;
 
+  // stop is called when animation is stopped and no other animation is currently running
+  virtual void stopped() {
+    fill_solid(leds, NUM_LEDS, CRGB::Black);
+    show();
+  }
+
   virtual bool isActive() {
     return _isActive;
   }

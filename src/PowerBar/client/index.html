@@ -18,13 +18,18 @@
     <input class="setting" data-name="text" placeholder="text"><br>
     <input class="setting" data-name="color1" placeholder="color1"><br>
     <input class="setting" data-name="color2" placeholder="color2"><br>
+    <input class="setting" data-name="color3" placeholder="color3"><br>
+    <input class="setting" data-name="colorCount" placeholder="colorCount"><br>
     <input class="setting" data-name="speed" placeholder="speed"><br>
     <input class="setting" data-name="brightness" placeholder="brightness"><br>
     <input class="setting" data-name="size" placeholder="size"><br>
+    <input class="setting" data-name="variant" placeholder="variant"><br>
+    <input class="setting" data-name="textSplitPosition" placeholder="textSplitPosition"><br>
     <hr>
     <button class="animationButton" data-name="blink">Blink</button><br>
     <button class="animationButton" data-name="strobo">Strobo</button><br>
     <button class="animationButton" data-name="text">Text</button><br>
+    <button class="animationButton" data-name="stop">Stop</button><br>
     
     <script>
         //const socket = new WebSocket('ws://192.168.142.100:80/ws');
@@ -82,7 +87,7 @@
             setting.onchange = function () {
                 let message = {};
                 message[setting.dataset.name] =
-                    setting.dataset.name.indexOf("color") == -1
+                    setting.dataset.name == "colorCount" || setting.dataset.name.indexOf("color") == -1
                         ? setting.value
                         : setting.value.split(",");
                 socket.send(JSON.stringify(message));

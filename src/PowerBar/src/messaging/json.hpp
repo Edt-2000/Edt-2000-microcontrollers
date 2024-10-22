@@ -86,30 +86,6 @@ public:
                 PrintDebug(",");
                 PrintLnDebug(globalSettings.colors[2].v);
             }
-            if (deserializeDoc.containsKey("color4"))
-            {
-                auto color = deserializeDoc["color4"];
-                globalSettings.colors[3] = CHSV(color[0], color[1], color[2]);
-
-                PrintDebug("Setting color[3] set to ");
-                PrintDebug(globalSettings.colors[3].h);
-                PrintDebug(",");
-                PrintDebug(globalSettings.colors[3].s);
-                PrintDebug(",");
-                PrintLnDebug(globalSettings.colors[3].v);
-            }
-            if (deserializeDoc.containsKey("color5"))
-            {
-                auto color = deserializeDoc["color5"];
-                globalSettings.colors[4] = CHSV(color[0], color[1], color[2]);
-
-                PrintDebug("Setting color[4] set to ");
-                PrintDebug(globalSettings.colors[4].h);
-                PrintDebug(",");
-                PrintDebug(globalSettings.colors[4].s);
-                PrintDebug(",");
-                PrintLnDebug(globalSettings.colors[4].v);
-            }
             if (deserializeDoc.containsKey("speed"))
             {
                 globalSettings.speed = deserializeDoc["speed"];
@@ -134,6 +110,41 @@ public:
 
                 PrintDebug("Setting size set to ");
                 PrintLnDebug(globalSettings.size);
+            }
+            if (deserializeDoc.containsKey("variant"))
+            {
+                globalSettings.variant = deserializeDoc["variant"];
+
+                PrintDebug("Setting variant set to ");
+                PrintLnDebug(globalSettings.variant);
+            }
+            if (deserializeDoc.containsKey("colorCount"))
+            {
+                globalSettings.colorCount = deserializeDoc["colorCount"];
+
+                if (globalSettings.colorCount == 0)
+                {
+                    globalSettings.colorCount = 1;
+                }
+                else if (globalSettings.colorCount > 3)
+                {
+                    globalSettings.colorCount = 3;
+                }
+
+                PrintDebug("Setting colorCount set to ");
+                PrintLnDebug(globalSettings.colorCount);
+            }
+            if (deserializeDoc.containsKey("textSplitPosition"))
+            {
+                globalSettings.textSplitPosition = deserializeDoc["textSplitPosition"];
+                
+                if (globalSettings.textSplitPosition < 0)
+                {
+                    globalSettings.textSplitPosition = 0;
+                }
+
+                PrintDebug("Setting textSplitPosition set to ");
+                PrintLnDebug(globalSettings.textSplitPosition);
             }
         }
 
@@ -160,7 +171,7 @@ public:
             PrintLnDebug(animationName);
             serializeDoc["animation"] = animationName;
         }
-        
+
         PrintDebug("text is ");
         PrintLnDebug(globalSettings.text);
         serializeDoc["text"] = globalSettings.text;

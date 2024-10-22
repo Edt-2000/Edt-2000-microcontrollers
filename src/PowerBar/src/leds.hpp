@@ -11,3 +11,8 @@ bool isRainbow(CHSV color)
 {
     return color.s == 10;
 }
+
+bool isSpecificColorSequence(CHSV color)
+{
+    return color.s == 20;
+}

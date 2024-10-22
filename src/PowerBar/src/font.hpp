@@ -1,10 +1,13 @@
 #pragma once
 
 #include <FastLED.h>
-#include "leds.hpp"
+#include "./leds.hpp"
+#include "./settings.hpp"
 
 #define MAX_CHAR 96
 #define MAX_COL 5
+#define FONT_OFFSET 32
+#define CHAR_SIZE 48
 
 // 5x7 lettertype
 const uint8_t font[MAX_CHAR][MAX_COL] = {
@@ -105,34 +108,74 @@ const uint8_t font[MAX_CHAR][MAX_COL] = {
     {0x02, 0x01, 0x02, 0x04, 0x02}  // ~
 };
 
+enum struct TextAlign
+{
+    left,
+    center,
+    right
+};
+
 class FontRendererHelper
 {
 public:
-    void displayText(const String * text, uint8_t startX, CRGB color, uint8_t spacing = 1)
+    bool displayText(const String *text, TextAlign align, int colorIndex)
     {
-        uint8_t startY = 0;
-        uint8_t currentIndex = 0;
-
-        while (currentIndex < text->length() && startX < MAX_WIDTH)
-        {
-            drawLetter(text->charAt(currentIndex), startX, startY, color);
-
-            currentIndex++;
-            startX += MAX_COL + spacing;
-        }
+        return displayText(text, getOffset(text, align), 0, colorIndex);
     }
 
+    bool displayText(const String *text, TextAlign align, int8_t offsetX, int8_t offsetY, int colorIndex)
+    {
+        return displayText(text, getOffset(text, align) + offsetX, offsetY, colorIndex);
+    }
+
+    bool displayText(const String *text, int8_t startX, int8_t startY, int colorIndex)
+    {
+        auto hasRendered = false;
+
+        uint8_t currentIndex = 0;
+        auto textLength = text->length();
+
+        while (currentIndex < textLength && startX < MAX_WIDTH)
+        {
+            auto letterColor = getColor(colorIndex, currentIndex, textLength);
+
+            bool letterHasRendered = drawLetter(text->charAt(currentIndex) - FONT_OFFSET, startX, startY, letterColor);
+
+            hasRendered = hasRendered || letterHasRendered;
+
+            currentIndex++;
+            startX += MAX_COL + 1;
+        }
+
+        return hasRendered;
+    }
+
+    int8_t getOffset(const String *text, TextAlign align)
+    {
+        int8_t offset = 0;
+
+        if (align != TextAlign::left)
+        {
+            offset = MAX_WIDTH - (text->length() * (MAX_COL + 1));
+        }
+        if (align == TextAlign::center)
+        {
+            offset /= 2;
+        }
+
+        return offset;
+    }
 private:
-    void drawLetter(char letter, uint8_t startX, uint8_t startY, CRGB color)
+    bool drawLetter(uint8_t letter, int8_t startX, int8_t startY, CRGB color)
     {
         if (letter >= MAX_CHAR)
         {
-            return;
+            return false;
         }
 
         if (startX < -MAX_COL || startX > MAX_WIDTH)
         {
-            return;
+            return false;
         }
 
         for (uint8_t i = 0; i < MAX_COL; i++)
@@ -144,17 +187,39 @@ private:
                 if (column & (1 << j))
                 {
                     uint8_t x = startX + i;
-                    uint8_t y = startY + (6 - j);
+                    uint8_t y = startY + (7 - j);
 
                     if (x >= 0 && x < MAX_WIDTH && y >= 0 && y < 8)
                     {
-                        uint8_t ledIndex = x * 8 + y;
+                        uint16_t ledIndex = x * 8 + y;
                         leds[ledIndex] = color;
                     }
                 }
             }
         }
+
+        return true;
     }
+
+    CHSV getColor(int colorIndex, uint8_t letterIndex, uint8_t textLength)
+    {
+        if (globalSettings.textSplitPosition > 0 && letterIndex >= globalSettings.textSplitPosition)
+        {
+            colorIndex++;
+        }
+
+        auto color = globalSettings.colorAt(colorIndex);
+
+        if (isRainbow(color) && textLength > 0)
+        {
+            return CHSV((255 / textLength) * letterIndex, 255, 255);
+        }
+        else
+        {
+            return color;
+        }
+    }
+
 } FontRenderer;
 
 extern FontRendererHelper FontRenderer;

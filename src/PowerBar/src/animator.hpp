@@ -4,6 +4,7 @@
 #include <map>
 
 #include "animation.hpp"
+#include "leds.hpp"
 #include "time.hpp"
 #include "debugging/logger.hpp"
 
@@ -75,6 +76,8 @@ public:
             }
             else
             {
+                animation->stopped();
+
                 // animation has finished
                 currentAnimation = nullptr;
             }

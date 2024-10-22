@@ -20,7 +20,7 @@ default font (8px height)
 
 - Text animation variants:
     - 3 colors 
-    - rainbow / fixed color sequence
+    - rainbow / fixed color sequence (magic color 0,20,0)
     - Simple foreground + background text - scrolling or not scrolling
     - Rotating foreground color - no scrolling - different fade modes (none, onoff, fadeinout, sawtooth (up & down)) + speed
     - Pen/drawing font
@@ -34,7 +34,7 @@ default font (8px height)
     - 1 color
     - 2 colors
     - 3 colors
-    - rainbow color / fixed color sequence (magic color?)
+    - rainbow color / fixed color sequence (magic color 0,20,0)
     - rainbow mode (rainbow, colorPerFlash)
     - amount of flashes before rotating color
     - speed

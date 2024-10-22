@@ -37,12 +37,12 @@ class NetworkHelper
 public:
     void startWifi()
     {
-        WiFi.begin("STROBOOS", "80208044111");
+        WiFi.begin("nEDTwerk", "ChillenInJeSjon");
         WiFi.onEvent(ethernetEventHandler);
 
-        auto staticIP = IPAddress(192, 168, 142, 100);
-        auto gatewayIP = IPAddress(192, 168, 142, 1);
-        auto subnet = IPAddress(255, 255, 255, 0);
+        auto staticIP = IPAddress(10, 0, 0, 30);
+        auto gatewayIP = IPAddress(10, 0, 0, 1);
+        auto subnet = IPAddress(255, 0, 0, 0);
 
         WiFi.config(staticIP, gatewayIP, subnet);
     }
