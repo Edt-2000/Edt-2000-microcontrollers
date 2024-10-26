@@ -143,14 +143,39 @@ public:
 
     bool displayText(const String *text, int8_t startX, int8_t startY, int colorIndex)
     {
+        // TODO: merge
         auto hasRendered = false;
 
         uint8_t currentIndex = 0;
         auto textLength = text->length();
+        auto maxTextLength = text->length();
 
         while (currentIndex < textLength && startX < MAX_WIDTH)
         {
-            auto letterColor = getColor(colorIndex, currentIndex, textLength);
+            auto letterColor = getColor(colorIndex, currentIndex, maxTextLength);
+
+            bool letterHasRendered = drawLetter(text->charAt(currentIndex) - FONT_OFFSET, startX, startY, letterColor);
+
+            hasRendered = hasRendered || letterHasRendered;
+
+            currentIndex++;
+            startX += MAX_COL + 1;
+        }
+
+        return hasRendered;
+    }
+
+    bool displayText(const String *text, uint8_t offset, uint8_t length, int8_t startX, int8_t startY, int colorIndex)
+    {
+        auto hasRendered = false;
+
+        uint8_t currentIndex = offset;
+        uint8_t textLength = offset + length;
+        auto maxTextLength = text->length();
+
+        while (currentIndex < textLength && startX < MAX_WIDTH)
+        {
+            auto letterColor = getColor(colorIndex, currentIndex, maxTextLength);
 
             bool letterHasRendered = drawLetter(text->charAt(currentIndex) - FONT_OFFSET, startX, startY, letterColor);
 

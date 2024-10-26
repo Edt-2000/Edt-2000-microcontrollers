@@ -17,8 +17,8 @@ enum struct TextAnimationVariants
 
   // animating text
   scrollRtl,
-  scrollBounce, // TODO
-  scrollMerge,  // TODO
+  scrollBounce,
+  scrollMerge,
 
   fadeOnOff,
   fadeInOut,
@@ -66,6 +66,10 @@ public:
     progress = 0;
 
     if (variant == TextAnimationVariants::scrollRtl)
+    {
+      progress = MAX_WIDTH;
+    }
+    else if (variant == TextAnimationVariants::scrollMerge)
     {
       progress = MAX_WIDTH;
     }
@@ -150,7 +154,31 @@ public:
       }
       else if (variant == TextAnimationVariants::scrollMerge)
       {
-        
+        if (progress-- >= 0)
+        {
+          int8_t centerPos = FontRenderer.getOffset(&globalSettings.text, TextAlign::center);
+
+          int8_t posLeft = centerPos - progress;
+          int8_t posRight = centerPos + progress + 1 + (globalSettings.textSplitPosition * (MAX_COL + 1));
+
+          FontRenderer.displayText(&globalSettings.text, 0, globalSettings.textSplitPosition, posLeft, 0, colorIndex);
+          FontRenderer.displayText(&globalSettings.text, globalSettings.textSplitPosition, globalSettings.text.length() - globalSettings.textSplitPosition, posRight, 0, colorIndex);
+        }
+        else
+        {
+          if (progress > -64)
+          {
+            fill_solid(leds, NUM_LEDS, CRGB::Gray);
+            fadeToBlackBy(leds, NUM_LEDS, 192 - progress);
+          }
+
+          FontRenderer.displayText(&globalSettings.text, TextAlign::center, colorIndex);
+
+          if (--progress == -128)
+          {
+            progress = MAX_WIDTH;
+          }
+        }
       }
       else if (variant >= TextAnimationVariants::fadeOnOff && variant <= TextAnimationVariants::fadeSawOut)
       {
