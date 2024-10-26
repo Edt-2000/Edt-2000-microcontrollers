@@ -39,7 +39,7 @@ public:
   // stop is called when animation is stopped and no other animation is currently running
   virtual void stopped() {
     fill_solid(leds, NUM_LEDS, CRGB::Black);
-    show();
+    FastLED.show();
   }
 
   virtual bool isActive() {

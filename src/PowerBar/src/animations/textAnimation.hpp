@@ -16,9 +16,9 @@ enum struct TextAnimationVariants
   right,
 
   // animating text
-  scroll,
-  bounce,      // TODO
-  mergeScroll, // TODO
+  scrollRtl,
+  scrollBounce, // TODO
+  scrollMerge,  // TODO
 
   fadeOnOff,
   fadeInOut,
@@ -39,6 +39,7 @@ private:
   int8_t progress;
   uint colorIndex;
   uint8_t letterIndex;
+  bool ltr;
   bool isAnimating;
 
 public:
@@ -59,11 +60,12 @@ public:
 
     colorIndex = 0;
     letterIndex = 0;
-    isAnimating = variant >= TextAnimationVariants::scroll;
+    ltr = false;
+    isAnimating = variant >= TextAnimationVariants::scrollRtl;
 
     progress = 0;
 
-    if (variant == TextAnimationVariants::scroll)
+    if (variant == TextAnimationVariants::scrollRtl)
     {
       progress = MAX_WIDTH;
     }
@@ -117,7 +119,7 @@ public:
 
       // TODO: perhaps these variants should become separate animations
 
-      if (variant == TextAnimationVariants::scroll)
+      if (variant == TextAnimationVariants::scrollRtl)
       {
         auto hasRendered = FontRenderer.displayText(&globalSettings.text, progress, 0, colorIndex);
 
@@ -126,6 +128,29 @@ public:
           progress = MAX_WIDTH;
           colorIndex++;
         }
+      }
+      else if (variant == TextAnimationVariants::scrollBounce)
+      {
+        auto limit = FontRenderer.getOffset(&globalSettings.text, TextAlign::right);
+
+        progress += ltr ? 1 : -1;
+
+        if (progress <= 0)
+        {
+          ltr = true;
+          colorIndex++;
+        }
+        else if (progress >= limit)
+        {
+          ltr = false;
+          colorIndex++;
+        }
+
+        FontRenderer.displayText(&globalSettings.text, progress, 0, colorIndex);
+      }
+      else if (variant == TextAnimationVariants::scrollMerge)
+      {
+        
       }
       else if (variant >= TextAnimationVariants::fadeOnOff && variant <= TextAnimationVariants::fadeSawOut)
       {
@@ -175,15 +200,24 @@ public:
 
         ++progress;
 
-        uint8_t offset = (letterIndex * CHAR_SIZE) + (FontRenderer.getOffset(&globalSettings.text, TextAlign::center) * 8);
+        uint16_t offset = (letterIndex * CHAR_SIZE) + (FontRenderer.getOffset(&globalSettings.text, TextAlign::center) * 8);
 
-        if (progress > 90)
+        if (progress > 64)
         {
-          fadeToBlackBy(leds + offset, CHAR_SIZE, random8(127, 255));
+          fadeToBlackBy(leds + offset, CHAR_SIZE, 191 + (random8(0, 2) * 64));
         }
         else if (progress > -90 && progress < 0)
         {
-          fadeToBlackBy(leds + offset, CHAR_SIZE, random8(127, 255));
+          fadeToBlackBy(leds + offset, CHAR_SIZE, 127 + (random8(0, 5) * 32));
+        }
+      }
+      else if (variant == TextAnimationVariants::glitchArtifacts)
+      {
+        FontRenderer.displayText(&globalSettings.text, TextAlign::center, 0);
+
+        for (uint8_t i = 0; i < 32; i++)
+        {
+          leds[random16(NUM_LEDS)] = globalSettings.colorAt(1);
         }
       }
 

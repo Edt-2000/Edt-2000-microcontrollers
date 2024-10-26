@@ -9,6 +9,8 @@
 #define FONT_OFFSET 32
 #define CHAR_SIZE 48
 
+#define SPECIFIC_COLOR_SEQUENCE_LENGTH 8
+
 // 5x7 lettertype
 const uint8_t font[MAX_CHAR][MAX_COL] = {
     {0x00, 0x00, 0x00, 0x00, 0x00}, // spatie
@@ -106,6 +108,17 @@ const uint8_t font[MAX_CHAR][MAX_COL] = {
     {0x00, 0x00, 0x7F, 0x00, 0x00}, // |
     {0x00, 0x41, 0x36, 0x08, 0x00}, // }
     {0x02, 0x01, 0x02, 0x04, 0x02}  // ~
+};
+
+const CHSV specificColorSequence[SPECIFIC_COLOR_SEQUENCE_LENGTH] = {
+    CHSV(0, 255, 255),
+    CHSV(95, 255, 255),
+    CHSV(158, 255, 255),
+    CHSV(18, 255, 255),
+    CHSV(129, 255, 255),
+    CHSV(238, 255, 255),
+    CHSV(18, 255, 255),
+    CHSV(183, 255, 255)
 };
 
 enum struct TextAlign
@@ -213,6 +226,10 @@ private:
         if (isRainbow(color) && textLength > 0)
         {
             return CHSV((255 / textLength) * letterIndex, 255, 255);
+        }
+        else if (isSpecificColorSequence(color) && textLength > 0) 
+        {
+            return specificColorSequence[letterIndex % SPECIFIC_COLOR_SEQUENCE_LENGTH];
         }
         else
         {
