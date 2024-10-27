@@ -15,6 +15,7 @@
 #include "animation.hpp"
 #include "animations/fadeTextAnimation.hpp"
 #include "animations/glitchTextAnimation.hpp"
+#include "animations/lsdAnimation.hpp"
 #include "animations/noiseAnimation.hpp"
 #include "animations/scrollTextAnimation.hpp"
 #include "animations/singlePulseAnimation.hpp"
@@ -62,6 +63,7 @@ void setup()
 
   // these are all the animations the system knows
   Animator.addAnimation(new SinglePulseAnimation());
+  Animator.addAnimation(new LsdAnimation());
   Animator.addAnimation(new NoiseAnimation());
   Animator.addAnimation(new StroboAnimation());
   Animator.addAnimation(new FadeTextAnimation());

@@ -53,7 +53,7 @@ v Data/Noise
 - Poetin
 - Cabrio
     - 2 modes
-- Rainbows / Rainbow LSD turbostrobo
+v Rainbows / Rainbow LSD turbostrobo
 - Loading
 - Harder dan jij
 - Adem mode
