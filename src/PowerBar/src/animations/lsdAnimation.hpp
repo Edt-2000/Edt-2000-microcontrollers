@@ -6,6 +6,14 @@
 
 #include "../leds.hpp"
 
+// Adapted from DiscoStrobe 
+//
+// DiscoStrobe
+// *Flashing* rainbow lights that zoom back and forth to a beat.
+// See your doctor before using this code if you have certain neurological conditions.
+//
+// Mark Kriegsman, July 2015
+
 #define ZOOMING_BEATS_PER_MINUTE 122
 
 class LsdAnimation : public Animation
