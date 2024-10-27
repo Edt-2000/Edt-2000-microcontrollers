@@ -65,8 +65,7 @@ public:
   {
     auto variant = (ScrollTextAnimationVariants)globalSettings.variant;
 
-    // TODO: fix timing
-    if (every(1000.0 / globalSettings.speed))
+    if (every(100 / globalSettings.speed))
     {
       fill_solid(leds, NUM_LEDS, CRGB::Black);
 
@@ -110,18 +109,17 @@ public:
           int8_t posLeft = centerPos - progress;
           int8_t posRight = centerPos + progress + 1 + (globalSettings.textSplitPosition * DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
 
-          FontRenderer.displayText(&globalSettings.text, 0, globalSettings.textSplitPosition, posLeft, 0, colorIndex);
-          FontRenderer.displayText(&globalSettings.text, globalSettings.textSplitPosition, globalSettings.text.length() - globalSettings.textSplitPosition, posRight, 0, colorIndex);
+          FontRenderer.displayText(&globalSettings.text, 0, globalSettings.textSplitPosition, posLeft, 0, 0);
+          FontRenderer.displayText(&globalSettings.text, globalSettings.textSplitPosition, globalSettings.text.length() - globalSettings.textSplitPosition, posRight, 0, 0);
         }
         else
         {
           if (progress > -64)
           {
-            fill_solid(leds, NUM_LEDS, CRGB::Gray);
-            fadeToBlackBy(leds, NUM_LEDS, 192 - progress);
+            fill_solid(leds, NUM_LEDS, CHSV(globalSettings.colorAt(2).h, globalSettings.colorAt(2).s, 4 * (128 - (progress * -1))));
           }
 
-          FontRenderer.displayText(&globalSettings.text, TextAlign::center, colorIndex);
+          FontRenderer.displayText(&globalSettings.text, TextAlign::center, 0);
 
           if (--progress == -128)
           {

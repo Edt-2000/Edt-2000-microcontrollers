@@ -59,8 +59,7 @@ public:
   {
     auto variant = (GlitchTextAnimationVariants)globalSettings.variant;
 
-    // TODO: fix timing
-    if (every(1000.0 / globalSettings.speed))
+    if (every(1000 / globalSettings.speed))
     {
       fill_solid(leds, NUM_LEDS, CRGB::Black);
 
@@ -104,7 +103,7 @@ public:
 
         for (uint8_t i = 0; i < 32; i++)
         {
-          leds[random16(NUM_LEDS)] = globalSettings.colorAt(1);
+          leds[random16(NUM_LEDS)] = globalSettings.colorAt(1 + (i % 2));
         }
       }
 

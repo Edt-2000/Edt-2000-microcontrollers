@@ -140,7 +140,7 @@ public:
     }
 
     bool every(unsigned int interval) {
-        return t1ms && (ms % interval) == 0;
+        return interval == 0 || (t1ms && (ms % interval) == 0);
     }
 } Time;
 
