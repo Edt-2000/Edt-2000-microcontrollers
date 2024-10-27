@@ -23,7 +23,7 @@ protected:
   // if the animation does not delay() the animation can call FastLED.show() directly 
   inline void show() {
     Time.yield();
-    FastLED.show();
+    FastLED.show(globalSettings.brightness);
   }
 
 public:

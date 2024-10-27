@@ -27,9 +27,7 @@ enum struct TextAnimationVariants
 
   glitchRotate,
   glitchPerLetter,
-  glitchArtifacts,
-
-  strobo
+  glitchArtifacts
 };
 
 class TextAnimation : public Animation
@@ -154,12 +152,14 @@ public:
       }
       else if (variant == TextAnimationVariants::scrollMerge)
       {
+        globalSettings.font = 0;
+
         if (progress-- >= 0)
         {
           int8_t centerPos = FontRenderer.getOffset(&globalSettings.text, TextAlign::center);
 
           int8_t posLeft = centerPos - progress;
-          int8_t posRight = centerPos + progress + 1 + (globalSettings.textSplitPosition * (MAX_COL + 1));
+          int8_t posRight = centerPos + progress + 1 + (globalSettings.textSplitPosition * DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
 
           FontRenderer.displayText(&globalSettings.text, 0, globalSettings.textSplitPosition, posLeft, 0, colorIndex);
           FontRenderer.displayText(&globalSettings.text, globalSettings.textSplitPosition, globalSettings.text.length() - globalSettings.textSplitPosition, posRight, 0, colorIndex);
@@ -221,6 +221,7 @@ public:
       {
         if (progress == 0)
         {
+          globalSettings.font = 0;
           letterIndex = random8(globalSettings.text.length());
         }
 
@@ -228,15 +229,15 @@ public:
 
         ++progress;
 
-        uint16_t offset = (letterIndex * CHAR_SIZE) + (FontRenderer.getOffset(&globalSettings.text, TextAlign::center) * 8);
+        uint16_t offset = (letterIndex * DEFAULT_FONT_CHAR_SIZE) + (FontRenderer.getOffset(&globalSettings.text, TextAlign::center) * 8);
 
         if (progress > 64)
         {
-          fadeToBlackBy(leds + offset, CHAR_SIZE, 191 + (random8(0, 2) * 64));
+          fadeToBlackBy(leds + offset, DEFAULT_FONT_CHAR_SIZE, 191 + (random8(0, 2) * 64));
         }
         else if (progress > -90 && progress < 0)
         {
-          fadeToBlackBy(leds + offset, CHAR_SIZE, 127 + (random8(0, 5) * 32));
+          fadeToBlackBy(leds + offset, DEFAULT_FONT_CHAR_SIZE, 127 + (random8(0, 5) * 32));
         }
       }
       else if (variant == TextAnimationVariants::glitchArtifacts)

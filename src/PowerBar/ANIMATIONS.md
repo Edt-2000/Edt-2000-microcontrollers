@@ -19,27 +19,27 @@ default font (8px height)
 "wingdings" font for icons (8px height)
 
 - Text animation variants:
-    - 3 colors 
-    - rainbow / fixed color sequence (magic color 0,20,0)
-    - Simple foreground + background text - scrolling or not scrolling
-    - Rotating foreground color - no scrolling - different fade modes (none, onoff, fadeinout, sawtooth (up & down)) + speed
+    v 3 colors 
+    v rainbow / fixed color sequence (magic color 0,20,0)
+    v Simple foreground + background text - scrolling or not scrolling
+    v Rotating foreground color - no scrolling - different fade modes (none, onoff, fadeinout, sawtooth (up & down)) + speed
     - Pen/drawing font
-    - Scroll mode (none, bounce, rtl, merge scroll)
-    - Double foreground color - position for color swap
-    - Glitch modes (none, rotate position (1px), random perLetter blink, extraArtifacts, strobo)
-    - Speed
+    v Scroll mode (none, bounce, rtl, merge scroll)
+    v Double foreground color - position for color swap
+    v Glitch modes (none, rotate position (1px), random perLetter blink, extraArtifacts, strobo)
+    v Speed
     - Adem in uit mode
-    - Align (center / left / right)
+    v Align (center / left / right)
 - Strobo
-    - 1 color
-    - 2 colors
-    - 3 colors
-    - rainbow color / fixed color sequence (magic color 0,20,0)
-    - rainbow mode (rainbow, colorPerFlash)
-    - amount of flashes before rotating color
-    - speed
-    - brightness
-    - animation mode (full, half, scanning line, scanning block, text)
+    v 1 color
+    v 2 colors
+    v 3 colors
+    v rainbow color
+    x rainbow mode (rainbow, colorPerFlash)
+    v amount of flashes before rotating color
+    v speed
+    v brightness
+    v animation mode (full, half, scanning line, scanning block, text)
 - Pulse
     - 1 color
     - 2 colors

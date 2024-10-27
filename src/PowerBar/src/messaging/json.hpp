@@ -104,12 +104,12 @@ public:
                 PrintDebug("Setting brightness set to ");
                 PrintLnDebug(globalSettings.brightness);
             }
-            if (deserializeDoc.containsKey("size"))
+            if (deserializeDoc.containsKey("font"))
             {
-                globalSettings.size = deserializeDoc["size"];
+                globalSettings.font = deserializeDoc["font"];
 
-                PrintDebug("Setting size set to ");
-                PrintLnDebug(globalSettings.size);
+                PrintDebug("Setting font set to ");
+                PrintLnDebug(globalSettings.font);
             }
             if (deserializeDoc.containsKey("variant"))
             {
@@ -133,6 +133,18 @@ public:
 
                 PrintDebug("Setting colorCount set to ");
                 PrintLnDebug(globalSettings.colorCount);
+            }
+            if (deserializeDoc.containsKey("flashCount"))
+            {
+                globalSettings.flashCount = deserializeDoc["flashCount"];
+
+                if (globalSettings.flashCount <= 0)
+                {
+                    globalSettings.flashCount = 1;
+                }
+                
+                PrintDebug("Setting flashCount set to ");
+                PrintLnDebug(globalSettings.flashCount);
             }
             if (deserializeDoc.containsKey("textSplitPosition"))
             {
@@ -206,26 +218,6 @@ public:
         serializeDoc["color3"][1] = globalSettings.colors[2].s;
         serializeDoc["color3"][2] = globalSettings.colors[2].v;
 
-        PrintDebug("color[3] is ");
-        PrintDebug(globalSettings.colors[3].h);
-        PrintDebug(",");
-        PrintDebug(globalSettings.colors[3].s);
-        PrintDebug(",");
-        PrintLnDebug(globalSettings.colors[3].v);
-        serializeDoc["color4"][0] = globalSettings.colors[3].h;
-        serializeDoc["color4"][1] = globalSettings.colors[3].s;
-        serializeDoc["color4"][2] = globalSettings.colors[3].v;
-
-        PrintDebug("color[4] is ");
-        PrintDebug(globalSettings.colors[4].h);
-        PrintDebug(",");
-        PrintDebug(globalSettings.colors[4].s);
-        PrintDebug(",");
-        PrintLnDebug(globalSettings.colors[4].v);
-        serializeDoc["color5"][0] = globalSettings.colors[4].h;
-        serializeDoc["color5"][1] = globalSettings.colors[4].s;
-        serializeDoc["color5"][2] = globalSettings.colors[4].v;
-
         PrintDebug("speed is ");
         PrintLnDebug(globalSettings.speed);
         serializeDoc["speed"] = globalSettings.speed;
@@ -234,9 +226,9 @@ public:
         PrintLnDebug(globalSettings.brightness);
         serializeDoc["brightness"] = globalSettings.brightness;
 
-        PrintDebug("size is ");
-        PrintLnDebug(globalSettings.size);
-        serializeDoc["size"] = globalSettings.size;
+        PrintDebug("font is ");
+        PrintLnDebug(globalSettings.font);
+        serializeDoc["font"] = globalSettings.font;
 
         auto json = String();
 

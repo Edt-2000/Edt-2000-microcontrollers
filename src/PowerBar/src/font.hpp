@@ -4,16 +4,22 @@
 #include "./leds.hpp"
 #include "./settings.hpp"
 
-#define MAX_CHAR 96
-#define MAX_COL 5
+#define MAX_DEFAULT_FONT_CHAR 96
+#define DEFAULT_FONT_GLYPH_SIZE 5
+#define DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING (DEFAULT_FONT_GLYPH_SIZE + 1)
+#define DEFAULT_FONT_CHAR_SIZE (DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING * 8)
+
+#define MAX_ICON_FONT_CHAR 2
+#define ICON_FONT_GLYPH_SIZE 7
+#define ICON_FONT_CHAR_SIZE ((ICON_FONT_GLYPH_SIZE) * 8)
+
 #define FONT_OFFSET 32
-#define CHAR_SIZE 48
 
 #define SPECIFIC_COLOR_SEQUENCE_LENGTH 8
 
-// 5x7 lettertype
-const uint8_t font[MAX_CHAR][MAX_COL] = {
-    {0x00, 0x00, 0x00, 0x00, 0x00}, // spatie
+// 5x7 font
+const uint8_t defaultFont[MAX_DEFAULT_FONT_CHAR][DEFAULT_FONT_GLYPH_SIZE] = {
+    {0x00, 0x00, 0x00, 0x00, 0x00}, // space
     {0x00, 0x00, 0x5F, 0x00, 0x00}, // !
     {0x00, 0x07, 0x00, 0x07, 0x00}, // "
     {0x14, 0x7F, 0x14, 0x7F, 0x14}, // #
@@ -110,6 +116,12 @@ const uint8_t font[MAX_CHAR][MAX_COL] = {
     {0x02, 0x01, 0x02, 0x04, 0x02}  // ~
 };
 
+// 7x7 icon font
+const uint8_t iconFont[MAX_ICON_FONT_CHAR][ICON_FONT_GLYPH_SIZE] = {
+    {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // space
+    {0x0c, 0x1e, 0x3e, 0x7c, 0x3e, 0x1e, 0x0c}  // ! -> ❤️
+};
+
 const CHSV specificColorSequence[SPECIFIC_COLOR_SEQUENCE_LENGTH] = {
     CHSV(0, 255, 255),
     CHSV(95, 255, 255),
@@ -118,14 +130,22 @@ const CHSV specificColorSequence[SPECIFIC_COLOR_SEQUENCE_LENGTH] = {
     CHSV(129, 255, 255),
     CHSV(238, 255, 255),
     CHSV(18, 255, 255),
-    CHSV(183, 255, 255)
-};
+    CHSV(183, 255, 255)};
 
 enum struct TextAlign
 {
     left,
     center,
     right
+};
+
+struct RenderResult
+{
+    bool rendered;
+    uint8_t size;
+
+    RenderResult() : rendered(0), size(0) {}
+    RenderResult(bool rendered, uint8_t size) : rendered(rendered), size(size) {}
 };
 
 class FontRendererHelper
@@ -143,26 +163,7 @@ public:
 
     bool displayText(const String *text, int8_t startX, int8_t startY, int colorIndex)
     {
-        // TODO: merge
-        auto hasRendered = false;
-
-        uint8_t currentIndex = 0;
-        auto textLength = text->length();
-        auto maxTextLength = text->length();
-
-        while (currentIndex < textLength && startX < MAX_WIDTH)
-        {
-            auto letterColor = getColor(colorIndex, currentIndex, maxTextLength);
-
-            bool letterHasRendered = drawLetter(text->charAt(currentIndex) - FONT_OFFSET, startX, startY, letterColor);
-
-            hasRendered = hasRendered || letterHasRendered;
-
-            currentIndex++;
-            startX += MAX_COL + 1;
-        }
-
-        return hasRendered;
+        return displayText(text, 0, text->length(), startX, startY, colorIndex);
     }
 
     bool displayText(const String *text, uint8_t offset, uint8_t length, int8_t startX, int8_t startY, int colorIndex)
@@ -176,13 +177,21 @@ public:
         while (currentIndex < textLength && startX < MAX_WIDTH)
         {
             auto letterColor = getColor(colorIndex, currentIndex, maxTextLength);
+            RenderResult renderResult;
 
-            bool letterHasRendered = drawLetter(text->charAt(currentIndex) - FONT_OFFSET, startX, startY, letterColor);
+            if (globalSettings.font == 0)
+            {
+                renderResult = drawLetterDefaultFont(text->charAt(currentIndex) - FONT_OFFSET, startX, startY, letterColor);
+            }
+            else if (globalSettings.font == 1)
+            {
+                renderResult = drawLetterIconFont(text->charAt(currentIndex) - FONT_OFFSET, startX, startY, letterColor);
+            }
 
-            hasRendered = hasRendered || letterHasRendered;
+            hasRendered = hasRendered || renderResult.rendered;
 
             currentIndex++;
-            startX += MAX_COL + 1;
+            startX += renderResult.size;
         }
 
         return hasRendered;
@@ -191,10 +200,11 @@ public:
     int8_t getOffset(const String *text, TextAlign align)
     {
         int8_t offset = 0;
+        uint8_t size = globalSettings.font == 1 ? ICON_FONT_GLYPH_SIZE : DEFAULT_FONT_GLYPH_SIZE;
 
         if (align != TextAlign::left)
         {
-            offset = MAX_WIDTH - (text->length() * (MAX_COL + 1));
+            offset = MAX_WIDTH - (text->length() * (size + 1));
         }
         if (align == TextAlign::center)
         {
@@ -203,22 +213,23 @@ public:
 
         return offset;
     }
+
 private:
-    bool drawLetter(uint8_t letter, int8_t startX, int8_t startY, CRGB color)
+    RenderResult drawLetterDefaultFont(uint8_t letter, int8_t startX, int8_t startY, CRGB color)
     {
-        if (letter >= MAX_CHAR)
+        if (letter >= MAX_DEFAULT_FONT_CHAR)
         {
-            return false;
+            return RenderResult(false, DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
         }
 
-        if (startX < -MAX_COL || startX > MAX_WIDTH)
+        if (startX < -DEFAULT_FONT_GLYPH_SIZE || startX > MAX_WIDTH)
         {
-            return false;
+            return RenderResult(false, DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
         }
 
-        for (uint8_t i = 0; i < MAX_COL; i++)
+        for (uint8_t i = 0; i < DEFAULT_FONT_GLYPH_SIZE; i++)
         {
-            uint8_t column = font[letter][i];
+            uint8_t column = defaultFont[letter][i];
 
             for (uint8_t j = 0; j < 8; j++)
             {
@@ -236,7 +247,42 @@ private:
             }
         }
 
-        return true;
+        return RenderResult(true, DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
+    }
+
+    RenderResult drawLetterIconFont(uint8_t letter, int8_t startX, int8_t startY, CRGB color)
+    {
+        if (letter >= MAX_ICON_FONT_CHAR)
+        {
+            return RenderResult(false, ICON_FONT_GLYPH_SIZE);
+        }
+
+        if (startX < -ICON_FONT_GLYPH_SIZE || startX > MAX_WIDTH)
+        {
+            return RenderResult(false, ICON_FONT_GLYPH_SIZE);
+        }
+
+        for (uint8_t i = 0; i < ICON_FONT_GLYPH_SIZE; i++)
+        {
+            uint8_t column = iconFont[letter][i];
+
+            for (uint8_t j = 0; j < 8; j++)
+            {
+                if (column & (1 << j))
+                {
+                    uint8_t x = startX + i;
+                    uint8_t y = startY + (7 - j);
+
+                    if (x >= 0 && x < MAX_WIDTH && y >= 0 && y < 8)
+                    {
+                        uint16_t ledIndex = x * 8 + y;
+                        leds[ledIndex] = color;
+                    }
+                }
+            }
+        }
+
+        return RenderResult(true, ICON_FONT_GLYPH_SIZE);
     }
 
     CHSV getColor(int colorIndex, uint8_t letterIndex, uint8_t textLength)
@@ -252,7 +298,7 @@ private:
         {
             return CHSV((255 / textLength) * letterIndex, 255, 255);
         }
-        else if (isSpecificColorSequence(color) && textLength > 0) 
+        else if (isSpecificColorSequence(color) && textLength > 0)
         {
             return specificColorSequence[letterIndex % SPECIFIC_COLOR_SEQUENCE_LENGTH];
         }
