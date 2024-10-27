@@ -18,7 +18,7 @@ Test client for simple effects
 default font (8px height)
 "wingdings" font for icons (8px height)
 
-- Text animation variants:
+v Text animation variants:
     v 3 colors 
     v rainbow / fixed color sequence (magic color 0,20,0)
     v Simple foreground + background text - scrolling or not scrolling
@@ -29,7 +29,7 @@ default font (8px height)
     v Glitch modes (none, rotate position (1px), random perLetter blink, extraArtifacts, strobo)
     v Speed
     v Align (center / left / right)
-- Strobo
+v Strobo
     v 1 color
     v 2 colors
     v 3 colors
@@ -49,7 +49,7 @@ default font (8px height)
     - fade mode
     - speed
 - Fire
-- Data/Noise
+v Data/Noise
 - Poetin
 - Cabrio
     - 2 modes

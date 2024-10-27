@@ -13,12 +13,13 @@
 #include "font.hpp"
 
 #include "animation.hpp"
-#include "animations/singlePulseAnimation.hpp"
-#include "animations/stroboAnimation.hpp"
 #include "animations/fadeTextAnimation.hpp"
 #include "animations/glitchTextAnimation.hpp"
+#include "animations/noiseAnimation.hpp"
 #include "animations/scrollTextAnimation.hpp"
+#include "animations/singlePulseAnimation.hpp"
 #include "animations/staticTextAnimation.hpp"
+#include "animations/stroboAnimation.hpp"
 #include "animations/stopAnimation.hpp"
 
 #include "networking/network.hpp"
@@ -61,6 +62,7 @@ void setup()
 
   // these are all the animations the system knows
   Animator.addAnimation(new SinglePulseAnimation());
+  Animator.addAnimation(new NoiseAnimation());
   Animator.addAnimation(new StroboAnimation());
   Animator.addAnimation(new FadeTextAnimation());
   Animator.addAnimation(new GlitchTextAnimation());
