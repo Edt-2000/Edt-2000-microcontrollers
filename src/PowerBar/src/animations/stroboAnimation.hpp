@@ -50,9 +50,6 @@ public:
 
       auto color = globalSettings.colorAt(colorIndex);
 
-      auto offset = 0;
-      auto numLeds = NUM_LEDS;
-
       if (variant == StroboAnimationVariants::stroboFull)
       {
         output(color, 0, NUM_LEDS);
@@ -63,11 +60,18 @@ public:
       }
       else if (variant == StroboAnimationVariants::stroboScanBlock)
       {
-        output(color, (colorIndex % 10) * (NUM_LEDS / 10), NUM_LEDS / 10);
+        uint8_t pos = colorIndex % 18;
+        if (pos > 9) {
+          pos = 18 - pos;
+        }
+        output(color, (pos) * (NUM_LEDS / 10), NUM_LEDS / 10);
       }
       else if (variant == StroboAnimationVariants::stroboScanLine)
       {
-        uint8_t height = colorIndex % 8;
+        uint8_t height = colorIndex % 14;
+        if (height > 7) {
+          height = 14 - height;
+        }
         if (isRainbow(color))
         {
           for (uint8_t i = 0; i < MAX_WIDTH; i++)

@@ -10,14 +10,14 @@
 #define DEFAULT_FONT_CHAR_SIZE (DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING * 8)
 
 #define MAX_ICON_FONT_CHAR 2
-#define ICON_FONT_GLYPH_SIZE 7
+#define ICON_FONT_GLYPH_SIZE 8
 #define ICON_FONT_CHAR_SIZE ((ICON_FONT_GLYPH_SIZE) * 8)
 
 #define FONT_OFFSET 32
 
 #define SPECIFIC_COLOR_SEQUENCE_LENGTH 8
 
-// 5x7 font
+// 5x8 text font
 const uint8_t defaultFont[MAX_DEFAULT_FONT_CHAR][DEFAULT_FONT_GLYPH_SIZE] = {
     {0x00, 0x00, 0x00, 0x00, 0x00}, // space
     {0x00, 0x00, 0x5F, 0x00, 0x00}, // !
@@ -116,10 +116,10 @@ const uint8_t defaultFont[MAX_DEFAULT_FONT_CHAR][DEFAULT_FONT_GLYPH_SIZE] = {
     {0x02, 0x01, 0x02, 0x04, 0x02}  // ~
 };
 
-// 7x7 icon font
+// 8x8 icon font
 const uint8_t iconFont[MAX_ICON_FONT_CHAR][ICON_FONT_GLYPH_SIZE] = {
-    {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // space
-    {0x0c, 0x1e, 0x3e, 0x7c, 0x3e, 0x1e, 0x0c}  // ! -> ❤️
+    {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}, // space
+    {0x0c, 0x1e, 0x3e, 0x7c, 0x3e, 0x1e, 0x0c, 0x00}  // ! -> ❤️
 };
 
 const CHSV specificColorSequence[SPECIFIC_COLOR_SEQUENCE_LENGTH] = {
@@ -200,11 +200,11 @@ public:
     int8_t getOffset(const String *text, TextAlign align)
     {
         int8_t offset = 0;
-        uint8_t size = globalSettings.font == 1 ? ICON_FONT_GLYPH_SIZE : DEFAULT_FONT_GLYPH_SIZE;
+        uint8_t size = globalSettings.font == 1 ? ICON_FONT_GLYPH_SIZE : DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING;
 
         if (align != TextAlign::left)
         {
-            offset = MAX_WIDTH - (text->length() * (size + 1));
+            offset = MAX_WIDTH - (text->length() * size);
         }
         if (align == TextAlign::center)
         {

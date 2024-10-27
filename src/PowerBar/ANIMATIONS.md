@@ -28,7 +28,6 @@ default font (8px height)
     v Double foreground color - position for color swap
     v Glitch modes (none, rotate position (1px), random perLetter blink, extraArtifacts, strobo)
     v Speed
-    - Adem in uit mode
     v Align (center / left / right)
 - Strobo
     v 1 color

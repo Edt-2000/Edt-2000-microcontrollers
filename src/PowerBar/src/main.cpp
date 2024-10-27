@@ -15,7 +15,10 @@
 #include "animation.hpp"
 #include "animations/singlePulseAnimation.hpp"
 #include "animations/stroboAnimation.hpp"
-#include "animations/textAnimation.hpp"
+#include "animations/fadeTextAnimation.hpp"
+#include "animations/glitchTextAnimation.hpp"
+#include "animations/scrollTextAnimation.hpp"
+#include "animations/staticTextAnimation.hpp"
 #include "animations/stopAnimation.hpp"
 
 #include "networking/network.hpp"
@@ -59,7 +62,10 @@ void setup()
   // these are all the animations the system knows
   Animator.addAnimation(new SinglePulseAnimation());
   Animator.addAnimation(new StroboAnimation());
-  Animator.addAnimation(new TextAnimation());
+  Animator.addAnimation(new FadeTextAnimation());
+  Animator.addAnimation(new GlitchTextAnimation());
+  Animator.addAnimation(new ScrollTextAnimation());
+  Animator.addAnimation(new StaticTextAnimation());
   Animator.addAnimation(new StopAnimation());
 
   Serial.begin(115200);
