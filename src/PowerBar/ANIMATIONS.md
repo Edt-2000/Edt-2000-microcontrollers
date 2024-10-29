@@ -48,10 +48,10 @@ v Strobo
     - fill mode (single, alternating, partial, double, doubleMixed, scan line, scan block)
     - fade mode
     - speed
-- Fire
+V Fire
 v Data/Noise
 - Poetin
-- Cabrio
+V Cabrio
     - 2 modes
 v Rainbows / Rainbow LSD turbostrobo
 - Loading

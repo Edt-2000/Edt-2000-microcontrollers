@@ -35,8 +35,6 @@ public:
 
   void start()
   {
-    auto variant = (FadeTextAnimationVariants)globalSettings.variant;
-
     _isActive = true;
 
     colorIndex = 0;
@@ -47,9 +45,6 @@ public:
   void stop()
   {
     _isActive = false;
-
-    fill_solid(leds, NUM_LEDS, CRGB::Black);
-    show();
   }
 
   void loop()
