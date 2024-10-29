@@ -54,7 +54,7 @@ v Data/Noise
 V Cabrio
     - 2 modes
 v Rainbows / Rainbow LSD turbostrobo
-- Loading
+v Loading
 - Harder dan jij
 - Adem mode
-- 
+- Pac Man

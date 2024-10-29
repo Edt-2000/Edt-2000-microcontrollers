@@ -13,9 +13,12 @@
 #include "font.hpp"
 
 #include "animation.hpp"
+#include "animations/cabrioAnimation.hpp"
 #include "animations/fadeTextAnimation.hpp"
 #include "animations/fireAnimation.hpp"
 #include "animations/glitchTextAnimation.hpp"
+#include "animations/harderAnimation.hpp"
+#include "animations/loadingAnimation.hpp"
 #include "animations/lsdAnimation.hpp"
 #include "animations/noiseAnimation.hpp"
 #include "animations/scrollTextAnimation.hpp"
@@ -65,6 +68,8 @@ void setup()
   // these are all the animations the system knows
   Animator.addAnimation(new SinglePulseAnimation());
   Animator.addAnimation(new FireAnimation());
+  Animator.addAnimation(new HarderAnimation());
+  Animator.addAnimation(new LoadingAnimation());
   Animator.addAnimation(new LsdAnimation());
   Animator.addAnimation(new NoiseAnimation());
   Animator.addAnimation(new StroboAnimation());
@@ -72,6 +77,7 @@ void setup()
   Animator.addAnimation(new GlitchTextAnimation());
   Animator.addAnimation(new ScrollTextAnimation());
   Animator.addAnimation(new StaticTextAnimation());
+  Animator.addAnimation(new CabrioAnimation());
   Animator.addAnimation(new StopAnimation());
 
   Serial.begin(115200);

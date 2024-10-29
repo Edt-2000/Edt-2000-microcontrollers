@@ -103,6 +103,11 @@ public:
 
                 PrintDebug("Setting brightness set to ");
                 PrintLnDebug(globalSettings.brightness);
+
+                if (globalSettings.brightness <= 0)
+                {
+                    globalSettings.brightness = 1;
+                }
             }
             if (deserializeDoc.containsKey("font"))
             {
@@ -142,14 +147,14 @@ public:
                 {
                     globalSettings.flashCount = 1;
                 }
-                
+
                 PrintDebug("Setting flashCount set to ");
                 PrintLnDebug(globalSettings.flashCount);
             }
             if (deserializeDoc.containsKey("textSplitPosition"))
             {
                 globalSettings.textSplitPosition = deserializeDoc["textSplitPosition"];
-                
+
                 if (globalSettings.textSplitPosition < 0)
                 {
                     globalSettings.textSplitPosition = 0;
