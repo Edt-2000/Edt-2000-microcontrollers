@@ -203,7 +203,8 @@ class StroboAnimation extends Animation {
             color1: getElement(colorSet, state.Tick).toArray(),
             color2: getElement(colorSet, state.Tick + 1).toArray(),
             speed: state.Modifier,
-            units: state.getUnits()
+            units: state.getUnits(),
+            variant: 0
         };
 
         return message;

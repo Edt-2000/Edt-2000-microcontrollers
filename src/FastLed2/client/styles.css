@@ -13,6 +13,7 @@
     --heading: #070;
     --ledDevice: #0f0;
     --powerBarDevice: #f00;
+    --allDevices: #ff0;
     --accent: #0f0;
     --connecting: #ff0;
     --connected: #0f0;
@@ -68,7 +69,8 @@ body>div {
 
 animation-configurator,
 animation-invoker,
-animation-repeater {
+animation-repeater,
+animation-sender {
     display: block;
     position: relative;
     padding: 25px 5px 5px;
@@ -79,6 +81,9 @@ animation-repeater {
 
 [data-device-type="powerbar"] {
     border: 1px solid var(--powerBarDevice);
+}
+[data-device-type="unit1,unit2,spectacle,powerbar"] {
+    border: 1px solid var(--allDevices);
 }
 
 h2.type {

@@ -57,4 +57,8 @@ v Rainbows / Rainbow LSD turbostrobo
 v Loading
 - Harder dan jij
 - Adem mode
-- Pac Man
+- Text sequentie met meerdere woorden achter elkaar
+-> text moet array worden - text split pos kan dan weg
+- strobo text kleur op random / links/center/rechts plek
+- text scroll split uit elkaar 
+- matrix

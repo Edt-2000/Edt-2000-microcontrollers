@@ -57,6 +57,7 @@ public:
 
     progress += max(1, globalSettings.speed / 10);
 
+    // check below zero + above zero
     if (progress == 0)
     {
       colorIndex++;

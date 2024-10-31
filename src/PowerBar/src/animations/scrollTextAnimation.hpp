@@ -114,7 +114,7 @@ public:
         }
         else
         {
-          if (progress > -64)
+          if (progress > -64 && globalSettings.colorAt(2).v > 0)
           {
             fill_solid(leds, NUM_LEDS, CHSV(globalSettings.colorAt(2).h, globalSettings.colorAt(2).s, 4 * (128 - (progress * -1))));
           }

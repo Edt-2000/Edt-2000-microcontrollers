@@ -16,7 +16,7 @@ function setupSocket() {
 
     let handler = new WebSocketHandler(socket);
 
-    const animationElements = document.querySelectorAll("animation-configurator, animation-invoker, animation-repeater");
+    const animationElements = document.querySelectorAll("animation-configurator, animation-invoker, animation-repeater, animation-sender");
     for (let element of animationElements) {
         element.setWebSocketHandler(handler);
     }

@@ -71,7 +71,7 @@ class AnimationInvoker extends AnimationElementBase {
         }
 
         if (this.dataset.deviceType) {
-            this.state.Units = [this.dataset.deviceType];
+            this.state.Units = this.dataset.deviceType.split(',');
         }
 
         window.addEventListener("keydown", (e) => {

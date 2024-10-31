@@ -59,8 +59,7 @@ void setup()
   //FastLED.addLeds<APA102, 13, 32, BGR>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   //FastLED.addLeds<APA102, 14, 32, BGR>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
 
-  // TODO: find optimum value
-  FastLED.setMaxPowerInMilliWatts(30000);
+  FastLED.setMaxPowerInMilliWatts(80000);
 
 
   Status.init();

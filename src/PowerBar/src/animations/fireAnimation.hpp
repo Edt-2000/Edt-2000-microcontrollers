@@ -69,7 +69,7 @@ public:
 
             show();
 
-            delay(16);
+            delay(66);
 
         } while (_isActive);
     }

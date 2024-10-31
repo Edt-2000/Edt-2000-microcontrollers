@@ -9,6 +9,7 @@
     <script src="./animationConfigurator.js"></script>
     <script src="./animationInvoker.js"></script>
     <script src="./animationRepeater.js"></script>
+    <script src="./animationSender.js"></script>
 </head>
 
 <body>
@@ -42,12 +43,17 @@
     </div>
     <div>
         <animation-invoker data-channel="2" data-key="KeyC"></animation-invoker>
-        <animation-invoker data-key="Escape" data-animation="stop" data-speed="false" data-color-set="false"
-            data-modifier="false" data-fade="false"></animation-invoker>
-        <animation-invoker data-channel="2" data-key="Space" data-animation="strobo" data-continuous="true"
+
+        <animation-invoker data-key="Escape" data-animation="stop" data-device-type="unit1,unit2,spectacle,powerbar"
+            data-speed="false" data-color-set="false" data-modifier="false" data-fade="false"></animation-invoker>
+
+        <animation-invoker data-channel="2" data-key="Space" data-animation="strobo"
+            data-device-type="unit1,unit2,spectacle,powerbar" data-continuous="true" data-speed="false"
+            data-fade="false"></animation-invoker>
+
+        <animation-invoker data-channel="2" data-key="KeyB" data-animation="fire"
+            data-device-type="unit1,unit2,spectacle,powerbar" data-continuous="true" data-color-set="false"
             data-speed="false" data-fade="false"></animation-invoker>
-        <animation-invoker data-channel="2" data-key="KeyB" data-animation="fire" data-continuous="true"
-            data-color-set="false" data-speed="false" data-fade="false"></animation-invoker>
         <animation-invoker data-channel="2" data-key="KeyN" data-animation="noise" data-continuous="true"
             data-color-set="false" data-speed="false" data-fade="false"></animation-invoker>
         <animation-invoker data-channel="2" data-key="KeyM" data-animation="pong" data-speed="false"
@@ -58,12 +64,13 @@
     </div>
     <div>
         <animation-repeater data-channel="4" data-key="KeyA,KeyJ"></animation-repeater>
-        <animation-invoker data-channel="4" data-device-type="powerbar" data-continuous="true" data-key="F1"
-            data-color="Red" data-animation="strobo" data-fade="false"></animation-invoker>
-        <animation-invoker data-channel="4" data-device-type="powerbar" data-continuous="true" data-key="F2"
-            data-color="Blue" data-animation="strobo" data-fade="false"></animation-invoker>
-        <animation-invoker data-key="Escape" data-animation="stop" data-device-type="powerbar" data-speed="false"
-            data-color-set="false" data-modifier="false" data-fade="false"></animation-invoker>
+
+        <animation-sender data-key="F1" data-animation="staticText" data-title="Strobocops" data-device-type="powerbar"
+            data-variant="1" data-text="STROBOCOPS" data-color="Red"></animation-sender>
+
+        <animation-sender data-key="F2" data-animation="staticText" data-title="Strobocops" data-device-type="powerbar"
+            data-variant="1" data-text="STROBOCOPS" data-color="Blue,Red"
+            data-text-split-position="6"></animation-sender>
     </div>
     <div>
         <animation-repeater data-channel="5" data-key="KeyS,KeyK"></animation-repeater>
