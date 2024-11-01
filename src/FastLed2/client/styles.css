@@ -7,6 +7,7 @@
 
 :root {
     --bg: #000;
+    --details: #fff;
     --setting: #333;
     --settingDisabled: #191919;
     --settingHighlight: #888;
@@ -93,7 +94,7 @@ h2.type {
     margin: 0;
     padding: 4px;
     background: var(--heading);
-    color: var(--bg);
+    color: var(--details);
 }
 
 h2.animation {
@@ -103,7 +104,7 @@ h2.animation {
     margin: 0;
     padding: 4px;
     background: var(--heading);
-    color: var(--bg);
+    color: var(--details);
 }
 
 p.text-setting,
@@ -148,7 +149,8 @@ p.value-setting.disabled {
     opacity: .5;
 }
 
-p.value-setting::before {
+p.value-setting::before,
+p.color-setting::before {
     content: attr(data-value);
     position: absolute;
     left: 4px;

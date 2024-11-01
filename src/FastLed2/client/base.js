@@ -103,6 +103,7 @@ class Colors {
 
     // magic colors
     static Rainbow = new HSV(0, 10, 0);
+    static Specific = new HSV(0, 20, 0);
 }
 
 function getElement(array, index) {
@@ -167,10 +168,10 @@ class AnimationElementBase extends HTMLElement {
 
     createColorSetHtml(colorSetIndex, disabled, button) {
         let colorSet = Constants.ColorSets[colorSetIndex];
-        return this.createColorsHtml(colorSet, disabled, button);
+        return this.createColorsHtml(colorSet, disabled, button, colorSetIndex);
     }
 
-    createColorsHtml(colors, disabled, button) {
+    createColorsHtml(colors, disabled, button, colorSetIndex) {
         let colorStyle = '';
 
         if (colors.length == 1 && colors[0].isRainbow()) {
@@ -182,7 +183,7 @@ class AnimationElementBase extends HTMLElement {
             colorStyle = `background: linear-gradient(90deg, ${gradient});`;
         }
 
-        return `<p class="color-setting${disabled ? ' disabled' : ''}" ${this.createButtonHtml(button)} style="${colorStyle}">&nbsp;</p>`;
+        return `<p data-value="${colorSetIndex != undefined ? `${colorSetIndex}/${Constants.ColorSets.length}` : ''}" class="color-setting${disabled ? ' disabled' : ''}" ${this.createButtonHtml(button)} style="${colorStyle}">&nbsp;</p>`;
     }
 
     createButtonHtml(button) {

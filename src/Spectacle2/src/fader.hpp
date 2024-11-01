@@ -12,7 +12,12 @@ enum FadeMode : uint8_t
     none,
     fadeAll,
     oneByOne,
-    sparkle
+    sparkle,
+    pulse,
+    pulse2 = 250,
+    pulse3 = 251,
+    pulse4 = 252,
+    pulse5 = 253
 };
 
 struct FadeState
@@ -22,6 +27,7 @@ struct FadeState
 
     uint8_t speed;
     FadeMode mode;
+    CRGB color;
 };
 
 class FaderHelper
@@ -36,14 +42,13 @@ public:
 
     void loop()
     {
-        uint8_t iMax = _fades.size();
-        for (uint8_t i = 0; i < iMax; i++)
+        uint8_t i = 0;
+            
+        for (auto & state : _fades)
         {
-            auto state = _fades[i];
-
             if (state.speed > 0)
             {
-                if (state.mode == FadeMode::fadeAll)
+                if (state.mode == FadeMode::fadeAll || state.mode == FadeMode::pulse5)
                 {
                     fadeToBlackBy(leds + i, 1, state.speed);
                 }
@@ -62,12 +67,12 @@ public:
                 {
                     if (state.speed == 255)
                     {
-                        _fades[i].speed = 0;
+                        state.speed = 0;
                         leds[i] = CRGB::Black;
                     }
                     else if (random8() < state.speed)
                     {
-                        _fades[i].speed = 255;
+                        state.speed = 255;
                         leds[i] = CRGB::White;
                     }
                     else
@@ -75,7 +80,30 @@ public:
                         fadeToBlackBy(leds + i, 1, 1);
                     }
                 }
+                else if (state.mode == FadeMode::pulse)
+                    {
+                        state.color = leds[i];
+                        leds[i] = CRGB::Black;
+                        state.mode = FadeMode::pulse2;
+                    }
+                    else if (state.mode == FadeMode::pulse2)
+                    {
+                        leds[i] = state.color;
+                        state.mode = FadeMode::pulse3;
+                    }
+                    else if (state.mode == FadeMode::pulse3)
+                    {
+                        leds[i] = CRGB::Black;
+                        state.mode = FadeMode::pulse4;
+                    }
+                    else if (state.mode == FadeMode::pulse4)
+                    {
+                        leds[i] = state.color;
+                        state.mode = FadeMode::pulse5;
+                    }
             }
+
+            i++;
         }
     }
 

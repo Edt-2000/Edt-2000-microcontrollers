@@ -1,7 +1,7 @@
 class Animation {
     name = "";
     selectable = [0, 1, 2, 3, 4, 5, 6, 7];
-    deviceTypes = [ "led" ];
+    deviceTypes = ["led"];
     modifierDescription = "Modifier";
     speedDescription = "Speed";
 
@@ -204,6 +204,9 @@ class StroboAnimation extends Animation {
             color2: getElement(colorSet, state.Tick + 1).toArray(),
             speed: state.Modifier,
             units: state.getUnits(),
+
+            // powerbar special
+            brightness: 255,
             variant: 0
         };
 
@@ -224,7 +227,10 @@ class FireAnimation extends Animation {
         let message = {
             animation: 'fire',
             speed: state.Modifier,
-            units: state.getUnits()
+            units: state.getUnits(),
+
+            // powerbar special
+            brightness: state.Modifier,
         };
 
         return message;
@@ -331,7 +337,8 @@ class Constants {
         [Colors.Red, Colors.Orange, Colors.Yellow, Colors.Lime, Colors.Green, Colors.SeaGreen, Colors.Turquoise, Colors.Blue, Colors.Purple, Colors.Pink],
         [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime],
         [Colors.Rainbow],
-        [Colors.White]
+        [Colors.White],
+        [Colors.Red], [Colors.Orange], [Colors.Yellow], [Colors.Lime], [Colors.Green], [Colors.SeaGreen], [Colors.Turquoise], [Colors.Blue], [Colors.Purple], [Colors.Pink],
     ];
     static Fades = ['none', 'fadeAll', 'oneByOne', 'sparkle', 'pulse'];
 }

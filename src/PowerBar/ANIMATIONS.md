@@ -62,3 +62,4 @@ v Loading
 - strobo text kleur op random / links/center/rechts plek
 - text scroll split uit elkaar 
 - matrix
+-> same animation should trigger STOP

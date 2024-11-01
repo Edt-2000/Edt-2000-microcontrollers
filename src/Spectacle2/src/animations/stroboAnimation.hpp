@@ -59,7 +59,10 @@ public:
 
       show();
 
-      delay(10);
+      // from this point the animation is interruptable
+      delay(255 - globalSettings.speed);
+      delay(255 - globalSettings.speed);
+      delay(255 - globalSettings.speed);
     }
   }
 };

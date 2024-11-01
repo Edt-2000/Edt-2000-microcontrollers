@@ -1,7 +1,16 @@
 class AnimationSender extends AnimationElementBase {
     units = null;
     colors = [];
-    
+    singleShot = true;
+
+    speed = 0;
+    usesSpeed = false;
+    speedName = '';
+
+    modifier = 0;
+    usesModifier = false;
+    modifierName = '';
+
     constructor() {
         super();
     }
@@ -24,35 +33,70 @@ class AnimationSender extends AnimationElementBase {
                 e.preventDefault();
                 this.onKeyDown();
             }
-        })
+        });
+
+        let speedProperty = Object.keys(this.dataset).find(k => this.dataset[k] == "{speed}");
+        this.speedName = speedProperty;
+        this.usesSpeed = !!speedProperty;
+
+        let modifierProperty = Object.keys(this.dataset).find(k => this.dataset[k] == "{modifier}");
+        this.modifierName = modifierProperty;
+        this.usesModifier = !!modifierProperty;
+
+        this.singleShot = !(this.usesSpeed || this.usesModifier);
 
         this.drawState();
     }
 
     onMessage(message) {
+        let newModifier = 1 + (message.s * 2);
+        let newSpeed = 1 + (message.i * 2);
+
+        this.animationProbablyActive = !this.singleShot && this.webSocketHandler.previousSender == this;
+
+        let shouldSend = this.animationProbablyActive;
+
+        if (shouldSend) {
+            this.sendMessage(false);
+        }
+
+        this.modifier = newModifier;
+        this.speed = newSpeed;
+
+        this.drawState();
     }
 
-    sendMessage() {
+    sendMessage(sendFullMessage) {
         let message = {
-            units: this.units,
-            colorCount: Math.max(1, this.colors.length)
+            units: this.units
         };
 
-        if (getElement(this.colors, 0)) {
-            message.color1 = getElement(this.colors, 0).toArray();
-        }
-        if (getElement(this.colors, 1)) {
-            message.color2 = getElement(this.colors, 1).toArray();
-        }
-        if (getElement(this.colors, 2)) {
-            message.color3 = getElement(this.colors, 2).toArray();
+        if (sendFullMessage) {
+            message.colorCount = Math.max(1, this.colors.length);
+
+            if (getElement(this.colors, 0)) {
+                message.color1 = getElement(this.colors, 0).toArray();
+            }
+            if (getElement(this.colors, 1)) {
+                message.color2 = getElement(this.colors, 1).toArray();
+            }
+            if (getElement(this.colors, 2)) {
+                message.color3 = getElement(this.colors, 2).toArray();
+            }
+
+            Object.assign(message, this.dataset);
+
+            delete message['key'];
+            delete message['title'];
+            delete message['deviceType'];
         }
 
-        Object.assign(message, this.dataset);
-
-        delete message['key'];
-        delete message['title'];
-        delete message['deviceType'];
+        if (this.usesSpeed) {
+            message[this.speedName] = this.speed;
+        }
+        if (this.usesModifier) {
+            message[this.modifierName] = this.modifier;
+        }
 
         this.drawState();
 
@@ -60,12 +104,21 @@ class AnimationSender extends AnimationElementBase {
     }
 
     onKeyDown() {
-        this.sendMessage();
+        this.sendMessage(true);
     }
 
     drawState() {
         let html = `<div><h2 class="type">${this.dataset.key}</h2>`;
         html += `<h2 class="animation">${this.dataset.title}</h2>`;
+
+        if (this.usesSpeed) {
+            html += this.createValueHtml(this.speed, spaceCapitals(this.speedName));
+        }
+        
+        if (this.usesModifier) {
+            html += this.createValueHtml(this.modifier, spaceCapitals(this.modifierName));
+        }
+
         html += '</div>';
 
         this.innerHTML = html;

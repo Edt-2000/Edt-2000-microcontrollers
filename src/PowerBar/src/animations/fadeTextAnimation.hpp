@@ -55,10 +55,11 @@ public:
 
     FontRenderer.displayText(&globalSettings.text, TextAlign::center, colorIndex);
 
+    auto isBelowZero = progress < 0;
+
     progress += max(1, globalSettings.speed / 10);
 
-    // check below zero + above zero
-    if (progress == 0)
+    if (isBelowZero && progress >= 0)
     {
       colorIndex++;
     }

@@ -83,13 +83,11 @@ public:
                         if (state.speed == 255)
                         {
                             state.speed = 0;
-                            //_fades[led][i].speed = 0;
                             _leds[led][i] = CRGB::Black;
                         }
                         else if (random8() < state.speed)
                         {
                             state.speed = 255;
-                            //_fades[led][i].speed = 255;
                             _leds[led][i] = CRGB::White;
                         }
                         else
@@ -100,28 +98,23 @@ public:
                     else if (state.mode == FadeMode::pulse)
                     {
                         state.color = _leds[led][i];
-                        //_fades[led][i].color = _leds[led][i];
                         _leds[led][i] = CRGB::Black;
                         state.mode = FadeMode::pulse2;
-                        //_fades[led][i].mode = FadeMode::pulse2;
                     }
                     else if (state.mode == FadeMode::pulse2)
                     {
                         _leds[led][i] = state.color;
                         state.mode = FadeMode::pulse3;
-                        //_fades[led][i].mode = FadeMode::pulse3;
                     }
                     else if (state.mode == FadeMode::pulse3)
                     {
                         _leds[led][i] = CRGB::Black;
                         state.mode = FadeMode::pulse4;
-                        //_fades[led][i].mode = FadeMode::pulse4;
                     }
                     else if (state.mode == FadeMode::pulse4)
                     {
                         _leds[led][i] = state.color;
                         state.mode = FadeMode::pulse5;
-                        //_fades[led][i].mode = FadeMode::pulse5;
                     }
                 }
 
