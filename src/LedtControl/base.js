@@ -78,6 +78,9 @@ class Leds {
     }
 
     static getConfig() { return this._modes[this.Config]; }
+    static setConfig(config) {
+        this.Config = Math.max(0, this._modes.indexOf(config));
+    }
     static nextConfig() {
         this.Config++;
         this._index = 8;
@@ -156,6 +159,14 @@ class AnimationElementBase extends HTMLElement {
     setWebSocketHandler(webSocketHandler) {
         this.webSocketHandler = webSocketHandler;
     }
+
+    onPreset(preset) {}
+
+    resetPresetState() {
+        this.dataset.underPreset = false;
+    }
+
+    onReset() {}
 
     createSettingHtml(value, disabled, button, active) {
         return `<p class="text-setting${disabled ? ' disabled' : ''}${active ? ' active' : ''}" ${this.createButtonHtml(button)}>${value}</p>`;

@@ -9,13 +9,8 @@ class AnimationRepeater extends AnimationElementBase {
 
     connectedCallback() {
         const keys = this.dataset.key.split(',');
-        
-        this.id = `invoker-${this.dataset.channel}-${this.dataset.key}`;
 
-        let state = localStorage.getItem(this.id);
-        if (state) {
-            Object.assign(this.state, JSON.parse(state));
-        }
+        this.initialize();
 
         window.addEventListener("keydown", (e) => {
             if (!e.repeat && keys.includes(e.code)) {
@@ -36,6 +31,15 @@ class AnimationRepeater extends AnimationElementBase {
         this.drawState();
     }
 
+    initialize() {
+        this.id = `invoker-${this.dataset.channel}-${this.dataset.key}`;
+
+        let state = localStorage.getItem(this.id);
+        if (state) {
+            Object.assign(this.state, JSON.parse(state));
+        }
+    }
+
     onMessage(message) {
         if (message.bS) {
             this.state.nextAnimation(this.channel);
@@ -51,14 +55,37 @@ class AnimationRepeater extends AnimationElementBase {
         this.state.RepeatTime = (145 - message.i) * 3;
 
         this.drawState();
-        
+
         localStorage.setItem(this.id, JSON.stringify(this.state));
+    }
+
+    onPreset(preset) {
+        if (!(preset instanceof RepeaterPreset)) {
+            return;
+        }
+
+        this.dataset.underPreset = true;
+        
+        this.state.setAnimation(preset.animation);
+        this.state.setColorSet(preset.colors);
+        this.state.setFade(preset.fade);
+        this.state.Modifier = preset.modifier;
+        this.state.Speed = preset.repeat;
+        this.state.RepeatTime = (145 - (preset.repeat / 2)) * 3;
+
+        this.drawState();
+    }
+
+    onReset() {
+        this.initialize();
+
+        this.drawState();
     }
 
     sendMessage(firstMessage) {
         let now = performance.now();
         let diff = now - this.previousAnimation;
-        
+
         if (!firstMessage && diff < this.state.RepeatTime) {
             return;
         }
@@ -78,7 +105,7 @@ class AnimationRepeater extends AnimationElementBase {
         const allowedAnimations = Constants.Animations.filter(x => x.selectable.includes(this.channel));
         const animationName = spaceCapitals(animation.name);
         const fade = spaceCapitals(Constants.Fades[this.state.Fade]);
-        
+
         this.innerHTML = `<div>
             <h2 class="type">Repeater ${this.dataset.channel}</h2>
             <h2 class="animation">${leftPad(allowedAnimations.indexOf(animation) + 1, 2)}/${allowedAnimations.length}</h2>

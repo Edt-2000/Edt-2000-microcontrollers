@@ -25,7 +25,6 @@ class AnimationConfigurator extends AnimationElementBase {
             FastLedUnits.nextConfig();
         }
 
-
         let newHue = (message.s * 2);
         let hueChanged = newHue != this.outputHue;
         if (hueChanged) {
@@ -50,6 +49,23 @@ class AnimationConfigurator extends AnimationElementBase {
                 units: FastLedUnits.getUnits()
             });
         }
+
+        this.drawState();
+    }
+
+    onPreset(preset) {
+        if (!preset instanceof ConfiguratorPreset) {
+            return;
+        }
+        
+        if (preset.color != null) {
+            this.hue = preset.color.H;
+        }
+        if (preset.config != null) {
+            Leds.setConfig(preset.config);
+        }
+        this.outputHue = -1;
+        this.output = 1;
 
         this.drawState();
     }

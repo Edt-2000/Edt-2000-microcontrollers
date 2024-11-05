@@ -25,15 +25,16 @@ function setupSocket() {
         statusElement.className = "connected";
     };
 
-    socket.onmessage = function (event) {
-        var eventData = JSON.parse(event.data);
+    document.querySelector("animation-presets").setPresetReceivers(animationElements);
 
-        if (eventData instanceof Array) {
-            for (let element of animationElements) {
-                if (element.dataset.channel) {
-                    var midiData = eventData[element.dataset.channel];
-                    element.onMessage(midiData);
-                }
+    socket.onmessage = function (event) {
+        let eventData = JSON.parse(event.data);
+
+        let index = eventData.index;
+
+        for (let element of animationElements) {
+            if (element.dataset.channel == index) {
+                element.onMessage(eventData.channel);
             }
         }
     };

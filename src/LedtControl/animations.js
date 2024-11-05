@@ -297,35 +297,36 @@ class StopAnimation extends Animation {
 }
 
 class Constants {
-    static Animations = [
-        new SinglePulseAnimation(true),
-        new SinglePartialPulseAnimation(true),
-        new DoublePulseAnimation(true),
-        new SinglePulseAnimation(false),
-        new SinglePartialPulseAnimation(false),
-        new DoublePulseAnimation(false),
-        new SingleChaseAnimation(true, 0),
-        new SingleChaseAnimation(true, 128),
-        new SingleChaseAnimation(true, 64),
-        new SingleChaseAnimation(true, 192),
-        new DoubleChaseAnimation(true, 0),
-        new DoubleChaseAnimation(true, 128),
-        new SingleChaseAnimation(false, 0),
-        new SingleChaseAnimation(false, 128),
-        new SingleChaseAnimation(false, 64),
-        new SingleChaseAnimation(false, 192),
-        new DoubleChaseAnimation(false, 0),
-        new DoubleChaseAnimation(false, 128),
-        new SingleSteppedChaseAnimation(true, 0),
-        new SingleSteppedChaseAnimation(true, 128),
-        new SingleSteppedChaseAnimation(false, 0),
-        new SingleSteppedChaseAnimation(false, 128),
-        new StroboAnimation(),
-        new FireAnimation(),
-        new NoiseAnimation(),
-        new PongAnimation(),
-        new StopAnimation()
-    ];
+    static AnimationTypes = {
+        allSinglePulse: new SinglePulseAnimation(true),
+        allPartialSinglePulse: new SinglePartialPulseAnimation(true),
+        allDoublePulse: new DoublePulseAnimation(true),
+        oneSinglePulse: new SinglePulseAnimation(false),
+        onePartialSinglePulse: new SinglePartialPulseAnimation(false),
+        oneDoublePulse: new DoublePulseAnimation(false),
+        allSingleChaseUp: new SingleChaseAnimation(true, 0),
+        allSingleChaseDown: new SingleChaseAnimation(true, 128),
+        allSingleChaseLeft: new SingleChaseAnimation(true, 64),
+        allSingleChaseRight: new SingleChaseAnimation(true, 192),
+        allDoubleChaseUp: new DoubleChaseAnimation(true, 0),
+        allDoubleChaseDown: new DoubleChaseAnimation(true, 128),
+        oneSingleChaseUp: new SingleChaseAnimation(false, 0),
+        oneSingleChaseDown: new SingleChaseAnimation(false, 128),
+        oneSingleChaseLeft: new SingleChaseAnimation(false, 64),
+        oneSingleChaseRight: new SingleChaseAnimation(false, 192),
+        oneDoubleChaseUp: new DoubleChaseAnimation(false, 0),
+        oneDoubleChaseDown: new DoubleChaseAnimation(false, 128),
+        allSingleSteppedChaseDown: new SingleSteppedChaseAnimation(true, 0),
+        allSingleSteppedChaseUp: new SingleSteppedChaseAnimation(true, 128),
+        oneSingleSteppedChaseDown: new SingleSteppedChaseAnimation(false, 0),
+        oneSIngleSteppedChaseUp: new SingleSteppedChaseAnimation(false, 128),
+        strobo: new StroboAnimation(),
+        fire: new FireAnimation(),
+        noise: new NoiseAnimation(),
+        pong: new PongAnimation(),
+        stop: new StopAnimation()
+    }
+    static Animations = Object.values(Constants.AnimationTypes);
     static ColorSets = [
         [Colors.Red, Colors.White],
         [Colors.Red, Colors.Blue],
@@ -340,7 +341,14 @@ class Constants {
         [Colors.White],
         [Colors.Red], [Colors.Orange], [Colors.Yellow], [Colors.Lime], [Colors.Green], [Colors.SeaGreen], [Colors.Turquoise], [Colors.Blue], [Colors.Purple], [Colors.Pink],
     ];
-    static Fades = ['none', 'fadeAll', 'oneByOne', 'sparkle', 'pulse'];
+    static FadeTypes = {
+        none: "none",
+        fadeAll: "fadeAll",
+        oneByOne: "oneByOne",
+        sparkle: "sparkle",
+        pulse: "pulse"
+    }
+    static Fades = Object.keys(Constants.FadeTypes);
 }
 
 class AnimationState {
@@ -360,6 +368,9 @@ class AnimationState {
     Tick = -1;
 
     getAnimation() { return Constants.Animations[this.Animation]; }
+    setAnimation(animationType) {
+        this.Animation = Math.max(0, Constants.Animations.findIndex(animation => animation === animationType));
+    }
     nextAnimation(channel) {
         this.Animation++;
         if (this.Animation >= Constants.Animations.length) {
@@ -370,6 +381,9 @@ class AnimationState {
         }
     }
     getColorSet() { return this.Color ? [this.Color] : Constants.ColorSets[this.ColorSet]; }
+    setColorSet(colorSet) {
+        this.ColorSet = Math.max(0, Constants.ColorSets.findIndex(set => arrayEquals(set, colorSet)));
+    }
     nextColorSet() {
         this.ColorSet++;
         if (this.ColorSet >= Constants.ColorSets.length) {
@@ -377,6 +391,9 @@ class AnimationState {
         }
     }
     getFade() { return this.Fade; }
+    setFade(fade) {
+        this.Fade = Math.max(0, Constants.Fades.indexOf(fade));
+    }
     nextFade() {
         this.Fade++;
         if (this.Fade >= Constants.Fades.length) {

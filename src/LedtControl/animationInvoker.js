@@ -15,7 +15,27 @@ class AnimationInvoker extends AnimationElementBase {
     connectedCallback() {
         const key = this.dataset.key;
 
-        this.id = `invoker-${this.dataset.channel}-${key}`;
+        this.initialize();
+
+        window.addEventListener("keydown", (e) => {
+            if (!this.singleShot && this.animationProbablyActive && e.code !== key) {
+                this.animationProbablyActive = false;
+                this.drawState();
+            }
+
+            if (!e.repeat && e.code === key) {
+                e.preventDefault();
+                this.onKeyDown();
+            }
+        });
+
+        this.channel = parseInt(this.dataset.channel);
+
+        this.drawState(false);   
+    }
+
+    initialize() {
+        this.id = `invoker-${this.dataset.channel}-${this.dataset.key}`;
 
         let state = localStorage.getItem(this.id);
         if (state) {
@@ -45,7 +65,7 @@ class AnimationInvoker extends AnimationElementBase {
             this.animation = false;
 
             if (this.dataset.animation !== "false") {
-                this.state.Animation = Constants.Animations.findIndex(x => x.name === this.dataset.animation)
+                this.state.Animation = Constants.Animations.findIndex(x => x.name === this.dataset.animation);
             }
         }
 
@@ -73,22 +93,6 @@ class AnimationInvoker extends AnimationElementBase {
         if (this.dataset.deviceType) {
             this.state.Units = this.dataset.deviceType.split(',');
         }
-
-        window.addEventListener("keydown", (e) => {
-            if (!this.singleShot && this.animationProbablyActive && e.code !== key) {
-                this.animationProbablyActive = false;
-                this.drawState();
-            }
-
-            if (!e.repeat && e.code === key) {
-                e.preventDefault();
-                this.onKeyDown();
-            }
-        })
-
-        this.channel = parseInt(this.dataset.channel);
-
-        this.drawState(false);
     }
 
     onMessage(message) {
@@ -139,6 +143,46 @@ class AnimationInvoker extends AnimationElementBase {
         localStorage.setItem(this.id, JSON.stringify(this.state));
     }
 
+    onPreset(preset) {
+        if (!(preset instanceof InvokerPreset)) {
+            return;
+        }
+
+        if (!this.animation && this.state.getAnimation() !== preset.animation){
+            return;
+        }
+
+        this.dataset.underPreset = true;
+
+        if (this.animation) {
+            this.state.setAnimation(preset.animation);
+        }
+
+        if (this.colorSet) {
+            this.state.setColorSet(preset.colors);
+        }
+
+        if (this.fade) {
+            this.state.setFade(preset.fade);
+        }
+        
+        if (this.modifier) {
+            this.state.Modifier = preset.modifier;
+        }
+
+        if (this.speed) {
+            this.state.Speed = preset.speed;
+        }
+
+        this.drawState();
+    }
+
+    onReset() {
+        this.initialize();
+
+        this.drawState();
+    }
+
     sendMessage(sendAnimationName) {
         let animation = this.state.getAnimation();
 
@@ -171,7 +215,8 @@ class AnimationInvoker extends AnimationElementBase {
         const animationName = spaceCapitals(animation.name);
         const fade = spaceCapitals(Constants.Fades[this.state.Fade]);
 
-        let html = `<div><h2 class="type">${this.dataset.key}</h2>`;
+        let html = `<div>
+            <h2 class="type">${this.dataset.key}</h2>`;
 
         if (!this.dataset.animation) {
             html += `<h2 class="animation">${leftPad(allowedAnimations.indexOf(animation) + 1, 2)}/${allowedAnimations.length}</h2>`;

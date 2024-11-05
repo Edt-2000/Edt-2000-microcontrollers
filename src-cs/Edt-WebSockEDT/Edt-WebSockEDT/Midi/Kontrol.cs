@@ -7,9 +7,9 @@ public class Kontrol
     private IMidiInput? _input;
     private IMidiOutput? _output;
 
-    private Action<Channel[]>? _messageCallback = null;
+    private Action<ChannelMessage>? _messageCallback = null;
 
-    public async Task InitAsync(Action<Channel[]> onMessage)
+    public async Task InitAsync(Action<ChannelMessage> onMessage)
     {
         _messageCallback = onMessage;
 
@@ -77,9 +77,10 @@ public class Kontrol
         var y = e.Data[1];
         var z = e.Data[2];
 
+        byte channel;
         if (x == 0x90)
         {
-            var channel = (byte)(y & 0x07);
+            channel = (byte)(y & 0x07);
             if (y < 0x18)
             {
                 var mode = (byte)((y & 0xFC) >> 3);
@@ -109,7 +110,7 @@ public class Kontrol
         }
         else if (x == 0xb0)
         {
-            var channel = y & 0x07;
+            channel = (byte)(y & 0x07);
             if (z == 0x3F)
             {
                 Cs[channel].SetSelect(127, null);
@@ -129,12 +130,16 @@ public class Kontrol
         }
         else if ((x & 0xe0) > 0)
         {
-            var channel = x & 0x07;
+            channel = (byte)(x & 0x07);
             var intensity = y;
             Cs[channel].SetIntensity(intensity);
         }
+        else
+        {
+            channel = 0;
+        }
 
-        _messageCallback?.Invoke(Cs);
+        _messageCallback?.Invoke(new(channel, Cs[channel]));
     }
 
     public Channel[] Cs { get; set; } = [

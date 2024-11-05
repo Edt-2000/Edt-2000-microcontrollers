@@ -23,10 +23,8 @@ class AnimationSender extends AnimationElementBase {
         if (this.dataset.deviceType) {
             this.units = this.dataset.deviceType.split(',');
         }
-        if (this.dataset.color) {
-            this.colors = this.dataset.color.split(',').map(c => Colors[c]);
-            delete this.dataset.color;
-        }
+
+        this.initialize();
 
         window.addEventListener("keydown", (e) => {
             if (!e.repeat && e.code === key) {
@@ -34,6 +32,15 @@ class AnimationSender extends AnimationElementBase {
                 this.onKeyDown();
             }
         });
+
+        this.drawState();
+    }
+
+    initialize() {
+        if (this.dataset.color) {
+            this.colors = this.dataset.color.split(',').map(c => Colors[c]);
+            delete this.dataset.color;
+        }
 
         let speedProperty = Object.keys(this.dataset).find(k => this.dataset[k] == "{speed}");
         this.speedName = speedProperty;
@@ -44,8 +51,6 @@ class AnimationSender extends AnimationElementBase {
         this.usesModifier = !!modifierProperty;
 
         this.singleShot = !(this.usesSpeed || this.usesModifier);
-
-        this.drawState();
     }
 
     onMessage(message) {
@@ -62,6 +67,60 @@ class AnimationSender extends AnimationElementBase {
 
         this.modifier = newModifier;
         this.speed = newSpeed;
+
+        this.drawState();
+    }
+
+    onPreset(preset) {
+        if (!(preset instanceof SenderPreset)) {
+            return;
+        }
+
+        if (preset.index != this.dataset.index) {
+            return;
+        }
+
+        this.dataset.underPreset = true;
+
+        this.dataset.animation = preset.animation;
+        this.dataset.title = preset.title;
+        this.dataset.text = preset.text;
+        this.dataset.font = preset.font;
+        this.dataset.variant = preset.variant;
+        this.dataset.flashCount = preset.flashCount;
+        this.dataset.brightness = preset.brightness;
+        this.dataset.speed = preset.speed;
+
+        this.colors = preset.colors;
+
+        this.initialize();
+
+        this.drawState();
+    }
+
+    resetPresetState() {
+        this.dataset.underPreset = false;
+        this.onReset();
+    }
+
+    onReset() {
+        if (!this.dataset.index) {
+            return;
+        }
+
+        delete this.dataset.animation;
+        delete this.dataset.title;
+        delete this.dataset.modifier;
+        delete this.dataset.speed;
+        delete this.dataset.text;
+        delete this.dataset.font;
+        delete this.dataset.variant;
+        delete this.dataset.flashCount;
+        delete this.dataset.color;
+        delete this.dataset.brightness;
+        delete this.dataset.speed;
+
+        this.initialize();
 
         this.drawState();
     }
@@ -89,6 +148,8 @@ class AnimationSender extends AnimationElementBase {
             delete message['key'];
             delete message['title'];
             delete message['deviceType'];
+            delete message['index'];
+            delete message['underPreset'];
         }
 
         if (this.usesSpeed) {
@@ -108,13 +169,17 @@ class AnimationSender extends AnimationElementBase {
     }
 
     drawState() {
+
         let html = `<div><h2 class="type">${this.dataset.key}</h2>`;
-        html += `<h2 class="animation">${this.dataset.title}</h2>`;
+
+        if (this.dataset.title != null) {
+            html += `<h2 class="animation">${this.dataset.title}</h2>`;
+        }
 
         if (this.usesSpeed) {
             html += this.createValueHtml(this.speed, spaceCapitals(this.speedName));
         }
-        
+
         if (this.usesModifier) {
             html += this.createValueHtml(this.modifier, spaceCapitals(this.modifierName));
         }

@@ -31,9 +31,9 @@ public class MidiBackgroundService : BackgroundService
         while (!stoppingToken.IsCancellationRequested);
     }
 
-    private void HandleMidiMessage(Channel[] states)
+    private void HandleMidiMessage(ChannelMessage message)
     {
-        var data = JsonSerializer.Serialize(states, _options);
+        var data = JsonSerializer.Serialize(message, _options);
         _webSocketHandler.Send(Constants.WebSocketControl, data);
     }
 }
