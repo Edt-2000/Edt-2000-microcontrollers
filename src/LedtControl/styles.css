@@ -24,7 +24,7 @@
 body {
     background-color: var(--bg);
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns:  repeat(8, minmax(0, 1fr));;
     grid-template-rows: 4rem 1fr;
     grid-auto-flow: dense;
     gap: 1rem;
@@ -84,10 +84,21 @@ animation-presets {
     min-height: 0;
     margin-bottom: 1rem;
     border: 1px solid var(--ledDevice);
+    width: 100%;
+    min-width: 100%;
 }
 
 animation-presets {
     height: 100%;
+    padding: 0;
+}
+
+animation-presets>div {
+    display: grid;
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+    grid-template-rows: 4rem 1fr;
+    grid-auto-flow: dense;
+    gap: 1rem;
 }
 
 [data-device-type="powerbar"] {
@@ -111,6 +122,25 @@ h2.type {
     color: var(--details);
 }
 
+h2.tab {
+    text-align: center;
+    grid-column: auto;
+    grid-row: 1;
+    background: var(--heading);
+    color: var(--details);
+    overflow: hidden;
+    min-width: 0;
+    max-width: 100%;
+    line-height: 25px;
+}
+h2.tab.active {
+    background: var(--accent);
+    color: var(--bg);
+}
+h2.tab.hidden {
+    background: var(--bg);
+}
+
 h2.animation {
     position: absolute;
     top: 0;
@@ -130,6 +160,8 @@ p.color-setting {
     text-align: center;
     text-transform: uppercase;
     margin: 4px -4px;
+    white-space:nowrap;
+    overflow:hidden;
 }
 
 [data-button]::after {

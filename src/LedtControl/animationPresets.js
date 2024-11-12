@@ -64,13 +64,26 @@ class AnimationPresets extends HTMLElement {
     }
 
     drawState() {
-        const preset = Presets.items[this.currentPreset];
-
-        const name = preset?.name ?? "None";
-
         let html = `<div>`;
-        
-        html +=`<h2 class="type">Preset ${name.toUpperCase()}</h2>`;
+
+        for (let i = -4; i < 5; i++) {
+            let x = i + this.currentPreset;
+
+            if (x < 0) {
+                html += `<h2 class="tab hidden">&nbsp;</h2>`;
+                continue;
+            }
+
+            if (x >= Presets.items.length) {
+                continue;
+            }
+
+            const preset = Presets.items[x];
+            const name = preset?.name ?? "None";
+            html += `<h2 class="tab${x == this.currentPreset ? " active" : ""}">${name.toUpperCase()}</h2>`;
+
+        }
+
 
         html += `</div>`;
 

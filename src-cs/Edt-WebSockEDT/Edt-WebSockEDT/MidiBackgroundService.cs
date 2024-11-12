@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Text.Json.Serialization;
 using EdtWebSockEDT.Midi;
 
 namespace EdtWebSockEDT;
@@ -9,7 +10,11 @@ public class MidiBackgroundService : BackgroundService
     private readonly WebSocketHandler _webSocketHandler;
     private readonly JsonSerializerOptions _options = new()
     {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Converters =
+        {
+            new JsonStringEnumConverter(JsonNamingPolicy.CamelCase)
+        }
     };
 
     public MidiBackgroundService(

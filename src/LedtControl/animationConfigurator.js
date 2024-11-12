@@ -16,24 +16,29 @@ class AnimationConfigurator extends AnimationElementBase {
         this.drawState(false);
     }
 
-    onMessage(message) {
-        if (message.bS) {
+    onSelectUpdate(s) {
+        let newHue = (s * 2);
+
+        this.hue = newHue;
+
+        this.drawState();
+    }
+
+    onIntensityUpdate(i) {
+
+    }
+
+    onButtonPress(s, m, r) {
+        if (s) {
             Leds.nextConfig();
         }
 
-        if (message.bR) {
-            FastLedUnits.nextConfig();
-        }
-
-        let newHue = (message.s * 2);
-        let hueChanged = newHue != this.outputHue;
-        if (hueChanged) {
-            this.output = 1;
-        }
-        this.hue = newHue;
-
-        if (message.bM) {
-            if (!hueChanged) {
+        if (m) {
+            let hueChanged = this.hue != this.outputHue;
+            if (hueChanged) {
+                this.output = 1;
+            }
+            else {
                 this.output = (this.output % 5) + 1;
             }
 
@@ -50,6 +55,10 @@ class AnimationConfigurator extends AnimationElementBase {
             });
         }
 
+        if (r) {
+            FastLedUnits.nextConfig();
+        }
+
         this.drawState();
     }
 
@@ -57,7 +66,7 @@ class AnimationConfigurator extends AnimationElementBase {
         if (!preset instanceof ConfiguratorPreset) {
             return;
         }
-        
+
         if (preset.color != null) {
             this.hue = preset.color.H;
         }

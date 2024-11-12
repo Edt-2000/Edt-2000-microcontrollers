@@ -31,7 +31,7 @@ class AnimationInvoker extends AnimationElementBase {
 
         this.channel = parseInt(this.dataset.channel);
 
-        this.drawState(false);   
+        this.drawState(false);
     }
 
     initialize() {
@@ -95,22 +95,37 @@ class AnimationInvoker extends AnimationElementBase {
         }
     }
 
-    onMessage(message) {
-        let newModifier = 1 + (message.s * 2);
-        let newSpeed = 1 + (message.i * 2);
+    onSelectUpdate(s) {
+        if (this.modifier) {
+            let newModifier = 1 + (s * 2);
+            this.state.Modifier = newModifier;
+        }
 
+        this.storeAndDraw();
+    }
+
+    onIntensityUpdate(i) {
+        if (this.speed) {
+            let newSpeed = 1 + (i * 2);
+            this.state.Speed = newSpeed;
+        }
+
+        this.storeAndDraw();
+    }
+
+    onButtonPress(s, m, r) {
         this.animationProbablyActive = !this.singleShot && this.webSocketHandler.previousSender == this;
 
         let shouldSend = this.animationProbablyActive;
 
         if (this.animation) {
-            if (message.bS) {
+            if (s) {
                 this.state.nextAnimation(this.channel);
             }
         }
 
         if (this.colorSet) {
-            if (message.bM) {
+            if (m) {
                 if (this.animationProbablyActive) {
                     this.state.updateTick();
                 }
@@ -121,25 +136,20 @@ class AnimationInvoker extends AnimationElementBase {
         }
 
         if (this.fade) {
-            if (message.bR) {
+            if (r) {
                 this.state.nextFade();
             }
-        }
-
-        if (this.modifier) {
-            this.state.Modifier = newModifier;
-        }
-
-        if (this.speed) {
-            this.state.Speed = newSpeed;
         }
 
         if (shouldSend) {
             this.sendMessage(false);
         }
 
-        this.drawState();
+        this.storeAndDraw();
+    }
 
+    storeAndDraw() {
+        this.drawState();
         localStorage.setItem(this.id, JSON.stringify(this.state));
     }
 
@@ -148,7 +158,7 @@ class AnimationInvoker extends AnimationElementBase {
             return;
         }
 
-        if (!this.animation && this.state.getAnimation() !== preset.animation){
+        if (!this.animation && this.state.getAnimation() !== preset.animation) {
             return;
         }
 
@@ -165,7 +175,7 @@ class AnimationInvoker extends AnimationElementBase {
         if (this.fade) {
             this.state.setFade(preset.fade);
         }
-        
+
         if (this.modifier) {
             this.state.Modifier = preset.modifier;
         }

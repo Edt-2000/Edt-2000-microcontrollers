@@ -1,30 +1,23 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace EdtWebSockEDT.Midi;
 
-namespace EdtWebSockEDT.Midi;
-
-public class StateChannel : Channel
+public class StateChannel
 {
-    [JsonPropertyName("i")]
-    public int Intensity { get; set; }
+    public int Intensity { get; private set; }
 
-    [JsonPropertyName("s")]
-    public int Select { get; set; }
+    public int Select { get; private set; }
 
-    [JsonPropertyName("bS")]
     public bool SPressed { get; set; }
 
-    [JsonPropertyName("bM")]
     public bool MPressed { get; set; }
 
-    [JsonPropertyName("bR")]
-    public bool RPRessed { get; set; }
+    public bool RPressed { get; set; }
 
-    public override void SetIntensity(byte intensity)
+    public void SetIntensity(byte intensity)
     {
         Intensity = intensity;
     }
 
-    public override void SetSelect(int? absoluteSelect, int? delta)
+    public void SetSelect(int? absoluteSelect, int? delta)
     {
         if (absoluteSelect.HasValue)
         {
@@ -37,14 +30,14 @@ public class StateChannel : Channel
         Select = Math.Clamp(Select, 0, 127);
     }
 
-    public override Mode GetMode()
+    public Mode GetMode()
     {
         return (SPressed ? Mode.One : 0)
             | (MPressed ? Mode.Two : 0)
-            | (RPRessed ? Mode.Four : 0);
+            | (RPressed ? Mode.Four : 0);
     }
 
-    public override void SetMode(Mode mode)
+    public void SetMode(Mode mode)
     {
         if (mode == Mode.One)
         {
@@ -56,14 +49,14 @@ public class StateChannel : Channel
         }
         if (mode == Mode.Four)
         {
-            RPRessed = true;
+            RPressed = true;
         }
     }
 
-    public override void ButtonUp()
+    public void ButtonUp()
     {
         SPressed = false;
         MPressed = false;
-        RPRessed = false;
+        RPressed = false;
     }
 }

@@ -34,7 +34,11 @@ function setupSocket() {
 
         for (let element of animationElements) {
             if (element.dataset.channel == index) {
-                element.onMessage(eventData.channel);
+                switch (eventData.updateType) {
+                    case "select": element.onSelectUpdate(eventData.value); break;
+                    case "intensity": element.onIntensityUpdate(eventData.value); break;
+                    case "button": element.onButtonPress(eventData.value == 1, eventData.value == 2, eventData.value == 4); break;
+                }
             }
         }
     };

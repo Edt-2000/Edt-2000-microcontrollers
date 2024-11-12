@@ -73,6 +73,9 @@ public class Kontrol
             return;
         }
 
+        var updateType = (UpdateType)0;
+        var updateValue = 0;
+
         var x = e.Data[0];
         var y = e.Data[1];
         var z = e.Data[2];
@@ -106,6 +109,9 @@ public class Kontrol
                 _output?.Send([0x90, (byte)(channel + 8), IsOn(output, Mode.One)], 0, 3, 0);
                 _output?.Send([0x90, (byte)(channel + 16), IsOn(output, Mode.Two)], 0, 3, 0);
                 _output?.Send([0x90, (byte)(channel + 0), IsOn(output, Mode.Four)], 0, 3, 0);
+
+                updateType = UpdateType.Button;
+                updateValue = (int)Cs[channel].GetMode();
             }
         }
         else if (x == 0xb0)
@@ -127,22 +133,28 @@ public class Kontrol
             {
                 Cs[channel].SetSelect(null, z & 0x03);
             }
+
+            updateType = UpdateType.Select;
+            updateValue = Cs[channel].Select;
         }
         else if ((x & 0xe0) > 0)
         {
             channel = (byte)(x & 0x07);
             var intensity = y;
             Cs[channel].SetIntensity(intensity);
+
+            updateType = UpdateType.Intensity;
+            updateValue = Cs[channel].Intensity;
         }
         else
         {
             channel = 0;
         }
 
-        _messageCallback?.Invoke(new(channel, Cs[channel]));
+        _messageCallback?.Invoke(new(channel, updateType, updateValue));
     }
 
-    public Channel[] Cs { get; set; } = [
+    public StateChannel[] Cs { get; set; } = [
         new StateChannel(),
         new StateChannel(),
         new StateChannel(),

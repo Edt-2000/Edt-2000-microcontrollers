@@ -53,10 +53,25 @@ class AnimationSender extends AnimationElementBase {
         this.singleShot = !(this.usesSpeed || this.usesModifier);
     }
 
-    onMessage(message) {
-        let newModifier = 1 + (message.s * 2);
-        let newSpeed = 1 + (message.i * 2);
+    onSelectUpdate(s) {
+        let newModifier = 1 + (s * 2);
+        this.modifier = newModifier;
 
+        this.drawAndSend();
+    }
+
+    onIntensityUpdate(i) {
+        let newSpeed = 1 + (i * 2);
+        this.speed = newSpeed;
+
+        this.drawAndSend();
+    }
+
+    onButtonPress(s, m, r) {
+
+    }
+
+    drawAndSend() {
         this.animationProbablyActive = !this.singleShot && this.webSocketHandler.previousSender == this;
 
         let shouldSend = this.animationProbablyActive;
@@ -64,9 +79,6 @@ class AnimationSender extends AnimationElementBase {
         if (shouldSend) {
             this.sendMessage(false);
         }
-
-        this.modifier = newModifier;
-        this.speed = newSpeed;
 
         this.drawState();
     }

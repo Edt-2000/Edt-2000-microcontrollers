@@ -40,22 +40,35 @@ class AnimationRepeater extends AnimationElementBase {
         }
     }
 
-    onMessage(message) {
-        if (message.bS) {
+    onSelectUpdate(s) {
+        this.state.Modifier = 1 + (s * 2);
+
+        this.storeAndDraw();
+    }
+
+    onIntensityUpdate(i) {
+        this.state.Speed = 1 + (i * 2);
+        this.state.RepeatTime = (145 - i) * 3;
+
+        this.storeAndDraw();
+    }
+
+    onButtonPress(s, m, r) {
+        if (s) {
             this.state.nextAnimation(this.channel);
         }
-        if (message.bM) {
+        if (m) {
             this.state.nextColorSet();
         }
-        if (message.bR) {
+        if (r) {
             this.state.nextFade();
         }
-        this.state.Modifier = 1 + (message.s * 2);
-        this.state.Speed = 1 + (message.i * 2);
-        this.state.RepeatTime = (145 - message.i) * 3;
 
+        this.storeAndDraw();
+    }
+
+    storeAndDraw() {
         this.drawState();
-
         localStorage.setItem(this.id, JSON.stringify(this.state));
     }
 
@@ -65,7 +78,7 @@ class AnimationRepeater extends AnimationElementBase {
         }
 
         this.dataset.underPreset = true;
-        
+
         this.state.setAnimation(preset.animation);
         this.state.setColorSet(preset.colors);
         this.state.setFade(preset.fade);

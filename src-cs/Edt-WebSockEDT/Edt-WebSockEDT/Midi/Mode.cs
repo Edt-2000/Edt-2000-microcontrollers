@@ -1,12 +1,9 @@
-﻿using System;
+﻿namespace EdtWebSockEDT.Midi;
 
-namespace EdtWebSockEDT.Midi
+[Flags]
+public enum Mode
 {
-    [Flags]
-    public enum Mode
-    {
-        One = 1,
-        Two = 2,
-        Four = 4
-    }
+    One = 1,
+    Two = 2,
+    Four = 4
 }
