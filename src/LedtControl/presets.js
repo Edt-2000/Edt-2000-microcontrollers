@@ -33,8 +33,8 @@ class SenderPreset extends ChannelPreset {
     index = 0;
     animation = null;
     title = null;
-    text = null;
-    textSplitPosition = 0;
+    texts = [];
+    displayAllTexts = false;
     font = 0;
     variant = 0;
     flashCount = 1;

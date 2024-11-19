@@ -2,8 +2,25 @@
 
 ## Experimental animations
 
-### `text`
+### `staticText`
 
+- 3 colors
+- 5 texts
+- variant = alignment
+
+### `fadeText`
+
+- 3 colors
+- 5 texts
+- displayAllTexts
+- variant = fadeOnOff / fadeInOut / fadeSawIn / fadeSawOut
+
+### `scrollText`
+
+- 3 colors
+- 5 texts
+- displayAllTexts
+- variant = fadeOnOff / fadeInOut / fadeSawIn / fadeSawOut
 
 
 ## Pending ideas & todos

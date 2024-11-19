@@ -151,6 +151,44 @@ struct RenderResult
 class FontRendererHelper
 {
 public:
+    bool displayText(TextAlign align, int colorIndex)
+    {
+        if (!globalSettings.displayAllTexts)
+        {
+            return displayText(globalSettings.textAt(colorIndex), align, colorIndex);
+        }
+        else
+        {
+            return displayText(getOffset(align, 0), 0, colorIndex);
+        }
+    }
+
+    bool displayText(int8_t offsetX, int8_t offsetY, int colorIndex)
+    {
+        if (!globalSettings.displayAllTexts)
+        {
+            return displayText(globalSettings.textAt(colorIndex), offsetX, offsetY, colorIndex);
+        }
+        else
+        {
+            bool hasRendered = false;
+            auto size = fontSize();
+
+            for (uint8_t i = 0; i < globalSettings.textCount; i++)
+            {
+                auto chunk = globalSettings.textAt(i);
+
+                bool rendered = displayText(chunk, offsetX, offsetY, colorIndex + i);
+
+                offsetX += chunk->length() * size;
+
+                hasRendered = hasRendered || rendered;
+            }
+
+            return hasRendered;
+        }
+    }
+
     bool displayText(const String *text, TextAlign align, int colorIndex)
     {
         return displayText(text, getOffset(text, align), 0, colorIndex);
@@ -163,20 +201,14 @@ public:
 
     bool displayText(const String *text, int8_t startX, int8_t startY, int colorIndex)
     {
-        return displayText(text, 0, text->length(), startX, startY, colorIndex);
-    }
-
-    bool displayText(const String *text, uint8_t offset, uint8_t length, int8_t startX, int8_t startY, int colorIndex)
-    {
         auto hasRendered = false;
 
-        uint8_t currentIndex = offset;
-        uint8_t textLength = offset + length;
-        auto maxTextLength = text->length();
+        uint8_t currentIndex = 0;
+        auto textLength = text->length();
 
         while (currentIndex < textLength && startX < MAX_WIDTH)
         {
-            auto letterColor = getColor(colorIndex, currentIndex, maxTextLength);
+            auto letterColor = getColor(colorIndex, currentIndex, textLength);
             RenderResult renderResult;
 
             if (globalSettings.font == 0)
@@ -199,19 +231,61 @@ public:
 
     int8_t getOffset(const String *text, TextAlign align)
     {
-        int8_t offset = 0;
-        uint8_t size = globalSettings.font == 1 ? ICON_FONT_GLYPH_SIZE : DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING;
+        return getOffset(text->length(), align);
+    }
 
-        if (align != TextAlign::left)
+    int8_t getOffset(uint textLength, TextAlign align)
+    {
+        if (align == TextAlign::left)
         {
-            offset = MAX_WIDTH - (text->length() * size);
+            return 0;
         }
+
+        uint8_t size = fontSize();
+        int8_t offset = MAX_WIDTH - (textLength * size);
+
         if (align == TextAlign::center)
         {
             offset /= 2;
         }
 
         return offset;
+    }
+
+    int8_t getOffset(TextAlign align, uint index)
+    {
+        if (align == TextAlign::left)
+        {
+            return 0;
+        }
+
+        if (!globalSettings.displayAllTexts)
+        {
+            return getOffset(globalSettings.textAt(index), align);
+        }
+        else
+        {
+            uint8_t size = fontSize();
+            uint8_t length = 0;
+            for (uint8_t i = 0; i < globalSettings.textCount; i++)
+            {
+                length += globalSettings.texts[i].length();
+            }
+
+            int8_t offset = MAX_WIDTH - (length * size);
+
+            if (align == TextAlign::center)
+            {
+                offset /= 2;
+            }
+
+            return offset;
+        }
+    }
+
+    uint8_t fontSize()
+    {
+        return globalSettings.font == 1 ? ICON_FONT_GLYPH_SIZE : DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING;
     }
 
 private:
@@ -287,11 +361,6 @@ private:
 
     CHSV getColor(int colorIndex, uint8_t letterIndex, uint8_t textLength)
     {
-        if (globalSettings.textSplitPosition > 0 && letterIndex >= globalSettings.textSplitPosition)
-        {
-            colorIndex++;
-        }
-
         auto color = globalSettings.colorAt(colorIndex);
 
         if (isRainbow(color) && textLength > 0)

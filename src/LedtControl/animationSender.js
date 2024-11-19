@@ -1,6 +1,7 @@
 class AnimationSender extends AnimationElementBase {
     units = null;
     colors = [];
+    texts = [];
     singleShot = true;
 
     speed = 0;
@@ -40,6 +41,10 @@ class AnimationSender extends AnimationElementBase {
         if (this.dataset.color) {
             this.colors = this.dataset.color.split(',').map(c => Colors[c]);
             delete this.dataset.color;
+        }
+        if (this.dataset.text) {
+            this.texts = this.dataset.text.split(',');
+            delete this.dataset.text;
         }
 
         let speedProperty = Object.keys(this.dataset).find(k => this.dataset[k] == "{speed}");
@@ -96,13 +101,14 @@ class AnimationSender extends AnimationElementBase {
 
         this.dataset.animation = preset.animation;
         this.dataset.title = preset.title;
-        this.dataset.text = preset.text;
+        this.dataset.displayAllTexts = preset.displayAllTexts;
         this.dataset.font = preset.font;
         this.dataset.variant = preset.variant;
         this.dataset.flashCount = preset.flashCount;
         this.dataset.brightness = preset.brightness;
         this.dataset.speed = preset.speed;
 
+        this.texts = preset.texts;
         this.colors = preset.colors;
 
         this.initialize();
@@ -125,6 +131,7 @@ class AnimationSender extends AnimationElementBase {
         delete this.dataset.modifier;
         delete this.dataset.speed;
         delete this.dataset.text;
+        delete this.dataset.displayAllTexts;
         delete this.dataset.font;
         delete this.dataset.variant;
         delete this.dataset.flashCount;
@@ -153,6 +160,10 @@ class AnimationSender extends AnimationElementBase {
             }
             if (getElement(this.colors, 2)) {
                 message.color3 = getElement(this.colors, 2).toArray();
+            }
+
+            for (let i = 0; i < this.texts.length; i++) {
+                message[`text${i + 1}`] = this.texts[i];
             }
 
             Object.assign(message, this.dataset);

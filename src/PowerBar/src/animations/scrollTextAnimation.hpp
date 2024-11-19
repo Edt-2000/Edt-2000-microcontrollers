@@ -39,7 +39,7 @@ public:
     _isActive = true;
 
     colorIndex = 0;
-    ltr = false;
+    ltr = true;
 
     progress = 0;
 
@@ -71,7 +71,7 @@ public:
 
       if (variant == ScrollTextAnimationVariants::scrollRtl)
       {
-        auto hasRendered = FontRenderer.displayText(&globalSettings.text, progress, 0, colorIndex);
+        auto hasRendered = FontRenderer.displayText(progress, 0, colorIndex);
 
         if (--progress < 0 && !hasRendered)
         {
@@ -81,22 +81,22 @@ public:
       }
       else if (variant == ScrollTextAnimationVariants::scrollBounce)
       {
-        auto limit = FontRenderer.getOffset(&globalSettings.text, TextAlign::right);
+        auto limit = FontRenderer.getOffset(TextAlign::right, colorIndex);
 
         progress += ltr ? 1 : -1;
 
-        if (progress <= 0)
+        if (!ltr && progress <= 0)
         {
           ltr = true;
           colorIndex++;
         }
-        else if (progress >= limit)
+        else if (ltr && progress >= limit)
         {
           ltr = false;
           colorIndex++;
         }
 
-        FontRenderer.displayText(&globalSettings.text, progress, 0, colorIndex);
+        FontRenderer.displayText(progress, 0, colorIndex);
       }
       else if (variant == ScrollTextAnimationVariants::scrollMerge)
       {
@@ -104,13 +104,21 @@ public:
 
         if (progress-- >= 0)
         {
-          int8_t centerPos = FontRenderer.getOffset(&globalSettings.text, TextAlign::center);
+          auto leftText = globalSettings.textAt(0);
+          auto rightText = globalSettings.textAt(1);
 
-          int8_t posLeft = centerPos - progress;
-          int8_t posRight = centerPos + progress + 1 + (globalSettings.textSplitPosition * DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
+          auto leftTextLength = leftText->length();
+          auto rightTextLength = rightText->length();
 
-          FontRenderer.displayText(&globalSettings.text, 0, globalSettings.textSplitPosition, posLeft, 0, 0);
-          FontRenderer.displayText(&globalSettings.text, globalSettings.textSplitPosition, globalSettings.text.length() - globalSettings.textSplitPosition, posRight, 0, 0);
+          auto totalLength = leftTextLength + rightTextLength;
+
+          auto centerPos = FontRenderer.getOffset(totalLength, TextAlign::center) + (leftTextLength * DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
+
+          int8_t posLeft = centerPos - progress - (leftTextLength * DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
+          int8_t posRight = centerPos + progress;
+
+          FontRenderer.displayText(leftText, posLeft, 0, 0);
+          FontRenderer.displayText(rightText, posRight, 0, 1);
         }
         else
         {
@@ -119,7 +127,7 @@ public:
             fill_solid(leds, NUM_LEDS, CHSV(globalSettings.colorAt(2).h, globalSettings.colorAt(2).s, 4 * (128 - (progress * -1))));
           }
 
-          FontRenderer.displayText(&globalSettings.text, TextAlign::center, 0);
+          FontRenderer.displayText(globalSettings.textAt(2), TextAlign::center, colorIndex);
 
           if (--progress == -128)
           {

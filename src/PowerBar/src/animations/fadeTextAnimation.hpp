@@ -53,7 +53,7 @@ public:
 
     fill_solid(leds, NUM_LEDS, CRGB::Black);
 
-    FontRenderer.displayText(&globalSettings.text, TextAlign::center, colorIndex);
+    FontRenderer.displayText(TextAlign::center, colorIndex);
 
     auto isBelowZero = progress < 0;
 

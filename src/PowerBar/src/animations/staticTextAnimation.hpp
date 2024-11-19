@@ -50,15 +50,15 @@ public:
 
     if (variant == StaticTextAnimationVariants::left)
     {
-      FontRenderer.displayText(&globalSettings.text, TextAlign::left, 0);
+      FontRenderer.displayText(TextAlign::left, 0);
     }
     else if (variant == StaticTextAnimationVariants::center)
     {
-      FontRenderer.displayText(&globalSettings.text, TextAlign::center, 0);
+      FontRenderer.displayText(TextAlign::center, 0);
     }
     else if (variant == StaticTextAnimationVariants::right)
     {
-      FontRenderer.displayText(&globalSettings.text, TextAlign::right, 0);
+      FontRenderer.displayText(TextAlign::right, 0);
     }
 
     show();

@@ -89,7 +89,7 @@ public:
       }
       else if (variant == StroboAnimationVariants::stroboText)
       {
-        FontRenderer.displayText(&globalSettings.text, TextAlign::center, colorIndex);
+        FontRenderer.displayText(globalSettings.textAt(colorIndex), TextAlign::center, colorIndex);
       }
 
       show();

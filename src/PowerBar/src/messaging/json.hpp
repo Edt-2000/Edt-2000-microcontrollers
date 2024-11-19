@@ -38,17 +38,152 @@ public:
 
         if (isSettings)
         {
-            if (deserializeDoc.containsKey("text"))
+            if (deserializeDoc.containsKey("text1"))
             {
-                String text = deserializeDoc["text"].as<String>();
+                String text = deserializeDoc["text1"].as<String>();
 
                 // copy text to avoid getting string that references some internal memory in JsonDoc which might get reused
                 String newText = String(text);
 
-                globalSettings.text = newText;
+                globalSettings.texts[0] = newText;
 
-                PrintDebug("Setting text set to ");
-                PrintLnDebug(globalSettings.text);
+                globalSettings.textCount = 1;
+
+                PrintDebug("Setting texts[0] set to ");
+                PrintLnDebug(globalSettings.texts[0]);
+            }
+            if (deserializeDoc.containsKey("text2"))
+            {
+                String text = deserializeDoc["text2"].as<String>();
+
+                // copy text to avoid getting string that references some internal memory in JsonDoc which might get reused
+                String newText = String(text);
+
+                globalSettings.texts[1] = newText;
+
+                globalSettings.textCount = 2;
+
+                PrintDebug("Setting texts[1] set to ");
+                PrintLnDebug(globalSettings.texts[1]);
+            }
+            if (deserializeDoc.containsKey("text3"))
+            {
+                String text = deserializeDoc["text3"].as<String>();
+
+                // copy text to avoid getting string that references some internal memory in JsonDoc which might get reused
+                String newText = String(text);
+
+                globalSettings.texts[2] = newText;
+
+                globalSettings.textCount = 3;
+
+                PrintDebug("Setting texts[2] set to ");
+                PrintLnDebug(globalSettings.texts[2]);
+            }
+            if (deserializeDoc.containsKey("text4"))
+            {
+                String text = deserializeDoc["text4"].as<String>();
+
+                // copy text to avoid getting string that references some internal memory in JsonDoc which might get reused
+                String newText = String(text);
+
+                globalSettings.texts[3] = newText;
+
+                globalSettings.textCount = 4;
+
+                PrintDebug("Setting texts[3] set to ");
+                PrintLnDebug(globalSettings.texts[3]);
+            }
+            if (deserializeDoc.containsKey("text5"))
+            {
+                String text = deserializeDoc["text5"].as<String>();
+
+                // copy text to avoid getting string that references some internal memory in JsonDoc which might get reused
+                String newText = String(text);
+
+                globalSettings.texts[4] = newText;
+
+                globalSettings.textCount = 5;
+
+                PrintDebug("Setting texts[4] set to ");
+                PrintLnDebug(globalSettings.texts[4]);
+            }
+            if (deserializeDoc.containsKey("text6"))
+            {
+                String text = deserializeDoc["text6"].as<String>();
+
+                // copy text to avoid getting string that references some internal memory in JsonDoc which might get reused
+                String newText = String(text);
+
+                globalSettings.texts[5] = newText;
+
+                globalSettings.textCount = 6;
+
+                PrintDebug("Setting texts[5] set to ");
+                PrintLnDebug(globalSettings.texts[5]);
+            }
+            if (deserializeDoc.containsKey("text7"))
+            {
+                String text = deserializeDoc["text7"].as<String>();
+
+                // copy text to avoid getting string that references some internal memory in JsonDoc which might get reused
+                String newText = String(text);
+
+                globalSettings.texts[6] = newText;
+
+                globalSettings.textCount = 7;
+
+                PrintDebug("Setting texts[6] set to ");
+                PrintLnDebug(globalSettings.texts[6]);
+            }
+            if (deserializeDoc.containsKey("text8"))
+            {
+                String text = deserializeDoc["text8"].as<String>();
+
+                // copy text to avoid getting string that references some internal memory in JsonDoc which might get reused
+                String newText = String(text);
+
+                globalSettings.texts[7] = newText;
+
+                globalSettings.textCount = 8;
+
+                PrintDebug("Setting texts[7] set to ");
+                PrintLnDebug(globalSettings.texts[7]);
+            }
+            if (deserializeDoc.containsKey("text9"))
+            {
+                String text = deserializeDoc["text9"].as<String>();
+
+                // copy text to avoid getting string that references some internal memory in JsonDoc which might get reused
+                String newText = String(text);
+
+                globalSettings.texts[8] = newText;
+
+                globalSettings.textCount = 9;
+
+                PrintDebug("Setting texts[8] set to ");
+                PrintLnDebug(globalSettings.texts[8]);
+            }
+            if (deserializeDoc.containsKey("text10"))
+            {
+                String text = deserializeDoc["text10"].as<String>();
+
+                // copy text to avoid getting string that references some internal memory in JsonDoc which might get reused
+                String newText = String(text);
+
+                globalSettings.texts[9] = newText;
+
+                globalSettings.textCount = 10;
+
+                PrintDebug("Setting texts[9] set to ");
+                PrintLnDebug(globalSettings.texts[9]);
+            }
+            if (deserializeDoc.containsKey("displayAllTexts"))
+            {
+                globalSettings.displayAllTexts = deserializeDoc["displayAllTexts"] == "true";
+
+                PrintDebug("Setting displayAllTexts set to ");
+                PrintLnDebug(globalSettings.displayAllTexts);
             }
             if (deserializeDoc.containsKey("color1"))
             {
@@ -151,18 +286,6 @@ public:
                 PrintDebug("Setting flashCount set to ");
                 PrintLnDebug(globalSettings.flashCount);
             }
-            if (deserializeDoc.containsKey("textSplitPosition"))
-            {
-                globalSettings.textSplitPosition = deserializeDoc["textSplitPosition"];
-
-                if (globalSettings.textSplitPosition < 0)
-                {
-                    globalSettings.textSplitPosition = 0;
-                }
-
-                PrintDebug("Setting textSplitPosition set to ");
-                PrintLnDebug(globalSettings.textSplitPosition);
-            }
         }
 
         if (isAnimation)
@@ -189,9 +312,25 @@ public:
             serializeDoc["animation"] = animationName;
         }
 
-        PrintDebug("text is ");
-        PrintLnDebug(globalSettings.text);
-        serializeDoc["text"] = globalSettings.text;
+        PrintDebug("texts[0] is ");
+        PrintLnDebug(globalSettings.texts[0]);
+        serializeDoc["text1"] = globalSettings.texts[0];
+
+        PrintDebug("texts[1] is ");
+        PrintLnDebug(globalSettings.texts[1]);
+        serializeDoc["text2"] = globalSettings.texts[1];
+
+        PrintDebug("texts[2] is ");
+        PrintLnDebug(globalSettings.texts[2]);
+        serializeDoc["text3"] = globalSettings.texts[2];
+
+        PrintDebug("texts[3] is ");
+        PrintLnDebug(globalSettings.texts[3]);
+        serializeDoc["text4"] = globalSettings.texts[3];
+
+        PrintDebug("texts[4] is ");
+        PrintLnDebug(globalSettings.texts[4]);
+        serializeDoc["text5"] = globalSettings.texts[4];
 
         PrintDebug("color[0] is ");
         PrintDebug(globalSettings.colors[0].h);

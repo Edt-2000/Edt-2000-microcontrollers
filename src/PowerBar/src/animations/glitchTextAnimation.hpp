@@ -20,7 +20,7 @@ class GlitchTextAnimation : public Animation
 private:
   uint8_t fade;
   int8_t progress;
-  uint colorIndex;
+  uint textIndex;
   uint8_t letterIndex;
   bool ltr;
 
@@ -40,7 +40,7 @@ public:
 
     _isActive = true;
 
-    colorIndex = 0;
+    textIndex = 0;
     letterIndex = 0;
     ltr = false;
 
@@ -70,23 +70,28 @@ public:
                                    : 0;
         int8_t y = progress < 2 ? -1 : 0;
 
-        FontRenderer.displayText(&globalSettings.text, TextAlign::center, x, y, progress);
+        FontRenderer.displayText(globalSettings.textAt(0), TextAlign::center, x, y, progress);
 
         progress = (progress + 1) % 3;
+
+        if (progress == 0) {
+          textIndex++;
+        }
       }
       else if (variant == GlitchTextAnimationVariants::glitchPerLetter)
       {
         if (progress == 0)
         {
           globalSettings.font = 0;
-          letterIndex = random8(globalSettings.text.length());
+          textIndex++;
+          letterIndex = random8(globalSettings.textAt(textIndex)->length());
         }
 
-        FontRenderer.displayText(&globalSettings.text, TextAlign::center, 0);
+        FontRenderer.displayText(globalSettings.textAt(textIndex), TextAlign::center, 0);
 
         ++progress;
 
-        uint16_t offset = (letterIndex * DEFAULT_FONT_CHAR_SIZE) + (FontRenderer.getOffset(&globalSettings.text, TextAlign::center) * 8);
+        uint16_t offset = (letterIndex * DEFAULT_FONT_CHAR_SIZE) + (FontRenderer.getOffset(globalSettings.textAt(textIndex), TextAlign::center) * 8);
 
         if (progress > 64)
         {
@@ -99,11 +104,15 @@ public:
       }
       else if (variant == GlitchTextAnimationVariants::glitchArtifacts)
       {
-        FontRenderer.displayText(&globalSettings.text, TextAlign::center, 0);
+        FontRenderer.displayText(globalSettings.textAt(textIndex), TextAlign::center, 0);
 
         for (uint8_t i = 0; i < 32; i++)
         {
           leds[random16(NUM_LEDS)] = globalSettings.colorAt(globalSettings.colorCount == 3 ? 2 : (1 + (i % 2)));
+        }
+
+        if (++progress == 0) {
+          textIndex++;
         }
       }
 
