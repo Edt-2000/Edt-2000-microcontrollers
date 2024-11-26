@@ -14,6 +14,21 @@ class AnimationPresets extends HTMLElement {
             }
         });
 
+        this.id = `presets`;
+        
+        let state = localStorage.getItem(this.id);
+        if (state) {
+            this.currentPreset = JSON.parse(state);
+            
+            if (this.currentPreset != null) {
+                // give the other components time to initialize
+                window.setTimeout(function(that) { 
+                    let preset = Presets.items[that.currentPreset];
+                    that.applyPreset(preset); 
+                }, 500, this);
+            }
+        }
+
         this.drawState();
     }
 
@@ -41,6 +56,7 @@ class AnimationPresets extends HTMLElement {
         }
 
         this.drawState();
+        localStorage.setItem(this.id, JSON.stringify(this.currentPreset));
     }
 
     applyPreset(preset) {

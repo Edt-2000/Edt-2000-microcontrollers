@@ -20,6 +20,7 @@
 #include "animations/harderAnimation.hpp"
 #include "animations/loadingAnimation.hpp"
 #include "animations/lsdAnimation.hpp"
+#include "animations/matrixAnimation.hpp"
 #include "animations/noiseAnimation.hpp"
 #include "animations/scrollTextAnimation.hpp"
 #include "animations/singlePulseAnimation.hpp"
@@ -61,7 +62,6 @@ void setup()
 
   FastLED.setMaxPowerInMilliWatts(80000);
 
-
   Status.init();
 
   // these are all the animations the system knows
@@ -70,6 +70,7 @@ void setup()
   Animator.addAnimation(new HarderAnimation());
   Animator.addAnimation(new LoadingAnimation());
   Animator.addAnimation(new LsdAnimation());
+  Animator.addAnimation(new MatrixAnimation());
   Animator.addAnimation(new NoiseAnimation());
   Animator.addAnimation(new StroboAnimation());
   Animator.addAnimation(new FadeTextAnimation());
@@ -94,10 +95,7 @@ void setup()
   PrintLnInfo("Network started!");
 
   JsonHandler.onAnimation(animationCallback);
-  //JsonHandler.onStateChange(stateChangeCallback);
 
-  // Udp.begin();
-  //WebSocket.onStateChange(stateChangeCallback);
   WebSocket.begin();
 
   PrintLnInfo("App started!");
@@ -122,11 +120,6 @@ void loop()
     if (Time.t12000ms)
     {
       WebSocket.cleanUp();
-    }
-
-    if (Time.t1000ms)
-    {
-      //stateChangeCallback();
     }
   } while (true);
 }

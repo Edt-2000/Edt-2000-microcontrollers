@@ -2,6 +2,7 @@
 
 #include <FastLED.h>
 #include "./leds.hpp"
+#include "./time.hpp"
 #include "./settings.hpp"
 
 #define MAX_DEFAULT_FONT_CHAR 96
@@ -219,6 +220,10 @@ public:
             {
                 renderResult = drawLetterIconFont(text->charAt(currentIndex) - FONT_OFFSET, startX, startY, letterColor);
             }
+            else if (globalSettings.font == 2)
+            {
+                renderResult = drawPencilFont(text->charAt(currentIndex) - FONT_OFFSET, startX, startY, letterColor);
+            }
 
             hasRendered = hasRendered || renderResult.rendered;
 
@@ -357,6 +362,44 @@ private:
         }
 
         return RenderResult(true, ICON_FONT_GLYPH_SIZE);
+    }
+
+    RenderResult drawPencilFont(uint8_t letter, int8_t startX, int8_t startY, CRGB color)
+    {
+        if (letter >= MAX_DEFAULT_FONT_CHAR)
+        {
+            return RenderResult(false, DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
+        }
+
+        if (startX < -DEFAULT_FONT_GLYPH_SIZE || startX > MAX_WIDTH)
+        {
+            return RenderResult(false, DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
+        }
+
+        for (uint8_t j = 0; j < 8; j++)
+        {
+            for (uint8_t i = 0; i < DEFAULT_FONT_GLYPH_SIZE; i++)
+            {
+                uint8_t column = defaultFont[letter][i];
+
+                if (column & (1 << j))
+                {
+                    uint8_t x = startX + i;
+                    uint8_t y = startY + (7 - j);
+
+                    if (x >= 0 && x < MAX_WIDTH && y >= 0 && y < 8)
+                    {
+                        uint16_t ledIndex = x * 8 + y;
+                        leds[ledIndex] = color;
+
+                        FastLED.show();
+                        Time.delay(10);
+                    }
+                }
+            }
+        }
+
+        return RenderResult(true, DEFAULT_FONT_GLYPH_SIZE_WITH_KERNING);
     }
 
     CHSV getColor(int colorIndex, uint8_t letterIndex, uint8_t textLength)

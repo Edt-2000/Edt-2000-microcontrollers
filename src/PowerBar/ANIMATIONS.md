@@ -5,23 +5,38 @@
 ### `staticText`
 
 - 3 colors
-- 5 texts
+- 10 texts
 - variant = alignment
 
 ### `fadeText`
 
 - 3 colors
-- 5 texts
+- 10 texts
 - displayAllTexts
+- speed
 - variant = fadeOnOff / fadeInOut / fadeSawIn / fadeSawOut
 
 ### `scrollText`
 
 - 3 colors
-- 5 texts
+- 10 texts
 - displayAllTexts
+- speed
 - variant = fadeOnOff / fadeInOut / fadeSawIn / fadeSawOut
 
+### `glitchText`
+
+- variant = rotate
+  - 3 colors
+  - 1 text
+- variant = perLetter
+  - 1 color
+  - 10 texts
+  - speed
+- variant = artifacts
+  - 1 color
+  - 10 texts
+  - speed
 
 ## Pending ideas & todos
 
@@ -73,10 +88,10 @@ V Cabrio
 v Rainbows / Rainbow LSD turbostrobo
 v Loading
 - Harder dan jij
-- Adem mode
-- Text sequentie met meerdere woorden achter elkaar
--> text moet array worden - text split pos kan dan weg
+? Adem mode
+v Text sequentie met meerdere woorden achter elkaar
+v-> text moet array worden - text split pos kan dan weg
 - strobo text kleur op random / links/center/rechts plek
 - text scroll split uit elkaar 
-- matrix
+v matrix
 -> same animation should trigger STOP

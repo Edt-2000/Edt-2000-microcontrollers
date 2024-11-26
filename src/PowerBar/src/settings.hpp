@@ -5,7 +5,7 @@
 struct Settings
 {
   // TODO: should this be a pointer?
-  String texts[10] = {"STROBOCOPS", "", "", "", ""};
+  String texts[10] = {"STROBOCOPS", "", "", "", "", "", "", "", "", ""};
   int textCount = 1;
   bool displayAllTexts = false;
 
