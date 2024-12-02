@@ -70,7 +70,8 @@ class Presets {
                     flashCount: 1,
                     colors: [Colors.White],
                     brightness: "{modifier}",
-                    speed: 200
+                    speed: "{speed}",
+                    //speed: 255
                 }),
                 Object.assign(new SenderPreset(), {
                     channel: 1,
@@ -195,7 +196,7 @@ class Presets {
                     animation: "fire",
                     title: "FIRE",
                     speed: 5,
-                    brightness: "{modifier}",
+                    brightness: "{modifier}", // TODO max 1/3
                 })
             ]
         },
@@ -223,11 +224,11 @@ class Presets {
                     index: 0,
                     animation: "scrollText",
                     title: "BEK OP ASFALT 1",
-                    texts: ["ASFALT", "BEK", "HARD VAN"],
+                    texts: ["BEK", "ASFALT", "HARD VAN"],
                     textSplitPosition: 6,
                     variant: 2,
-                    colors: [Colors.Blue, Colors.Pink, Colors.Red],
-                    speed: 1000
+                    colors: [Colors.Pink, Colors.Blue, Colors.Red],
+                    speed: 10
                 }),
                 Object.assign(new SenderPreset(), {
                     channel: 1,
@@ -444,6 +445,7 @@ class Presets {
                     title: "VOEL NIKS",
                     texts: ["VOEL", "NIKS"],
                     variant: 4,
+                    flashCount: 3,
                     colors: [Colors.White],
                     speed: 245
                 })
