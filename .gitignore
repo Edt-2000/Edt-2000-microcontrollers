@@ -331,3 +331,4 @@ ASALocalRun/
 
 **/.vscode/*
 .DS_Store
+**/.pio/*
