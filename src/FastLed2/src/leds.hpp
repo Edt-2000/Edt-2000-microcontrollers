@@ -8,7 +8,7 @@
 volatile bool doFastLed = true;
 volatile bool fastLedSuspended = false;
 
-CRGB leds0[64];
+CRGB leds0[59];
 CRGB leds1[59];
 CRGB leds2[59];
 CRGB leds3[59];

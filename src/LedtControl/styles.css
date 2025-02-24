@@ -14,6 +14,7 @@
     --heading: #070;
     --ledDevice: #0f0;
     --powerBarDevice: #f00;
+    --strobeDevice: #f88;
     --allDevices: #ff0;
     --accent: #0f0;
     --connecting: #ff0;
@@ -101,8 +102,11 @@ animation-presets>div {
     gap: 1rem;
 }
 
-[data-device-type="powerbar"] {
+[data-device-type="powerbar"],[data-device-type="powerbar,strobe1"] {
     border: 1px solid var(--powerBarDevice);
+}
+[data-device-type="strobe1"] {
+    border: 1px solid var(--strobeDevice);
 }
 [data-device-type="unit1,unit2,spectacle,powerbar"] {
     border: 1px solid var(--allDevices);

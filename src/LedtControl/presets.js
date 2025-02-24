@@ -57,6 +57,13 @@ class Presets {
                     colors: [Colors.Red, Colors.White],
                     fade: Constants.FadeTypes.fadeAll
                 }),
+                Object.assign(new InvokerPreset(), {
+                    channel: 1,
+                    animation: Constants.AnimationTypes.allPartialSinglePulse,
+                    modifier: 155,
+                    colors: [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime],
+                    fade: Constants.FadeTypes.oneByOne
+                }),
                 Object.assign(new ConfiguratorPreset(), {
                     channel: 3,
                     color: Colors.Red
@@ -84,7 +91,17 @@ class Presets {
                     colors: [Colors.White, Colors.Blue, Colors.Green],
                     brightness: "{modifier}",
                     speed: 240
-                })
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "MEERPOWER strobo",
+                    colors: [Colors.White],
+                    brightness: 255,// "{modifier}",
+                    speed: 192, // "{speed}",
+                    //speed: 255
+                }),
                 // strobo op en neer
             ]
         },
@@ -162,6 +179,14 @@ class Presets {
                     title: "BINNEN",
                     colors: [Colors.Yellow, Colors.Yellow, Colors.White],
                     speed: 30
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "FLASH",
+                    colors: [Colors.White],
+                    speed: 1
                 })
             ]
         },
@@ -202,7 +227,51 @@ class Presets {
                     flashCount: 10,
                     colors: [Colors.Specific, Colors.Rainbow],
                     speed: 250
-                }), 
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "singlePulse",
+                    title: "Red",
+                    colors: [Colors.Red],
+                    brightness: 255,// "{modifier}",
+                    speed: 65, // "{speed}",
+                    fade: 1
+                    //speed: 255
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 5,
+                    animation: "singlePulse",
+                    title: "Black",
+                    colors: [Colors.White],
+                    brightness: 255,// "{modifier}",
+                    speed: 65, // "{speed}",
+                    fade: 1
+                    //speed: 255
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 6,
+                    animation: "singlePulse",
+                    title: "Yellow",
+                    colors: [Colors.Yellow],
+                    brightness: 255,// "{modifier}",
+                    speed: 65, // "{speed}",
+                    fade: 1
+                    //speed: 255
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 7,
+                    animation: "singlePulse",
+                    title: "Pink",
+                    colors: [Colors.Pink],
+                    brightness: 255,// "{modifier}",
+                    speed: 65, // "{speed}",
+                    fade: 1
+                    //speed: 255
+                }),
             ]
         },
         {
@@ -216,6 +285,14 @@ class Presets {
                 Object.assign(new SenderPreset(), {
                     channel: 1,
                     index: 0,
+                    animation: "fire",
+                    title: "FIRE",
+                    speed: 5,
+                    brightness: "{modifier}", // TODO max 1/3
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
                     animation: "fire",
                     title: "FIRE",
                     speed: 5,
@@ -261,7 +338,18 @@ class Presets {
                     variant: 2,
                     colors: [Colors.Blue, Colors.Pink],
                     speed: 255
-                })
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "singlePulse",
+                    title: "Red",
+                    colors: [Colors.Red],
+                    brightness: 255,
+                    speed: 64, 
+                    fade: 1
+                    //speed: 255
+                }),
             ]
         },
         {
@@ -300,7 +388,47 @@ class Presets {
                     title: "CABRIO 2",
                     colors: [Colors.SeaGreen],
                     speed: 300
-                })
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "doublePulse",
+                    title: "Red",
+                    colors: [Colors.Red, Colors.Black],
+                    percentage: 20,// "{modifier}",
+                    speed: 0, // "{speed}",
+                    //speed: 255
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 5,
+                    animation: "doublePulse",
+                    title: "Red",
+                    colors: [Colors.Red, Colors.Black],
+                    percentage: 40,// "{modifier}",
+                    speed: 0, // "{speed}",
+                    //speed: 255
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 6,
+                    animation: "doublePulse",
+                    title: "Red",
+                    colors: [Colors.Red, Colors.Black],
+                    percentage: 80,// "{modifier}",
+                    speed: 0, // "{speed}",
+                    //speed: 255
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 7,
+                    animation: "doublePulse",
+                    title: "Red",
+                    colors: [Colors.Red, Colors.Black],
+                    percentage: 127,// "{modifier}",
+                    speed: 0, // "{speed}",
+                    //speed: 255
+                }),
             ]
         },
         {
@@ -329,6 +457,14 @@ class Presets {
                     flashCount: 4,
                     colors: [Colors.Red, Colors.Blue],
                     speed: 240
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "STROBO",
+                    colors: [Colors.White],
+                    speed: 220
                 })
             ]
         },
@@ -371,7 +507,15 @@ class Presets {
                     title: "MATRIX",
                     colors: [Colors.White, Colors.Green],
                     speed: 11
-                })
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "noise",
+                    title: "NOISE",
+                    colors: [Colors.White],
+                    speed: 20
+                }),
             ]
         },
         {
@@ -408,6 +552,14 @@ class Presets {
                     index: 1,
                     animation: "lsd",
                     title: "LSD"
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "STROBO",
+                    colors: [Colors.Rainbow],
+                    speed: 220
                 })
             ]
         },
@@ -457,7 +609,7 @@ class Presets {
                     title: "ADEM IN/UIT",
                     texts: ["ADEM IN", "ADEM UIT"],
                     variant: 1,
-                    colors: [Colors.Blue],
+                    colors: [Colors.SeaGreen, Colors.Yellow],
                     speed: 128
                 }),
                 Object.assign(new SenderPreset(), {
@@ -470,6 +622,14 @@ class Presets {
                     flashCount: 3,
                     colors: [Colors.White],
                     speed: 245
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "STROBO",
+                    colors: [Colors.Orange],
+                    speed: 220
                 })
             ]
         },
@@ -498,20 +658,108 @@ class Presets {
                     variant: 4,
                     colors: [Colors.Pink],
                     speed: 245
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "STROBO",
+                    colors: [Colors.Pink],
+                    speed: 220
                 })
             ]
         },
         {
             name: "alles gejat",
-            channels: []
+            channels: [
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 0,
+                    animation: "strobo",
+                    title: "ALLES GEJAT",
+                    texts: ["ALLES", "GEJAT"], // centreertruuk met tekst niet zichtbaar
+                    variant: 4,
+                    flashCount: 10,
+                    colors: [Colors.Orange, Colors.Green],
+                    speed: 240
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "singlePulse",
+                    title: "Orange",
+                    colors: [Colors.Orange],
+                    percentage: 20,
+                    speed: 120,
+                    fade: 3,
+                    //speed: 255
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 5,
+                    animation: "singlePulse",
+                    title: "Green",
+                    colors: [Colors.Green],
+                    percentage: 20,
+                    speed: 120,
+                    fade: 3,
+                    //speed: 255
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 6,
+                    animation: "strobo",
+                    title: "GIGI",
+                    colors: [Colors.White],
+                    speed: 1
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 7,
+                    animation: "singlePulse",
+                    title: "BASE",
+                    colors: [Colors.Pink],
+                    speed: 30,
+                    fade: 1
+                })]
         },
         {
             name: "poetin",
-            channels: []
+            channels: [
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 0,
+                    animation: "lsd",
+                    title: "LSD"
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "STROBO",
+                    colors: [Colors.Rainbow],
+                    speed: 220
+                })
+            ]
         },
         {
             name: "kermis/instaparty",
-            channels: []
+            channels: [
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 0,
+                    animation: "lsd",
+                    title: "LSD"
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "STROBO",
+                    colors: [Colors.Rainbow],
+                    speed: 220
+                })
+            ]
         },
         {
             name: "kerst",
@@ -547,11 +795,27 @@ class Presets {
                     index: 1,
                     animation: "glitchText",
                     title: "KERST 2",
-                    texts: ["STROBO","COPS"],
+                    texts: ["STROBO", "COPS"],
                     variant: 2,
                     displayAllTexts: true,
                     colors: [Colors.Red, Colors.Green, Colors.White],
                     speed: 50
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "STROBO",
+                    colors: [Colors.Green],
+                    speed: 220
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 5,
+                    animation: "strobo",
+                    title: "STROBO",
+                    colors: [Colors.Red],
+                    speed: 220
                 })
             ]
         }

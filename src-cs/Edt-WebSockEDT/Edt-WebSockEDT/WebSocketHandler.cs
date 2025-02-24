@@ -16,7 +16,8 @@ public class WebSocketHandler
     [
         new("unit1", new Uri("ws://10.0.0.21:80/ws"), ConnectionType.Wired),
         new("unit2", new Uri("ws://10.0.0.22:80/ws"), ConnectionType.Wired),
-        new("powerbar", new Uri("ws://10.0.0.30:80/ws"), ConnectionType.Wireless)
+        new("powerbar", new Uri("ws://10.0.0.30:80/ws"), ConnectionType.Wireless),
+        new("strobe1", new Uri("ws://10.0.0.41:80/ws"), ConnectionType.Wireless),
     ];
     private readonly Uri _mainframeWebSocketUrl = new("ws://10.0.0.202:8898");
 

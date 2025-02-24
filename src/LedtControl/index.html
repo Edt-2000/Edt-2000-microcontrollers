@@ -47,12 +47,27 @@
             data-device-type="powerbar"></animation-sender>
         <animation-sender data-channel="1" data-key="KeyR" data-index="3"
             data-device-type="powerbar"></animation-sender>
+
+        <animation-invoker data-key="CapsLock" data-animation="stop" data-device-type="strobe1" data-speed="false"
+            data-color-set="false" data-modifier="false" data-fade="false"></animation-invoker>
+
+        <animation-sender data-channel="1" data-key="KeyU" data-index="4"
+            data-device-type="strobe1"></animation-sender>
+        <animation-sender data-channel="1" data-key="KeyI" data-index="5"
+            data-device-type="strobe1"></animation-sender>
+        <animation-sender data-channel="1" data-key="KeyO" data-index="6"
+            data-device-type="strobe1"></animation-sender>
+        <animation-sender data-channel="1" data-key="KeyP" data-index="7"
+            data-device-type="strobe1"></animation-sender>
     </div>
     <div>
         <animation-invoker data-key="Escape" data-animation="stop" data-speed="false" data-color-set="false"
             data-modifier="false" data-fade="false"></animation-invoker>
 
         <animation-invoker data-channel="2" data-key="Space" data-animation="strobo" data-continuous="true"
+            data-speed="false" data-fade="false"></animation-invoker>
+            
+        <animation-invoker data-channel="2" data-key="KeyV" data-animation="strobo" data-continuous="true"
             data-speed="false" data-fade="false"></animation-invoker>
 
         <animation-invoker data-channel="2" data-key="KeyB" data-animation="fire" data-continuous="true"
@@ -92,9 +107,9 @@
         <animation-sender data-key="F6" data-animation="staticText" data-title="STROBOCOPS" data-device-type="powerbar"
             data-variant="1" data-text="STROBOCOPS" data-font="2" data-color="Red"
             data-brightness="255"></animation-sender>
-            <animation-sender data-key="F7" data-animation="scrollText" data-title="STROBOCOPS" data-device-type="powerbar"
-                data-variant="2" data-text="LEDS,SYNTHS,STROBOCOPS" data-color="Red,White,Blue"
-                data-brightness="255"></animation-sender>
+        <animation-sender data-key="F7" data-animation="scrollText" data-title="STROBOCOPS" data-device-type="powerbar"
+            data-variant="2" data-text="LEDS,SYNTHS,STROBOCOPS" data-color="Red,White,Blue"
+            data-brightness="255"></animation-sender>
     </div>
     <div>
         <animation-repeater data-channel="6" data-key="KeyD,KeyL"></animation-repeater>
