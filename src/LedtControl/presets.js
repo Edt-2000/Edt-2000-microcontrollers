@@ -85,6 +85,7 @@ class Presets {
                     brightness: "{modifier}",
                     speed: 240
                 })
+                // strobo op en neer
             ]
         },
         {
@@ -123,7 +124,18 @@ class Presets {
                     flashCount: 1,
                     colors: [Colors.Specific],
                     speed: 250
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 1,
+                    animation: "fadeText",
+                    title: "DANCE",
+                    texts: ["DANCE"],
+                    variant: 3,
+                    colors: [Colors.Specific],
+                    speed: 91 // TODO
                 })
+                // dance in code monkey kleuren
             ]
         },
         {
@@ -179,7 +191,18 @@ class Presets {
                     flashCount: 2,
                     colors: [Colors.Rainbow],
                     speed: 255
-                })
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 1,
+                    animation: "strobo",
+                    title: "PARTTIME",
+                    texts: ["PARTTIME", "POWERRANGER"], // part + time / power + ranger 
+                    variant: 4,
+                    flashCount: 10,
+                    colors: [Colors.Specific, Colors.Rainbow],
+                    speed: 250
+                }), 
             ]
         },
         {
@@ -225,10 +248,9 @@ class Presets {
                     animation: "scrollText",
                     title: "BEK OP ASFALT 1",
                     texts: ["BEK", "ASFALT", "HARD VAN"],
-                    textSplitPosition: 6,
                     variant: 2,
-                    colors: [Colors.Pink, Colors.Blue, Colors.Red],
-                    speed: 10
+                    colors: [Colors.Pink, Colors.Blue, Colors.Red], // 1 extra kleur
+                    speed: 100
                 }),
                 Object.assign(new SenderPreset(), {
                     channel: 1,
@@ -267,7 +289,7 @@ class Presets {
                     animation: "cabrio",
                     variant: 0,
                     title: "CABRIO 1",
-                    colors: [Colors.Turquoise],
+                    colors: [Colors.Orange],
                     speed: 100
                 }),
                 Object.assign(new SenderPreset(), {
@@ -276,7 +298,7 @@ class Presets {
                     animation: "cabrio",
                     variant: 1,
                     title: "CABRIO 2",
-                    colors: [Colors.Yellow],
+                    colors: [Colors.SeaGreen],
                     speed: 300
                 })
             ]
@@ -443,7 +465,7 @@ class Presets {
                     index: 2,
                     animation: "strobo",
                     title: "VOEL NIKS",
-                    texts: ["VOEL", "NIKS"],
+                    texts: ["VOEL", "NIKS"], // centreertruuk met tekst niet zichtbaar
                     variant: 4,
                     flashCount: 3,
                     colors: [Colors.White],
@@ -525,9 +547,9 @@ class Presets {
                     index: 1,
                     animation: "glitchText",
                     title: "KERST 2",
-                    texts: ["STROBOCOPS"],
-                    textSplitPosition: 6,
+                    texts: ["STROBO","COPS"],
                     variant: 2,
+                    displayAllTexts: true,
                     colors: [Colors.Red, Colors.Green, Colors.White],
                     speed: 50
                 })

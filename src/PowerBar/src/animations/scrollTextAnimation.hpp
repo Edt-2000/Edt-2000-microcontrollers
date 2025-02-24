@@ -127,7 +127,7 @@ public:
             fill_solid(leds, NUM_LEDS, CHSV(globalSettings.colorAt(2).h, globalSettings.colorAt(2).s, 4 * (128 - (progress * -1))));
           }
 
-          FontRenderer.displayText(globalSettings.textAt(2), TextAlign::center, colorIndex);
+          FontRenderer.displayText(globalSettings.textAt(2), TextAlign::center, 2);
 
           if (--progress == -128)
           {

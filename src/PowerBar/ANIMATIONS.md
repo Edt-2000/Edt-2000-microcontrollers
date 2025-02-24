@@ -93,5 +93,11 @@ v Text sequentie met meerdere woorden achter elkaar
 v-> text moet array worden - text split pos kan dan weg
 - strobo text kleur op random / links/center/rechts plek
 - text scroll split uit elkaar 
+- delen van text niet laten zien maar wel laten meetellen in het centreren
 v matrix
 -> same animation should trigger STOP
+
+alles + gejat -> gejat scrollt heen en weer
+gigi -> tu tu tu tu
+
+kermis-> chase van stippen

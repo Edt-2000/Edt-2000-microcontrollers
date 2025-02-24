@@ -104,6 +104,7 @@ public:
       }
       else if (variant == GlitchTextAnimationVariants::glitchArtifacts)
       {
+        // TODO: fix double color text
         FontRenderer.displayText(globalSettings.textAt(textIndex), TextAlign::center, 0);
 
         for (uint8_t i = 0; i < 32; i++)

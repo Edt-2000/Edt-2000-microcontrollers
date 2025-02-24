@@ -53,14 +53,18 @@ auto animationCallback = [](std::string animation)
 
 void setup()
 {
-  FastLED.addLeds<APA102, 16, 32, BGR>(leds0, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 13, 32, BGR>(leds1, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 14, 32, BGR>(leds2, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 15, 32, BGR>(leds3, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 5, 32, BGR>(leds4, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 3, 32, BGR>(leds5, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 4, 32, BGR>(leds6, 59).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<APA102, 2, 32, BGR>(leds7, 59).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<APA102, 16, 32, BGR>(leds0, 59).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<APA102, 13, 32, BGR>(leds1, 59).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<APA102, 14, 32, BGR>(leds2, 59).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<APA102, 15, 32, BGR>(leds3, 59).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<APA102, 5, 32, BGR>(leds4, 59).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<APA102, 3, 32, BGR>(leds5, 59).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<APA102, 4, 32, BGR>(leds6, 59).setCorrection(TypicalLEDStrip);
+  // FastLED.addLeds<APA102, 2, 32, BGR>(leds7, 59).setCorrection(TypicalLEDStrip);
+
+  FastLED.addLeds<WS2812B, 13, GRB>(leds0, 64).setCorrection(TypicalLEDStrip);
+  
+  FastLED.setMaxPowerInMilliWatts(3000);
 
   xTaskCreate(&fastLedTask, "FL", 5120, NULL, 1, NULL);
 
@@ -115,7 +119,7 @@ void setup()
 
   Serial.begin(115200);
 
-  Network.startEthernet(1);
+  Network.startWifi(1);
 
   Status.setup();
 
@@ -149,10 +153,10 @@ void loop()
     Animator.loop();
 
 #ifdef DEBUG
-    if (Time.t100ms)
-    {
-      WebSocket.send(String(Time.ms));
-    }
+    // if (Time.t100ms)
+    // {
+    //   WebSocket.send(String(Time.ms));
+    // }
     if (Time.t1000ms)
     {
       WebSocket.send("=== 1s");
