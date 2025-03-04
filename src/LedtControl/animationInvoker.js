@@ -101,6 +101,14 @@ class AnimationInvoker extends AnimationElementBase {
             this.state.Modifier = newModifier;
         }
 
+        this.animationProbablyActive = !this.singleShot && this.webSocketHandler.previousSender == this;
+
+        let shouldSend = this.animationProbablyActive;
+
+        if (shouldSend) {
+            this.sendMessage(false);
+        }
+
         this.storeAndDraw();
     }
 
@@ -109,6 +117,15 @@ class AnimationInvoker extends AnimationElementBase {
             let newSpeed = 1 + (i * 2);
             this.state.Speed = newSpeed;
         }
+
+        this.animationProbablyActive = !this.singleShot && this.webSocketHandler.previousSender == this;
+
+        let shouldSend = this.animationProbablyActive;
+
+        if (shouldSend) {
+            this.sendMessage(false);
+        }
+
 
         this.storeAndDraw();
     }
