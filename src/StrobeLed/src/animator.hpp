@@ -69,15 +69,15 @@ public:
         {
             PrintLnDebug("Has running animations");
 
-            if (mustBeStopped && currentAnimations.front() == animation[0])
+            if (isSingular && currentAnimations.front() == animation[0])
             {
-                PrintLnDebug("Stopping current animation");
+                PrintLnDebug("Continuing current animation");
 
-                currentAnimations.front()->stop();
+                //currentAnimations.front()->stop();
 
-                mustBeStopped = false;
+                //mustBeStopped = false;
 
-                Time.interrupt();
+                //Time.interrupt();
                 return;
             }
 
