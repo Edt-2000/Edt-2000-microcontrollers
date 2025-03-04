@@ -69,7 +69,7 @@ public:
         {
             PrintLnDebug("Has running animations");
 
-            if (isSingular && currentAnimations.front() == animation[0])
+            if (mustBeStopped && currentAnimations.front() == animation[0])
             {
                 PrintLnDebug("Continuing current animation");
 
