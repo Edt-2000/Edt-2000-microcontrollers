@@ -28,6 +28,7 @@ private:
         // reset all leds
         fill_solid(leds0, 64, CRGB::Black);
         fill_solid(leds0, 1, color); 
+        FastLED.show();
     }
 } Status;
 

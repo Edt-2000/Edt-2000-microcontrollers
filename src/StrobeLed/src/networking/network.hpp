@@ -26,7 +26,6 @@ void ethernetEventHandler(WiFiEvent_t event, WiFiEventInfo_t info)
         case ARDUINO_EVENT_ETH_DISCONNECTED:
         case ARDUINO_EVENT_WIFI_STA_DISCONNECTED:
             PrintLnInfo("Network disconnected!");
-            ESP.restart();
             break;
     }
 }
