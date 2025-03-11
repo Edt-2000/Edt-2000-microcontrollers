@@ -49,6 +49,7 @@ class Presets {
         null,
         {
             name: "meer power",
+            description: "donker beginnen - langzaam Z - daarna X",
             channels: [
                 Object.assign(new InvokerPreset(), {
                     channel: 0,
@@ -107,6 +108,7 @@ class Presets {
         },
         {
             name: "code monkeys",
+            description: "",
             channels: [
                 Object.assign(new InvokerPreset(), {
                     channel: 0,
@@ -157,6 +159,7 @@ class Presets {
         },
         {
             name: "binnen",
+            description: "",
             channels: [
                 Object.assign(new InvokerPreset(), {
                     channel: 2,
@@ -192,6 +195,7 @@ class Presets {
         },
         {
             name: "parttimepowerranger",
+            description: "",
             channels: [
                 Object.assign(new InvokerPreset(), {
                     channel: 2,
@@ -276,6 +280,7 @@ class Presets {
         },
         {
             name: "lava lava",
+            description: "",
             channels: [
                 Object.assign(new InvokerPreset(), {
                     channel: 2,
@@ -302,6 +307,7 @@ class Presets {
         },
         {
             name: "bek op asfalt",
+            description: "",
             channels: [
                 Object.assign(new RepeaterPreset(), {
                     channel: 4,
@@ -354,6 +360,7 @@ class Presets {
         },
         {
             name: "cabrioletta",
+            description: "",
             channels: [
                 Object.assign(new RepeaterPreset(), {
                     channel: 4,
@@ -433,6 +440,7 @@ class Presets {
         },
         {
             name: "schuren in de fik",
+            description: "",
             channels: [
                 Object.assign(new InvokerPreset(), {
                     channel: 0,
@@ -470,6 +478,7 @@ class Presets {
         },
         {
             name: "technokoning",
+            description: "",
             channels: [
                 Object.assign(new RepeaterPreset(), {
                     channel: 4,
@@ -520,6 +529,7 @@ class Presets {
         },
         {
             name: "harder dan jij",
+            description: "",
             channels: [
                 Object.assign(new RepeaterPreset(), {
                     channel: 4,
@@ -565,6 +575,7 @@ class Presets {
         },
         {
             name: "intens",
+            description: "",
             channels: [
                 Object.assign(new RepeaterPreset(), {
                     channel: 4,
@@ -635,6 +646,7 @@ class Presets {
         },
         {
             name: "neuken",
+            description: "",
             channels: [
                 Object.assign(new InvokerPreset(), {
                     channel: 0,
@@ -671,6 +683,7 @@ class Presets {
         },
         {
             name: "alles gejat",
+            description: "",
             channels: [
                 Object.assign(new SenderPreset(), {
                     channel: 1,
@@ -725,6 +738,7 @@ class Presets {
         },
         {
             name: "poetin",
+            description: "",
             channels: [
                 Object.assign(new SenderPreset(), {
                     channel: 1,
@@ -744,6 +758,7 @@ class Presets {
         },
         {
             name: "kermis/instaparty",
+            description: "",
             channels: [
                 Object.assign(new SenderPreset(), {
                     channel: 1,
@@ -763,6 +778,7 @@ class Presets {
         },
         {
             name: "kerst",
+            description: "",
             channels: [
                 Object.assign(new RepeaterPreset(), {
                     channel: 4,

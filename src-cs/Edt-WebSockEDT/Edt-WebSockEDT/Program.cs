@@ -6,8 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.WebHost.UseUrls("http://*:5151");
 
-builder.Services.AddSingleton(new WebSocketHandler());
+builder.Services.AddSingleton<StatusHandler>();
+builder.Services.AddSingleton<WebSocketHandler>();
 
+builder.Services.AddHostedService<StatusBackgroundService>();
 builder.Services.AddHostedService<MidiBackgroundService>();
 builder.Services.AddHostedService<WebSocketBackgroundService>();
 

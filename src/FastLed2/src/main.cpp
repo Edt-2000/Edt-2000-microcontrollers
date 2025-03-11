@@ -151,7 +151,7 @@ void loop()
 #ifdef DEBUG
     if (Time.t100ms)
     {
-      WebSocket.send(String(Time.ms));
+      //WebSocket.send(String(Time.));
     }
     if (Time.t1000ms)
     {

@@ -97,9 +97,9 @@ class AnimationPresets extends HTMLElement {
             const preset = Presets.items[x];
             const name = preset?.name ?? "None";
             html += `<h2 class="tab${x == this.currentPreset ? " active" : ""}">${name.toUpperCase()}</h2>`;
-
         }
 
+        html += `<p>${Presets.items[this.currentPreset]?.description ?? ''}</p>`
 
         html += `</div>`;
 

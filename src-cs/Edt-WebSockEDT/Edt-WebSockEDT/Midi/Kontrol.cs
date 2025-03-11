@@ -9,6 +9,13 @@ public class Kontrol
 
     private Action<ChannelMessage>? _messageCallback = null;
 
+    private readonly StatusHandler _statusHandler;
+
+    public Kontrol(StatusHandler statusHandler)
+    {
+        _statusHandler = statusHandler;
+    }
+
     public async Task InitAsync(Action<ChannelMessage> onMessage)
     {
         _messageCallback = onMessage;
@@ -60,6 +67,8 @@ public class Kontrol
                     }
                 }
             }
+
+            _statusHandler.ReportStatus("MIDI", _input != null && _output != null);
 
             await Task.Delay(1000);
         }
