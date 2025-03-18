@@ -166,209 +166,6 @@ class Presets {
             ]
         },
         {
-            name: "binnen",
-            description: "` tijdens tellen | repeater 4 = constant | repeater 5 = stress | repeater 6 + 7 = chases | Strobeled aan",
-            channels: [
-                Object.assign(new InvokerPreset(), {
-                    channel: 0,
-                    animation: Constants.AnimationTypes.allPartialSinglePulse,
-                    modifier: 250,
-                    colors: [Colors.Red, Colors.Yellow, Colors.Blue, Colors.Pink],
-                    fade: Constants.FadeTypes.oneByOne
-                }),
-                Object.assign(new InvokerPreset(), {
-                    channel: 1,
-                    animation: Constants.AnimationTypes.allPartialSinglePulse,
-                    modifier: 250,
-                    colors: [Colors.Yellow],
-                    fade: Constants.FadeTypes.sparkle
-                }),
-                Object.assign(new InvokerPreset(), {
-                    channel: 2,
-                    animation: Constants.AnimationTypes.strobo,
-                    modifier: 213,
-                    colors: [Colors.Rainbow]
-                }),
-                Object.assign(new RepeaterPreset(), {
-                    channel: 4,
-                    animation: Constants.AnimationTypes.allPartialSinglePulse,
-                    modifier: 177,
-                    repeat: 189,
-                    colors: [Colors.Yellow],
-                    fade: Constants.FadeTypes.sparkle
-                }),
-                Object.assign(new RepeaterPreset(), {
-                    channel: 5,
-                    animation: Constants.AnimationTypes.allDoublePulse,
-                    modifier: 51,
-                    repeat: 213,
-                    colors: [Colors.Yellow],
-                    fade: Constants.FadeTypes.sparkle
-                }),
-                Object.assign(new RepeaterPreset(), {
-                    channel: 6,
-                    animation: Constants.AnimationTypes.allDoubleChaseDown,
-                    modifier: 125,
-                    repeat: 125,
-                    colors: [Colors.Yellow],
-                    fade: Constants.FadeTypes.sparkle
-                }),
-                Object.assign(new RepeaterPreset(), {
-                    channel: 7,
-                    animation: Constants.AnimationTypes.allDoubleChaseUp,
-                    modifier: 125,
-                    repeat: 125,
-                    colors: [Colors.Yellow],
-                    fade: Constants.FadeTypes.sparkle
-                }),
-                Object.assign(new SenderPreset(), {
-                    channel: 1,
-                    index: 0,
-                    animation: "noise",
-                    title: "BINNEN",
-                    colors: [Colors.Yellow, Colors.Yellow, Colors.White],
-                    speed: 30
-                }),
-                Object.assign(new SenderPreset(), {
-                    channel: 1,
-                    index: 4,
-                    animation: "strobo",
-                    title: "FLASH",
-                    colors: [Colors.White],
-                    speed: 1
-                })
-            ]
-        },
-        {
-            name: "schuren in de fik",
-            description: "Z tijdens couplet | strobo + channel 2 M | X afwisseling | Strobeled aan",
-            channels: [
-                Object.assign(new InvokerPreset(), {
-                    channel: 0,
-                    animation: Constants.AnimationTypes.allDoublePulse,
-                    modifier: 107,
-                    speed: 17,
-                    colors: [Colors.Red, Colors.Blue],
-                    fade: Constants.FadeTypes.sparkle
-                }),
-                Object.assign(new InvokerPreset(), {
-                    channel: 1,
-                    animation: Constants.AnimationTypes.allSinglePulse,
-                    modifier: 107,
-                    speed: 17,
-                    colors: [Colors.Red, Colors.Blue],
-                    fade: Constants.FadeTypes.fadeAll
-                }),
-                Object.assign(new InvokerPreset(), {
-                    channel: 2,
-                    animation: Constants.AnimationTypes.strobo,
-                    modifier: 237,
-                    colors: [Colors.Red, Colors.Blue],
-                }),
-                Object.assign(new SenderPreset(), {
-                    channel: 1,
-                    index: 0,
-                    animation: "strobo",
-                    title: "SCHUREN",
-                    variant: 1,
-                    flashCount: 4,
-                    colors: [Colors.Red, Colors.Blue],
-                    speed: 240
-                }),
-                Object.assign(new SenderPreset(), {
-                    channel: 1,
-                    index: 4,
-                    animation: "strobo",
-                    title: "STROBO",
-                    colors: [Colors.White],
-                    speed: 220
-                })
-            ]
-        },
-        {
-            name: "cabrioletta",
-            description: "Repeater 4 = tijdens alles | Repeater 5 = tijdens gas (100 - 255) | Z = tijdens cabrioletta | Strobeled tijdens gas",
-            channels: [
-                Object.assign(new InvokerPreset(), {
-                    channel: 0,
-                    animation: Constants.AnimationTypes.allSinglePulse,
-                    modifier: 128,
-                    colors: [Colors.Red],
-                    fade: Constants.FadeTypes.oneByOne
-                }),
-                Object.assign(new RepeaterPreset(), {
-                    channel: 4,
-                    animation: Constants.AnimationTypes.allSingleChaseUp,
-                    modifier: 81,
-                    repeat: 151,
-                    colors: [Colors.Red, Colors.White],
-                    fade: Constants.FadeTypes.none
-                }),
-                Object.assign(new RepeaterPreset(), {
-                    channel: 5,
-                    animation: Constants.AnimationTypes.allSingleChaseDown,
-                    modifier: 100,
-                    repeat: 1,
-                    colors: [Colors.Red],
-                    fade: Constants.FadeTypes.pulse
-                }),
-                Object.assign(new SenderPreset(), {
-                    channel: 1,
-                    index: 0,
-                    animation: "cabrio",
-                    variant: 0,
-                    title: "CABRIO 1",
-                    colors: [Colors.Orange],
-                    speed: 100
-                }),
-                Object.assign(new SenderPreset(), {
-                    channel: 1,
-                    index: 1,
-                    animation: "cabrio",
-                    variant: 1,
-                    title: "CABRIO 2",
-                    colors: [Colors.SeaGreen],
-                    speed: 300
-                }),
-                Object.assign(new SenderPreset(), {
-                    channel: 1,
-                    index: 4,
-                    animation: "doublePulse",
-                    title: "Red",
-                    colors: [Colors.Red, Colors.Black],
-                    percentage: 20,
-                    speed: 0
-                }),
-                Object.assign(new SenderPreset(), {
-                    channel: 1,
-                    index: 5,
-                    animation: "doublePulse",
-                    title: "Red",
-                    colors: [Colors.Red, Colors.Black],
-                    percentage: 40,
-                    speed: 0
-                }),
-                Object.assign(new SenderPreset(), {
-                    channel: 1,
-                    index: 6,
-                    animation: "doublePulse",
-                    title: "Red",
-                    colors: [Colors.Red, Colors.Black],
-                    percentage: 80,
-                    speed: 0
-                }),
-                Object.assign(new SenderPreset(), {
-                    channel: 1,
-                    index: 7,
-                    animation: "doublePulse",
-                    title: "Red",
-                    colors: [Colors.Red, Colors.Black],
-                    percentage: 127,
-                    speed: 0,
-                }),
-            ]
-        },
-        {
             name: "klein beetje anders",
             description: "Repeater 5 = constant | Repeater 4 = high-hat | Strobeled strobo",
             channels: [
@@ -457,8 +254,211 @@ class Presets {
             ]
         },
         {
+            name: "schuren in de fik",
+            description: "Z tijdens couplet | strobo + channel 2 M + powerbar strobe | X afwisseling | Strobeled aan",
+            channels: [
+                Object.assign(new InvokerPreset(), {
+                    channel: 0,
+                    animation: Constants.AnimationTypes.allDoublePulse,
+                    modifier: 107,
+                    speed: 17,
+                    colors: [Colors.Red, Colors.Blue],
+                    fade: Constants.FadeTypes.sparkle
+                }),
+                Object.assign(new InvokerPreset(), {
+                    channel: 1,
+                    animation: Constants.AnimationTypes.allSinglePulse,
+                    modifier: 107,
+                    speed: 17,
+                    colors: [Colors.Red, Colors.Blue],
+                    fade: Constants.FadeTypes.fadeAll
+                }),
+                Object.assign(new InvokerPreset(), {
+                    channel: 2,
+                    animation: Constants.AnimationTypes.strobo,
+                    modifier: 237,
+                    colors: [Colors.Red, Colors.Blue],
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 0,
+                    animation: "strobo",
+                    title: "SCHUREN",
+                    variant: 1,
+                    flashCount: 4,
+                    colors: [Colors.Red, Colors.Blue],
+                    speed: 240
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "STROBO",
+                    colors: [Colors.White],
+                    speed: 220
+                })
+            ]
+        },
+        {
+            name: "cabrioletta",
+            description: "Repeater 4 = tijdens alles | Repeater 5 = tijdens gas (100 - 255) | Z = tijdens cabrioletta | Strobeled tijdens gas | Powerbar tijdens couplet + hero moment",
+            channels: [
+                Object.assign(new InvokerPreset(), {
+                    channel: 0,
+                    animation: Constants.AnimationTypes.allSinglePulse,
+                    modifier: 128,
+                    colors: [Colors.Red],
+                    fade: Constants.FadeTypes.oneByOne
+                }),
+                Object.assign(new RepeaterPreset(), {
+                    channel: 4,
+                    animation: Constants.AnimationTypes.allSingleChaseUp,
+                    modifier: 81,
+                    repeat: 151,
+                    colors: [Colors.Red, Colors.White],
+                    fade: Constants.FadeTypes.none
+                }),
+                Object.assign(new RepeaterPreset(), {
+                    channel: 5,
+                    animation: Constants.AnimationTypes.allSingleChaseDown,
+                    modifier: 100,
+                    repeat: 1,
+                    colors: [Colors.Red],
+                    fade: Constants.FadeTypes.pulse
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 0,
+                    animation: "cabrio",
+                    variant: 0,
+                    title: "CABRIO 1",
+                    colors: [Colors.Orange],
+                    speed: 100
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 1,
+                    animation: "cabrio",
+                    variant: 1,
+                    title: "CABRIO 2",
+                    colors: [Colors.SeaGreen],
+                    speed: 300
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "doublePulse",
+                    title: "Red",
+                    colors: [Colors.Red, Colors.Black],
+                    percentage: 20,
+                    speed: 0
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 5,
+                    animation: "doublePulse",
+                    title: "Red",
+                    colors: [Colors.Red, Colors.Black],
+                    percentage: 40,
+                    speed: 0
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 6,
+                    animation: "doublePulse",
+                    title: "Red",
+                    colors: [Colors.Red, Colors.Black],
+                    percentage: 80,
+                    speed: 0
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 7,
+                    animation: "doublePulse",
+                    title: "Red",
+                    colors: [Colors.Red, Colors.Black],
+                    percentage: 127,
+                    speed: 0,
+                }),
+            ]
+        },
+        {
+            name: "binnen",
+            description: "` tijdens tellen | repeater 4 = constant | repeater 5 = stress | repeater 6 + 7 = chases | Strobeled aan | Powerbar aan",
+            channels: [
+                Object.assign(new InvokerPreset(), {
+                    channel: 0,
+                    animation: Constants.AnimationTypes.allPartialSinglePulse,
+                    modifier: 250,
+                    colors: [Colors.Red, Colors.Yellow, Colors.Blue, Colors.Pink],
+                    fade: Constants.FadeTypes.oneByOne
+                }),
+                Object.assign(new InvokerPreset(), {
+                    channel: 1,
+                    animation: Constants.AnimationTypes.allPartialSinglePulse,
+                    modifier: 250,
+                    colors: [Colors.Yellow],
+                    fade: Constants.FadeTypes.sparkle
+                }),
+                Object.assign(new InvokerPreset(), {
+                    channel: 2,
+                    animation: Constants.AnimationTypes.strobo,
+                    modifier: 213,
+                    colors: [Colors.Rainbow]
+                }),
+                Object.assign(new RepeaterPreset(), {
+                    channel: 4,
+                    animation: Constants.AnimationTypes.allPartialSinglePulse,
+                    modifier: 177,
+                    repeat: 189,
+                    colors: [Colors.Yellow],
+                    fade: Constants.FadeTypes.sparkle
+                }),
+                Object.assign(new RepeaterPreset(), {
+                    channel: 5,
+                    animation: Constants.AnimationTypes.allDoublePulse,
+                    modifier: 51,
+                    repeat: 213,
+                    colors: [Colors.Yellow],
+                    fade: Constants.FadeTypes.sparkle
+                }),
+                Object.assign(new RepeaterPreset(), {
+                    channel: 6,
+                    animation: Constants.AnimationTypes.allDoubleChaseDown,
+                    modifier: 125,
+                    repeat: 125,
+                    colors: [Colors.Yellow],
+                    fade: Constants.FadeTypes.sparkle
+                }),
+                Object.assign(new RepeaterPreset(), {
+                    channel: 7,
+                    animation: Constants.AnimationTypes.allDoubleChaseUp,
+                    modifier: 125,
+                    repeat: 125,
+                    colors: [Colors.Yellow],
+                    fade: Constants.FadeTypes.sparkle
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 0,
+                    animation: "noise",
+                    title: "BINNEN",
+                    colors: [Colors.Yellow, Colors.Yellow, Colors.White],
+                    speed: 30
+                }),
+                Object.assign(new SenderPreset(), {
+                    channel: 1,
+                    index: 4,
+                    animation: "strobo",
+                    title: "FLASH",
+                    colors: [Colors.White],
+                    speed: 1
+                })
+            ]
+        },
+        {
             name: "neuken",
-            description: "Repeat 6 + 7 = bounce | Repeat 4 + 5 = up down | Strobo | Strobeled aan",
+            description: "Repeat 6 + 7 = bounce | Repeat 4 + 5 = up down | Strobo | Strobeled aan | Powerbar aan",
             channels: [
                 Object.assign(new InvokerPreset(), {
                     channel: 0,
