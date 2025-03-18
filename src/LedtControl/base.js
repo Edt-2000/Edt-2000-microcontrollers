@@ -186,7 +186,7 @@ class AnimationElementBase extends HTMLElement {
         let colorStyle = '';
 
         if (colors.length == 1 && colors[0].isRainbow()) {
-            colorStyle = `background: linear-gradient(in hsl longer hue 90deg, red 0 0);`;
+            colorStyle = `background: linear-gradient(in hsl longer hue 90deg, red 0 100%);`;
         }
         else {
             let colorLength = colors.length;
