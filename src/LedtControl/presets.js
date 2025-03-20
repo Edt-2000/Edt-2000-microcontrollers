@@ -48,7 +48,7 @@ class Presets {
         null,
         {
             name: "meer power",
-            description: "donker beginnen - langzaam Z - daarna X | Strobeled | Powerbar brightness 0 -> 255",
+            description: "donker beginnen - langzaam Z - daarna X | Strobeled | Powerbar brightness 0 -> 255 | Powerbar strobo speed 0 -> 255",
             channels: [
                 Object.assign(new InvokerPreset(), {
                     channel: 0,
@@ -231,7 +231,7 @@ class Presets {
                     channel: 0,
                     animation: Constants.AnimationTypes.allPartialSinglePulse,
                     modifier: 250,
-                    colors: [Colors.Red, Colors.Yellow, Colors.Blue, Colors.Pink],
+                    colors: [Colors.Yellow],
                     fade: Constants.FadeTypes.oneByOne
                 }),
                 Object.assign(new InvokerPreset(), {
