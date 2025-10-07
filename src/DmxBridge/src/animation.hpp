@@ -1,6 +1,7 @@
 #pragma once
 
 #include "time.hpp"
+#include "dmx/devices.hpp"
 
 // Base abstract animation class 
 class Animation
@@ -21,17 +22,17 @@ protected:
     ::delay(ms);
   }
 
-  // calls FastLED.show() after checking if the animation should be interrupted
-  // if the animation does not delay() the animation can call FastLED.show() directly 
+  // calls DmxDevices.loop() after checking if the animation should be interrupted
+  // if the animation does not delay() the animation can call DmxDevices.loop() directly 
   inline void show() {
     Time.yield();
-    FastLED.show();
+    DmxDevices.loop();
   }
 
-  // calls FastLED.show() no matter what
+  // calls DmxDevices.loop() no matter what
   // NOTE: use sparingly
   inline void uninterruptibleShow() {
-    FastLED.show();
+    DmxDevices.loop();
   }
   
 public:

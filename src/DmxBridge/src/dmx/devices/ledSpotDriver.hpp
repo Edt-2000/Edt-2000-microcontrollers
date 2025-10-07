@@ -10,6 +10,8 @@ private:
     {
         auto led = clampValue(leds[_ledIndex]);
 
+        DmxSerial::Write(_address, 255);
+
         DmxSerial::Write(_address + 1, led.r);
         DmxSerial::Write(_address + 2, led.g);
         DmxSerial::Write(_address + 3, led.b);
@@ -27,7 +29,6 @@ public:
         _minimumBrightness = minimumBrightness;
 
         DmxSerial::Write(_address, 0);
-        DmxSerial::Write(_address + 3, 255);
     }
 
     void loop()

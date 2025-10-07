@@ -147,7 +147,11 @@ public:
 
     void disableFade()
     {
-        scheduleFade(0, FadeMode::none);
+        uint8_t size = _fades.size();
+        for (uint8_t i = 0; i < size; i++)
+        {
+            scheduleFade(i, 0, FadeMode::none);
+        }
     }
 } Fader;
 

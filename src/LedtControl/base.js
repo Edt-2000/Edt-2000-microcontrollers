@@ -23,11 +23,11 @@ class HSV {
 
 class FastLedUnits {
     static _modes = [
-        ['unit1', 'unit2', 'spectacle'],
+        ['unit1', 'unit2', 'spectacle', 'dmx'],
         ['unit1'],
         ['unit2'],
         ['spectacle'],
-        ['unit1', 'unit2']
+        ['unit1', 'unit2', 'dmx']
     ];
     static _activeMode = 0;
 

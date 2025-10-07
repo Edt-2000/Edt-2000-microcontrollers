@@ -17,8 +17,12 @@ public:
         DmxSerial::Initialize(DmxDirection::output);
 
         auto led1 = new LedSpotDriver();
-        led1->initialize(10, 0, 0, 255);
+        led1->initialize(10, 0, 255, 0);
         _devices.push_back(led1);
+        
+        auto led2 = new LedSpotDriver();
+        led2->initialize(16, 30, 255, 0);
+        _devices.push_back(led2);
     }
 
     void loop()

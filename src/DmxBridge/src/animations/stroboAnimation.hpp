@@ -24,13 +24,11 @@ public:
 
   void start()
   {
-    takeFastLedControl();
     _isActive = true;
   }
 
   void stop()
   {
-    yieldFastLedControl();
     _isActive = false;
   }
 
@@ -41,23 +39,23 @@ public:
       auto color = globalSettings.primaryColor();
 
       if (isRainbow(color)) {
-        applyToLeds([](CRGB* leds) { fill_rainbow(leds, 59, 0, DEFAULT_DELTA_HUE); });
+        fill_rainbow(leds, 59, 0, DEFAULT_DELTA_HUE);
       }
       else {
-        applyToLeds([&](CRGB* leds) { fill_solid(leds, 59, color); });
+        fill_solid(leds, 59, color);
       }
 
       // going back to black is uninterruptible, otherwise the leds might stay on full blast
       uninterruptibleShow();
-
+      
       uint8_t onDelay = 
         globalSettings.speed <= 5 ? 12 :
         globalSettings.speed <= 20 ? 6 : 3;
 
       uninterruptibleDelay(onDelay);
       
-      applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
-      
+      fill_solid(leds, 59, CRGB::Black);
+
       uninterruptibleShow();
 
       // from this point the animation is interruptable
