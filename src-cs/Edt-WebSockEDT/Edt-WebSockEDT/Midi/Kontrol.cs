@@ -44,7 +44,20 @@ public class Kontrol
                 {
                     if (inputDevice.Name.Contains("nanoKONTROL2", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        _input = await MidiAccessManager.Default.OpenInputAsync(inputDevice.Id);
+                        try
+                        {
+                            _input = await MidiAccessManager.Default.OpenInputAsync(inputDevice.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            continue;
+                        }
+
+                        if (_input == null)
+                        {
+                            throw new InvalidOperationException();
+                        }
 
                         _input.MessageReceived += MessageReceived;
 
@@ -61,7 +74,20 @@ public class Kontrol
                 {
                     if (outputDevice.Name.Contains("nanoKONTROL2", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        _output = await MidiAccessManager.Default.OpenOutputAsync(outputDevice.Id);
+                        try
+                        {
+                            _output = await MidiAccessManager.Default.OpenOutputAsync(outputDevice.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            continue;
+                        }
+
+                        if (_input == null)
+                        {
+                            throw new InvalidOperationException();
+                        }
 
                         Console.WriteLine("MIDI Output connected");
                     }

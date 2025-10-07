@@ -38,7 +38,7 @@ public:
     {
         WiFi.onEvent(ethernetEventHandler);
 
-        auto staticIP = IPAddress(10, 0, 0, 30);
+        auto staticIP = IPAddress(10, 0, 0, 50);
         auto gatewayIP = IPAddress(10, 0, 0, 1);
         auto subnet = IPAddress(255, 0, 0, 0);
 

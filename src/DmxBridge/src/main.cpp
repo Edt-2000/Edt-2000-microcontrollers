@@ -40,7 +40,7 @@
 #include "animator.hpp"
 #include "time.hpp"
 #include "settings.hpp"
-#include "fastLedTask.hpp"
+#include "dmx/devices.hpp"
 
 #include "debugging/logger.hpp"
 #include "debugging/status.hpp"
@@ -52,7 +52,7 @@ auto animationCallback = [](std::string animation)
 
 void setup()
 {
-  // FastLED.addLeds<APA102, 16, 32, BGR>(leds0, 59).setCorrection(TypicalLEDStrip);
+	// FastLED.addLeds<APA102, 16, 32, BGR>(leds0, 59).setCorrection(TypicalLEDStrip);
   // FastLED.addLeds<APA102, 13, 32, BGR>(leds1, 59).setCorrection(TypicalLEDStrip);
   // FastLED.addLeds<APA102, 14, 32, BGR>(leds2, 59).setCorrection(TypicalLEDStrip);
   // FastLED.addLeds<APA102, 15, 32, BGR>(leds3, 59).setCorrection(TypicalLEDStrip);
@@ -61,9 +61,9 @@ void setup()
   // FastLED.addLeds<APA102, 4, 32, BGR>(leds6, 59).setCorrection(TypicalLEDStrip);
   // FastLED.addLeds<APA102, 2, 32, BGR>(leds7, 59).setCorrection(TypicalLEDStrip);
 
-  //xTaskCreate(&fastLedTask, "FL", 5120, NULL, 1, NULL);
-
   Status.init();
+
+  DmxDevices.init();
 
   // these are all the animations the system knows
   Animator.addAnimation(new SinglePulseAnimation());
@@ -146,6 +146,7 @@ void loop()
   do
   {
     Animator.loop();
+    DmxDevices.loop();
 
 #ifdef DEBUG
     if (Time.t100ms)

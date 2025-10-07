@@ -35,7 +35,8 @@ public:
 
   void loop()
   {
-    applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
+    fill_solid(leds, 59, CRGB::Black);
+    //applyToLeds([](CRGB* leds) { fill_solid(leds, 59, CRGB::Black); });
     Fader.disableFade();
 
     _isActive = false;

@@ -38,23 +38,13 @@ public:
 
     if (isRainbow(color))
     {
-      applyToLeds(
-          globalSettings.led,
-          [](CRGB *leds, uint8_t index)
-          {
-            fill_rainbow(leds, 59, 0, DEFAULT_DELTA_HUE);
-            Fader.scheduleFade(index, globalSettings.speed / 2, globalSettings.fadeMode());
-          });
+      fill_rainbow(leds, 59, 0, DEFAULT_DELTA_HUE);
+      Fader.scheduleFade(globalSettings.speed / 2, globalSettings.fadeMode());
     }
     else
     {
-      applyToLeds(
-          globalSettings.led,
-          [&](CRGB *leds, uint8_t index)
-          {
-            fill_solid(leds, 59, color);
-            Fader.scheduleFade(index, globalSettings.speed / 2, globalSettings.fadeMode());
-          });
+      fill_solid(leds, 59, color);
+      Fader.scheduleFade(globalSettings.speed / 2, globalSettings.fadeMode());
     }
   }
 };
