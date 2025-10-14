@@ -13,6 +13,9 @@ AsyncWebSocket ws("/ws");
 using StateChangedHandler = std::function<void()>;
 StateChangedHandler stateChangedCallback;
 
+// dmx bridge needs to count clients
+uint8_t clients = 0;
+
 void onEvent(
     AsyncWebSocket *server,
     AsyncWebSocketClient *client,
@@ -27,11 +30,21 @@ void onEvent(
     }
     else if (type == WS_EVT_CONNECT)
     {
+        clients++;
         Status.allOk();
     }
     else if (type == WS_EVT_DISCONNECT)
     {
-        Status.setup();
+        clients--;
+
+        if (clients > 0)
+        {
+            Status.allOk();
+        }
+        else
+        {
+            Status.setup();
+        }
     }
 }
 

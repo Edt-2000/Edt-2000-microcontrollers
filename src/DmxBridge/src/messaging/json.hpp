@@ -4,6 +4,7 @@
 
 #include "../settings.hpp"
 #include "../debugging/logger.hpp"
+#include "../dmx/devices.hpp"
 
 using AnimationHandler = std::function<void(std::string animationName)>;
 
@@ -30,9 +31,19 @@ public:
         PrintDebug("Message has animation ");
         PrintLnDebug(isAnimation);
 
-        auto isSettings = !isAnimation || (isAnimation && deserializeDoc.size() > 1);
+        auto isDmxConfig = deserializeDoc.containsKey("dmx");
+        PrintDebug("Message has dmxConfig ");
+        PrintLnDebug(isDmxConfig);
+
+        auto isSettings = !(isAnimation || isDmxConfig) || (isAnimation && deserializeDoc.size() > 1);
         PrintDebug("Message has settings ");
         PrintLnDebug(isSettings);
+
+        if (isDmxConfig) 
+        {
+            DmxDevices.handleConfig(deserializeDoc);
+            return;
+        }
 
         if (isSettings)
         {

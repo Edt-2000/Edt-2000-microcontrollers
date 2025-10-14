@@ -19,9 +19,6 @@ protected:
 
 	inline CRGB clampValue(CRGB rgb)
 	{
-		// TODO
-		return rgb;
-
 		auto color = rgb2hsv_approximate(rgb);
 		return CHSV(color.h, color.s, _minimumBrightness + ((color.v / 255.0) * ((float)(_maximumBrightness - _minimumBrightness))));
 	}

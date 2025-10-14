@@ -16,8 +16,7 @@ private:
         DmxSerial::Write(_address + 2, led.g);
         DmxSerial::Write(_address + 3, led.b);
 
-        // use second color's red channel for white channel
-        DmxSerial::Write(_address + 4, led.r);
+        DmxSerial::Write(_address + 4, led.getLuma());
     }
 
 public:
