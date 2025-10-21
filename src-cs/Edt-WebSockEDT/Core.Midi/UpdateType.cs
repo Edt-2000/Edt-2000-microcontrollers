@@ -1,4 +1,4 @@
-﻿namespace EdtWebSockEDT.Midi;
+﻿namespace Core.Midi;
 
 public enum UpdateType
 {

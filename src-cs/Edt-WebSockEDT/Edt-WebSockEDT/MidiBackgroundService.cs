@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
-using EdtWebSockEDT.Midi;
+using Core.Midi;
 
 namespace EdtWebSockEDT;
 

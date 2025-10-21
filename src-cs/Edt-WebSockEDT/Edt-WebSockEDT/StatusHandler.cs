@@ -1,11 +1,12 @@
 ﻿using System.Collections.Concurrent;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Core;
 using EdtWebSockEDT.Status;
 
 namespace EdtWebSockEDT;
 
-public class StatusHandler
+public class StatusHandler : IStatusReporter
 {
     private readonly ConcurrentDictionary<string, DateTime> _devices = new();
     private WebSocketHandler? _webSocketHandler;
@@ -27,6 +28,7 @@ public class StatusHandler
     {
         _devices[device] = isOk ? DateTime.UtcNow : DateTime.MinValue;
     }
+
     public void SendStatus()
     {
         var message = new StatusMessage(_devices.ToDictionary(x => x.Key, x => x.Value switch

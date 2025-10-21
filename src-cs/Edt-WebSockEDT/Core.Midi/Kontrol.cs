@@ -1,6 +1,6 @@
 ﻿using Commons.Music.Midi;
 
-namespace EdtWebSockEDT.Midi;
+namespace Core.Midi;
 
 public class Kontrol
 {
@@ -9,11 +9,11 @@ public class Kontrol
 
     private Action<ChannelMessage>? _messageCallback = null;
 
-    private readonly StatusHandler _statusHandler;
+    private readonly IStatusReporter _statusReporter;
 
-    public Kontrol(StatusHandler statusHandler)
+    public Kontrol(IStatusReporter statusReporter)
     {
-        _statusHandler = statusHandler;
+        _statusReporter = statusReporter;
     }
 
     public async Task InitAsync(Action<ChannelMessage> onMessage)
@@ -94,7 +94,7 @@ public class Kontrol
                 }
             }
 
-            _statusHandler.ReportStatus("MIDI", _input != null && _output != null);
+            _statusReporter.ReportStatus("MIDI", _input != null && _output != null);
 
             await Task.Delay(1000);
         }
@@ -141,9 +141,7 @@ public class Kontrol
 
                 var output = Cs[channel].GetMode();
 
-                _output?.Send([0x90, (byte)(channel + 8), IsOn(output, Mode.One)], 0, 3, 0);
-                _output?.Send([0x90, (byte)(channel + 16), IsOn(output, Mode.Two)], 0, 3, 0);
-                _output?.Send([0x90, (byte)(channel + 0), IsOn(output, Mode.Four)], 0, 3, 0);
+                Send(channel, output);
 
                 updateType = UpdateType.Button;
                 updateValue = (int)Cs[channel].GetMode();
@@ -187,6 +185,13 @@ public class Kontrol
         }
 
         _messageCallback?.Invoke(new(channel, updateType, updateValue));
+    }
+
+    public void Send(byte channel, Mode mode)
+    {
+        _output?.Send([0x90, (byte)(channel + 8), IsOn(mode, Mode.One)], 0, 3, 0);
+        _output?.Send([0x90, (byte)(channel + 16), IsOn(mode, Mode.Two)], 0, 3, 0);
+        _output?.Send([0x90, (byte)(channel + 0), IsOn(mode, Mode.Four)], 0, 3, 0);
     }
 
     public StateChannel[] Cs { get; set; } = [
