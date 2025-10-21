@@ -1,3 +1,5 @@
+class Songs {}
+
 class HSV {
     H = 0;
     S = 0;
