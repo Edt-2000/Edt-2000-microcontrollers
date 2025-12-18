@@ -1,6 +1,6 @@
 Songs.codemonkeys = {
     name: "code monkeys",
-    description: "",
+    description: "2 repeaters + Z",
     channels: [
         Object.assign(new InvokerPreset(), {
             channel: 0,

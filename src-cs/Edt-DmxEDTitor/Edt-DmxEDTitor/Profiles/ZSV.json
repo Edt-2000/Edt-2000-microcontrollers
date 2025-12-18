@@ -1,0 +1,25 @@
+{
+    "$schema": "./_schema.json",
+    "dmx" : [
+        {
+            "type": "ShowTecCompactPar4channel",
+            "address": 1,
+            "maximumBrightness": 192
+        },
+        {
+            "type": "ShowTecCompactPar4channel",
+            "address": 17,
+            "maximumBrightness": 192
+        },
+        {
+            "type": "ShowTecCompactPar4channel",
+            "address": 33,
+            "maximumBrightness": 128
+        },
+        {
+            "type": "ShowTecCompactPar4channel",
+            "address": 49,
+            "maximumBrightness": 128
+        }
+    ]
+}

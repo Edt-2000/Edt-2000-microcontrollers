@@ -39,7 +39,7 @@ public:
     {
         PrintLnDebug("Starting web socket");
 
-        ws.begin("10.0.0.201", 5151, "/led/spectacle");
+        ws.begin("10.0.0.202", 5151, "/led/spectacle");
         ws.onEvent(onEvent);
 
         PrintLnDebug("Started web socket");
