@@ -2,6 +2,8 @@ let socket;
 
 let statusElement = document.querySelector('#networking');
 let resetElement = document.querySelector('#storage');
+let devicesElement = document.querySelector('#devices');
+
 resetElement.onclick = function () {
     if (confirm('Reset?')) {
         localStorage.clear();
@@ -30,14 +32,19 @@ function setupSocket() {
     socket.onmessage = function (event) {
         let eventData = JSON.parse(event.data);
 
-        let index = eventData.index;
+        if (eventData.devices != null) {
+            devicesElement.innerHTML = Object.entries(eventData.devices).sort((a,b) => a[0] > b[0]).map(([device, status]) => `<span class="${status}">${device}</span>`).join("");
+        }
+        else {
+            let index = eventData.index;
 
-        for (let element of animationElements) {
-            if (element.dataset.channel == index) {
-                switch (eventData.updateType) {
-                    case "select": element.onSelectUpdate(eventData.value); break;
-                    case "intensity": element.onIntensityUpdate(eventData.value); break;
-                    case "button": element.onButtonPress(eventData.value == 1, eventData.value == 2, eventData.value == 4); break;
+            for (let element of animationElements) {
+                if (element.dataset.channel == index) {
+                    switch (eventData.updateType) {
+                        case "select": element.onSelectUpdate(eventData.value); break;
+                        case "intensity": element.onIntensityUpdate(eventData.value); break;
+                        case "button": element.onButtonPress(eventData.value == 1, eventData.value == 2, eventData.value == 4); break;
+                    }
                 }
             }
         }

@@ -37,15 +37,15 @@ public:
 
         if (currentAnimation == animation)
         {
-            PrintLnInfo("Stopping animation.");
+            PrintLnInfo("Stopping animation and resuming.");
 
             currentAnimation->stop();
             currentAnimation = nullptr;
 
             Time.interrupt();
-            return;
         }
-        else if (currentAnimation != nullptr)
+        
+        if (currentAnimation != nullptr)
         {
             PrintDebug("Stopping animation ");
             PrintDebug(currentAnimation->name());

@@ -10,23 +10,33 @@ public class WebSocketHandler
 {
     private readonly MessageAnalyzer _messageAnalyzer = new();
     private readonly List<Task> _sendingTasks = new();
+    private readonly StatusHandler _statusHandler;
 
     private readonly List<WebSocketRegistration> _webSockets = new();
     private readonly WebSocketConfig[] _ledWebSocketUrls =
     [
         new("unit1", new Uri("ws://10.0.0.21:80/ws"), ConnectionType.Wired),
         new("unit2", new Uri("ws://10.0.0.22:80/ws"), ConnectionType.Wired),
-        new("powerbar", new Uri("ws://10.0.0.30:80/ws"), ConnectionType.Wireless)
+        new("powerbar", new Uri("ws://10.0.0.30:80/ws"), ConnectionType.Wireless),
+        new("strobe1", new Uri("ws://10.0.0.41:80/ws"), ConnectionType.Wireless),
+        new("dmx", new Uri("ws://10.0.0.50:80/ws"), ConnectionType.Wired),
     ];
     private readonly Uri _mainframeWebSocketUrl = new("ws://10.0.0.202:8898");
 
     private SocketIoClient? _socketIoClient = null;
 
+    public WebSocketHandler(StatusHandler statusHandler)
+    {
+        _statusHandler = statusHandler;
+    }
+
     public void AddWebSocket(string type, string unit, WebSocket ws)
     {
         var connectionType = unit == "spectacle" ? ConnectionType.Wireless : ConnectionType.Wired;
 
-        _webSockets.Add(new(type, unit, null, ws, CreateRateLimiter(connectionType)));
+        var socket = new WebSocketRegistration(type, unit, null, ws, CreateRateLimiter(connectionType));
+        _webSockets.Add(socket);
+        _statusHandler.ReportStatus(socket.ToString(), true);
     }
 
     public void RemoveWebSocket(WebSocket ws)
@@ -44,10 +54,12 @@ public class WebSocketHandler
             _socketIoClient.Connected += (s, e) =>
             {
                 Console.WriteLine("Socket IO connected");
+                _statusHandler.ReportStatus("SocketIO", true);
             };
             _socketIoClient.Disconnected += (s, e) =>
             {
                 Console.WriteLine("Socket IO disconnected");
+                _statusHandler.ReportStatus("SocketIO", false);
             };
 
             try
@@ -57,8 +69,8 @@ public class WebSocketHandler
             catch (Exception ex)
             {
                 Console.WriteLine($"Socket IO encountered issue: {ex.Message}");
-
                 _socketIoClient = null;
+                _statusHandler.ReportStatus("SocketIO", false);
             }
         }
 
@@ -101,28 +113,32 @@ public class WebSocketHandler
                     try
                     {
                         await socket.WebSocket.SendAsync(memory, WebSocketMessageType.Text, true, CancellationToken.None);
+                        _statusHandler.ReportStatus(socket.ToString(), true);
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"WebSocket {socket.Type} ({socket.Unit}) encountered issue: {ex.Message}");
+                        Console.WriteLine($"WebSocket {socket} encountered issue: {ex.Message}");
 
+                        _statusHandler.ReportStatus(socket.ToString(), false);
                         _webSockets.Remove(socket);
                     }
                 }
                 else
                 {
+                    _statusHandler.ReportStatus(socket.ToString(), false);
                     _webSockets.Remove(socket);
                     socket.WebSocket.Dispose();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"WebSocketHandler {socket.Type} ({socket.Unit}) encountered issue: {ex.Message}");
+                Console.WriteLine($"WebSocketHandler {socket} encountered issue: {ex.Message}");
             }
         }
 
         if (colorTask != null)
         {
+            _statusHandler.ReportStatus("SocketIO", true);
             await colorTask;
         }
     }
@@ -140,14 +156,17 @@ public class WebSocketHandler
     private async Task AddOutboundWebSocketAsync(string type, string unit, Uri uri, ConnectionType connectionType)
     {
         var outbound = new ClientWebSocket();
-        outbound.Options.KeepAliveInterval = TimeSpan.FromSeconds(5);
+        outbound.Options.KeepAliveInterval = TimeSpan.FromSeconds(1);
         try
         {
+            var socket = new WebSocketRegistration(type, unit, uri, outbound, CreateRateLimiter(connectionType));
+            _statusHandler.ReportStatus(socket.ToString(), false);
+
             await outbound.ConnectAsync(uri, CancellationToken.None);
 
             Console.WriteLine($"New device of type {type} ({unit}) at address {uri} added");
 
-            _webSockets.Add(new(type, unit, uri, outbound, CreateRateLimiter(connectionType)));
+            _webSockets.Add(socket);
         }
         catch (Exception ex)
         {
@@ -176,7 +195,10 @@ public class WebSocketHandler
         string Unit,
         Uri? Uri,
         WebSocket WebSocket,
-        RateLimiter RateLimiter);
+        RateLimiter RateLimiter)
+    {
+        public override string ToString() => Type == Unit ? Type : $"{Type}({Unit})";
+    }
 
     private sealed record WebSocketConfig(
         string Unit,

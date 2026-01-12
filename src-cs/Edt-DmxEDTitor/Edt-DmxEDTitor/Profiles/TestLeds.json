@@ -1,0 +1,13 @@
+{
+    "$schema": "./_schema.json",
+    "dmx" : [
+        {
+            "type": "LedSpot",
+            "address": 16
+        },
+        {
+            "type": "LedSpot",
+            "address": 10
+        }
+    ]
+}

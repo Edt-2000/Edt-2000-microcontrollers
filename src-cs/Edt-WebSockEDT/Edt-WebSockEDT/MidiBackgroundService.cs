@@ -6,7 +6,7 @@ namespace EdtWebSockEDT;
 
 public class MidiBackgroundService : BackgroundService
 {
-    private readonly Kontrol _kontrol = new();
+    private readonly Kontrol _kontrol;
     private readonly WebSocketHandler _webSocketHandler;
     private readonly JsonSerializerOptions _options = new()
     {
@@ -18,8 +18,10 @@ public class MidiBackgroundService : BackgroundService
     };
 
     public MidiBackgroundService(
+        StatusHandler statusHandler,
         WebSocketHandler webSocketHandler)
     {
+        _kontrol = new(statusHandler);
         _webSocketHandler = webSocketHandler;
     }
 

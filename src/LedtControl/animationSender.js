@@ -107,6 +107,8 @@ class AnimationSender extends AnimationElementBase {
         this.dataset.flashCount = preset.flashCount;
         this.dataset.brightness = preset.brightness;
         this.dataset.speed = preset.speed;
+        this.dataset.percentage = preset.percentage;
+        this.dataset.fade = preset.fade;
 
         this.texts = preset.texts;
         this.colors = preset.colors;
@@ -138,6 +140,8 @@ class AnimationSender extends AnimationElementBase {
         delete this.dataset.color;
         delete this.dataset.brightness;
         delete this.dataset.speed;
+        delete this.dataset.percentage;
+        delete this.dataset.fade;
 
         this.initialize();
 

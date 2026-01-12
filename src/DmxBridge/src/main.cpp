@@ -1,0 +1,131 @@
+#include <Arduino.h>
+#include <Wifi.h>
+#include <ETH.h>
+#include <stdio.h>
+#include <setjmp.h>
+
+#include "leds.hpp"
+
+#include "animation.hpp"
+
+#define SERVER
+
+// tested animations
+#include "animations/stroboAnimation.hpp"
+#include "animations/fireAnimation.hpp"
+#include "animations/noiseAnimation.hpp"
+#include "animations/stopAnimation.hpp"
+
+#include "animations/singlePulseAnimation.hpp"
+#include "animations/doublePulseAnimation.hpp"
+
+#include "animations/singlePartialPulseAnimation.hpp"
+
+#include "animations/singleChaseAnimation.hpp"
+#include "animations/doubleChaseAnimation.hpp"
+
+// /
+
+#include "networking/network.hpp"
+#ifdef SERVER
+#include "networking/websocketServer.hpp"
+#else
+#include "networking/websocketClient.hpp"
+#endif
+
+#include "animator.hpp"
+#include "time.hpp"
+#include "settings.hpp"
+#include "dmx/devices.hpp"
+
+#include "debugging/logger.hpp"
+#include "debugging/status.hpp"
+
+auto animationCallback = [](std::string animation)
+{
+  Animator.changeAnimation(animation);
+};
+
+void setup()
+{
+	Status.init();
+
+  DmxDevices.init();
+
+  // these are all the animations the system knows
+  Animator.addAnimation(new SinglePulseAnimation());
+  Animator.addAnimation(new DoublePulseAnimation());
+
+  Animator.addAnimation(new SinglePartialPulseAnimation());
+
+  Animator.addAnimation(new SingleChaseAnimation());
+  
+  Animator.addAnimation(new DoubleChaseAnimation());
+
+  Animator.addAnimation(new StroboAnimation());
+  Animator.addAnimation(new FireAnimation());
+  Animator.addAnimation(new NoiseAnimation());
+  
+  Animator.addAnimation(new StopAnimation());
+
+  Serial.begin(115200);
+
+  Network.startEthernet();
+
+  Status.setup();
+
+  do
+  {
+    PrintLnInfo("Waiting for network..");
+    delay(100);
+  } while (!Network.networkIsConnected());
+
+  PrintLnInfo("Network started!");
+
+  JsonHandler.onAnimation(animationCallback);
+
+  WebSocket.begin();
+
+  PrintLnInfo("App started!");
+
+  Time.setup();
+}
+
+// this buffer saves the start of the loop, which allows the time class
+// to jump to, interrupting the animation loop
+jmp_buf loop_jump_buffer;
+
+void loop()
+{
+  setjmp(loop_jump_buffer);
+
+  do
+  {
+    Animator.loop();
+    DmxDevices.loop();
+
+#ifdef DEBUG
+    if (Time.t100ms)
+    {
+      //WebSocket.send("=");
+    }
+    if (Time.t1000ms)
+    {
+      //WebSocket.send("=== 1s");
+    }
+    if (Time.t12000ms)
+    {
+      //WebSocket.send("================== 12s");
+    }
+#endif
+
+#ifdef SERVER
+    if (Time.t12000ms)
+    {
+      WebSocket.cleanUp();
+    }
+#endif
+
+  } while (true);
+}
+

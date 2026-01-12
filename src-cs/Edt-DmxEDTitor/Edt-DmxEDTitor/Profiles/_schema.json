@@ -1,0 +1,41 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "properties": {
+        "dmx": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "type": {
+                        "enum": [ 
+                            "LedSpot",
+                            "ThreeChannelLed",
+                            "FixedSingleChannel",
+                            "ShowTecCompactPar8channel",
+                            "ShowTecCompactPar4channel",
+                            "ShowTecCompactPar3channel",
+                            "JbSystemLedPar56"
+                        ]
+                    },
+                    "address": {
+                        "type": "integer",
+                        "minimum": 1,
+                        "maximum": 511
+                    },
+                    "minimumBrightness": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                    },
+                    "maximumBrightness": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 255
+                    }
+                },
+                "required": [ "type", "address" ]
+            }
+        }
+    },
+    "required": [ "dmx" ]
+}

@@ -9,6 +9,13 @@ public class Kontrol
 
     private Action<ChannelMessage>? _messageCallback = null;
 
+    private readonly StatusHandler _statusHandler;
+
+    public Kontrol(StatusHandler statusHandler)
+    {
+        _statusHandler = statusHandler;
+    }
+
     public async Task InitAsync(Action<ChannelMessage> onMessage)
     {
         _messageCallback = onMessage;
@@ -37,7 +44,20 @@ public class Kontrol
                 {
                     if (inputDevice.Name.Contains("nanoKONTROL2", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        _input = await MidiAccessManager.Default.OpenInputAsync(inputDevice.Id);
+                        try
+                        {
+                            _input = await MidiAccessManager.Default.OpenInputAsync(inputDevice.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            continue;
+                        }
+
+                        if (_input == null)
+                        {
+                            throw new InvalidOperationException();
+                        }
 
                         _input.MessageReceived += MessageReceived;
 
@@ -54,12 +74,27 @@ public class Kontrol
                 {
                     if (outputDevice.Name.Contains("nanoKONTROL2", StringComparison.CurrentCultureIgnoreCase))
                     {
-                        _output = await MidiAccessManager.Default.OpenOutputAsync(outputDevice.Id);
+                        try
+                        {
+                            _output = await MidiAccessManager.Default.OpenOutputAsync(outputDevice.Id);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine(ex.Message);
+                            continue;
+                        }
+
+                        if (_input == null)
+                        {
+                            throw new InvalidOperationException();
+                        }
 
                         Console.WriteLine("MIDI Output connected");
                     }
                 }
             }
+
+            _statusHandler.ReportStatus("MIDI", _input != null && _output != null);
 
             await Task.Delay(1000);
         }

@@ -1,0 +1,82 @@
+#pragma once
+
+#include <AsyncWebSocket.h>
+#include <ArduinoJson.h>
+
+#include "../debugging/logger.hpp"
+#include "../debugging/status.hpp"
+#include "../messaging/json.hpp"
+
+AsyncWebServer server(80);
+AsyncWebSocket ws("/ws");
+
+using StateChangedHandler = std::function<void()>;
+StateChangedHandler stateChangedCallback;
+
+// dmx bridge needs to count clients
+uint8_t clients = 0;
+
+void onEvent(
+    AsyncWebSocket *server,
+    AsyncWebSocketClient *client,
+    AwsEventType type,
+    void *arg,
+    uint8_t *data,
+    size_t len)
+{
+    if (type == WS_EVT_DATA)
+    {
+        JsonHandler.deserialize(data);
+    }
+    else if (type == WS_EVT_CONNECT)
+    {
+        clients++;
+        Status.allOk();
+    }
+    else if (type == WS_EVT_DISCONNECT)
+    {
+        clients--;
+
+        if (clients > 0)
+        {
+            Status.allOk();
+        }
+        else
+        {
+            Status.setup();
+        }
+    }
+}
+
+class WebSocketHelper
+{
+public:
+    void begin()
+    {
+        PrintLnDebug("Starting web socket");
+
+        ws.onEvent(onEvent);
+        server.addHandler(&ws);
+        server.begin();
+
+        PrintLnDebug("Started web socket");
+    }
+
+    void send(String data)
+    {
+        ws.textAll(data);
+    }
+
+    void cleanUp()
+    {
+        ws.cleanupClients();
+    }
+
+    void onStateChange(StateChangedHandler callback)
+    {
+        stateChangedCallback = callback;
+    }
+
+} WebSocket;
+
+extern WebSocketHelper WebSocket;

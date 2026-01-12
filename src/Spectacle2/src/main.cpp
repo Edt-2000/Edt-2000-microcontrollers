@@ -14,6 +14,10 @@
 #include "animations/stopAnimation.hpp"
 
 #include "animations/singlePulseAnimation.hpp"
+#include "animations/singleChaseAnimation.hpp"
+#include "animations/singlePartialPulseAnimation.hpp"
+#include "animations/doublePulseAnimation.hpp"
+#include "animations/doubleChaseAnimation.hpp"
 
 #include "networking/network.hpp"
 #include "networking/websocketClient.hpp"
@@ -38,6 +42,11 @@ void setup()
 
   // these are all the animations the system knows
   Animator.addAnimation(new SinglePulseAnimation());
+  Animator.addAnimation(new SingleChaseAnimation());
+  Animator.addAnimation(new SinglePartialPulseAnimation());
+
+  Animator.addAnimation(new DoublePulseAnimation());
+  Animator.addAnimation(new DoubleChaseAnimation());
   
   Animator.addAnimation(new StroboAnimation());
   Animator.addAnimation(new FireAnimation());

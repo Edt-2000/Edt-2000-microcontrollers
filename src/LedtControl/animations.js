@@ -340,6 +340,7 @@ class Constants {
         [Colors.Rainbow],
         [Colors.White],
         [Colors.Red], [Colors.Orange], [Colors.Yellow], [Colors.Lime], [Colors.Green], [Colors.SeaGreen], [Colors.Turquoise], [Colors.Blue], [Colors.Purple], [Colors.Pink],
+        [Colors.Red, Colors.Yellow, Colors.Blue, Colors.Pink],
     ];
     static FadeTypes = {
         none: "none",
