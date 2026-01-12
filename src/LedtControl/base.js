@@ -29,7 +29,8 @@ class FastLedUnits {
         ['unit1'],
         ['unit2'],
         ['spectacle'],
-        ['unit1', 'unit2', 'dmx']
+        ['unit1', 'unit2', 'dmx'],
+        ['dmx']
     ];
     static _activeMode = 0;
 
