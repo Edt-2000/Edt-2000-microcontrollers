@@ -15,16 +15,21 @@ class AnimationPresets extends HTMLElement {
         });
 
         this.id = `presets`;
-        
+
         let state = localStorage.getItem(this.id);
         if (state) {
             this.currentPreset = JSON.parse(state);
-            
+
             if (this.currentPreset != null) {
                 // give the other components time to initialize
-                window.setTimeout(function(that) { 
+                window.setTimeout(function (that) {
                     let preset = Presets.items[that.currentPreset];
-                    that.applyPreset(preset); 
+                    if (preset != null) {
+                        that.applyPreset(preset);
+                    }
+                    else {
+                        that.applyReset();
+                    }
                 }, 500, this);
             }
         }
@@ -63,6 +68,7 @@ class AnimationPresets extends HTMLElement {
         for (let receiver of this.receivers) {
             receiver.resetPresetState();
         }
+
         for (let channelPreset of preset.channels) {
             for (let receiver of this.receivers) {
                 if (receiver.dataset.channel == channelPreset.channel) {
