@@ -44,6 +44,7 @@ class AnimationConfigurator extends AnimationElementBase {
 
             this.outputHue = this.hue;
             let color = new HSV(this.hue, 255, this.output * 50);
+
             this.webSocketHandler.send(this, {
                 animation: 'singlePulse',
                 led: 255,
@@ -51,7 +52,7 @@ class AnimationConfigurator extends AnimationElementBase {
                 color1: color.toArray(),
                 color2: color.toArray(),
                 speed: 0,
-                units: FastLedUnits.gets()
+                units: FastLedUnits.getUnits()
             });
         }
 

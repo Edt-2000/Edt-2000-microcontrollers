@@ -2,6 +2,11 @@ Songs.parttimepowerranger = {
     name: "parttimepowerranger",
     description: "Channel 0 + 1 partial pulses | Repeater 4 = flash slow / Repeater 5 = flash fast | Repeater 6 + 7 = chases | Strobeled hero moment",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-3"
+        }),
+        
         Object.assign(new InvokerPreset(), {
             channel: 0,
             animation: Constants.AnimationTypes.allPartialSinglePulse,
@@ -20,7 +25,7 @@ Songs.parttimepowerranger = {
             channel: 2,
             animation: Constants.AnimationTypes.strobo,
             modifier: 213,
-            colors: [Colors.Rainbow]
+            colors: [Colors.Red, Colors.Yellow, Colors.Blue, Colors.Pink]
         }),
         Object.assign(new RepeaterPreset(), {
             channel: 4,

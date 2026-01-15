@@ -2,6 +2,11 @@ Songs.codemonkeys = {
     name: "code monkeys",
     description: "2 repeaters + Z",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-3"
+        }),
+        
         Object.assign(new InvokerPreset(), {
             channel: 0,
             animation: Constants.AnimationTypes.allPartialSinglePulse,

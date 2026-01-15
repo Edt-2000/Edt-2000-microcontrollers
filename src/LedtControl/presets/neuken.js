@@ -2,6 +2,11 @@ Songs.neuken = {
     name: "neuken",
     description: "Repeat 6 + 7 = bounce | Repeat 4 + 5 = up down | Strobo | Strobeled aan | Powerbar aan",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-3"
+        }),
+        
         Object.assign(new InvokerPreset(), {
             channel: 0,
             animation: Constants.AnimationTypes.allSingleChaseLeft,

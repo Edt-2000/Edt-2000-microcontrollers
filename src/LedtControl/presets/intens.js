@@ -1,7 +1,12 @@
 Songs.intens = {
     name: "intens",
-    description: "",
+    description: "Repeater 4 / 5 - Noise",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "center-2"
+        }),
+        
         Object.assign(new RepeaterPreset(), {
             channel: 4,
             animation: Constants.AnimationTypes.onePartialSinglePulse,
@@ -18,15 +23,13 @@ Songs.intens = {
             colors: [Colors.Pink],
             fade: Constants.FadeTypes.oneByOne
         }),
-        Object.assign(new ConfiguratorPreset(), {
-            channel: 3,
-            config: "center-2"
-        }),
         Object.assign(new InvokerPreset(), {
             channel: 2,
             animation: Constants.AnimationTypes.noise,
             modifier: 69
         }),
+
+        // powerbar effects
         Object.assign(new SenderPreset(), {
             channel: 1,
             index: 0,

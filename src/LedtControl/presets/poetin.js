@@ -2,6 +2,11 @@ Songs.poetin = {
     name: "poetin",
     description: "Repeater 4 = stress | Repeater 5 = champignon | Repeater 6 + 7 = bounce | Strobeled strobo | Powerbar LSD",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-3"
+        }),
+        
         Object.assign(new InvokerPreset(), {
             channel: 0,
             animation: Constants.AnimationTypes.allPartialSinglePulse,

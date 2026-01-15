@@ -2,6 +2,11 @@ Songs.binnen = {
     name: "binnen",
     description: "` tijdens tellen | repeater 4 = constant | repeater 5 = stress | repeater 6 + 7 = chases | Strobeled aan | Powerbar aan",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-3"
+        }),
+        
         Object.assign(new InvokerPreset(), {
             channel: 0,
             animation: Constants.AnimationTypes.allPartialSinglePulse,
@@ -20,7 +25,7 @@ Songs.binnen = {
             channel: 2,
             animation: Constants.AnimationTypes.strobo,
             modifier: 239,
-            colors: [Colors.Rainbow]
+            colors: [Colors.Yellow, Colors.White]
         }),
         Object.assign(new RepeaterPreset(), {
             channel: 4,
@@ -54,6 +59,8 @@ Songs.binnen = {
             colors: [Colors.Yellow],
             fade: Constants.FadeTypes.sparkle
         }),
+
+        // powerbar effects
         Object.assign(new SenderPreset(), {
             channel: 1,
             index: 0,

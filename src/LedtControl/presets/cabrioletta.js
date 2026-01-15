@@ -2,6 +2,11 @@ Songs.cabrioletta = {
     name: "cabrioletta",
     description: "Repeater 4 = tijdens alles | Repeater 5 = tijdens gas (100 - 255) | Z = tijdens cabrioletta | Strobeled tijdens gas | Powerbar tijdens couplet + hero moment",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-3"
+        }),
+        
         Object.assign(new InvokerPreset(), {
             channel: 0,
             animation: Constants.AnimationTypes.allSinglePulse,
@@ -25,6 +30,8 @@ Songs.cabrioletta = {
             colors: [Colors.Red],
             fade: Constants.FadeTypes.pulse
         }),
+
+        // powerbar effects
         Object.assign(new SenderPreset(), {
             channel: 1,
             index: 0,

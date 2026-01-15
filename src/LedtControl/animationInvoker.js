@@ -225,13 +225,14 @@ class AnimationInvoker extends AnimationElementBase {
     }
 
     onKeyDown() {
-        if (!this.singleShot) {
-            this.state.reset();
-            this.state.updateTick();
-        }
-        else {
-            this.state.updateTick();
-        }
+        // TODO: verify this is ok by not resetting the state when its not single shot
+        // if (!this.singleShot) {
+        //     this.state.reset();
+        //     this.state.updateTick();
+        // }
+        // else {
+        // }
+        this.state.updateTick();
 
         this.sendMessage(true);
     }
