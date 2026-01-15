@@ -1,7 +1,28 @@
 Songs.kerst = {
     name: "kerst",
-    description: "",
+    description: "Repeater 4 + 5 tegelijkertijd",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-3"
+        }),
+        
+        Object.assign(new InvokerPreset(), {
+            channel: 0,
+            animation: Constants.AnimationTypes.allDoublePulse,
+            modifier: 127,
+            speed: 45,
+            colors: [Colors.Red, Colors.Green],
+            fade: Constants.FadeTypes.pulse
+        }),
+        Object.assign(new InvokerPreset(), {
+            channel: 1,
+            animation: Constants.AnimationTypes.allSinglePulse,
+            modifier: 127,
+            speed: 255,
+            colors: [Colors.Red, Colors.Green],
+            fade: Constants.FadeTypes.fadeAll
+        }),
         Object.assign(new RepeaterPreset(), {
             channel: 4,
             animation: Constants.AnimationTypes.allSingleChaseLeft,
@@ -18,6 +39,24 @@ Songs.kerst = {
             colors: [Colors.Red],
             fade: Constants.FadeTypes.none
         }),
+        Object.assign(new RepeaterPreset(), {
+            channel: 6,
+            animation: Constants.AnimationTypes.allDoublePulse,
+            modifier: 147,
+            repeat: 191,
+            colors: [Colors.Red, Colors.Green],
+            fade: Constants.FadeTypes.pulse
+        }),
+        Object.assign(new RepeaterPreset(), {
+            channel: 7,
+            animation: Constants.AnimationTypes.allSinglePulse,
+            modifier: 31,
+            repeat: 123,
+            colors: [Colors.Red, Colors.Green],
+            fade: Constants.FadeTypes.fadeAll
+        }),
+
+        // powerbar effects
         Object.assign(new SenderPreset(), {
             channel: 1,
             index: 0,

@@ -2,6 +2,11 @@ Songs.schurenindefik = {
     name: "schuren in de fik",
     description: "Z tijdens couplet | strobo + channel 2 M + powerbar strobe | X afwisseling | Strobeled aan",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-3"
+        }),
+        
         Object.assign(new InvokerPreset(), {
             channel: 0,
             animation: Constants.AnimationTypes.allDoublePulse,

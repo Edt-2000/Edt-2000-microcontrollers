@@ -2,6 +2,11 @@ Songs.meerpower = {
     name: "meer power",
     description: "donker beginnen - langzaam Z - daarna X | Strobeled | Powerbar brightness 0 -> 255 | Powerbar strobo speed 0 -> 255",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-1"
+        }),
+        
         Object.assign(new InvokerPreset(), {
             channel: 0,
             animation: Constants.AnimationTypes.allPartialSinglePulse,
@@ -20,6 +25,8 @@ Songs.meerpower = {
             channel: 3,
             color: Colors.Red
         }),
+
+        // powerbar effects
         Object.assign(new SenderPreset(), {
             channel: 1,
             index: 0,

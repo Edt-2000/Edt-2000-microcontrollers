@@ -2,6 +2,11 @@ Songs.bekopasfalt = {
     name: "bek op asfalt",
     description: "",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-1"
+        }),
+
         Object.assign(new RepeaterPreset(), {
             channel: 4,
             animation: Constants.AnimationTypes.allDoublePulse,

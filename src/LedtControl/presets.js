@@ -15,4 +15,6 @@ class Presets {
         Songs.kermisinstaparty,
         Songs.kerst
     ]
+    // code to test all presets
+    // static items = Object.entries(Songs).map(([key, value]) => value);
 };

@@ -2,11 +2,16 @@ Songs.kleinbeetjeanders = {
     name: "klein beetje anders",
     description: "2 kleuren voor tijdens djvt toontje - ",
     channels: [
+        Object.assign(new ConfiguratorPreset(), {
+            channel: 3,
+            config: "random-3"
+        }),
+        
         Object.assign(new InvokerPreset(), {
             channel: 0,
             animation: Constants.AnimationTypes.allDoubleChaseUp,
             modifier: 127,
-            speed: 255,
+            speed: 16,
             colors: [Colors.Turquoise, Colors.Pink],
             fade: Constants.FadeTypes.fadeAll
         }),
@@ -14,7 +19,7 @@ Songs.kleinbeetjeanders = {
             channel: 1,
             animation: Constants.AnimationTypes.allDoublePulse,
             modifier: 127,
-            speed: 255,
+            speed: 16,
             colors: [Colors.Turquoise, Colors.Pink],
             fade: Constants.FadeTypes.fadeAll
         }),

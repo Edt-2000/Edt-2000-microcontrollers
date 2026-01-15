@@ -13,7 +13,14 @@ class HSV {
 
     toHsl() {
         let vFactor = this.S == 0 ? 100.0 : 50.0;
-        return `hsl(${((360.0 * this.H) / 255.0)} ${((100.0 * this.S) / 255.0)}% ${((vFactor * this.V) / 255.0)}%)`
+
+        // fix for yellow being almost green 
+        let h = (360.0 * this.H) / 255.0;
+        if (h > 65 && h < 85) {
+            h -= 25;
+        }
+
+        return `hsl(${h} ${((100.0 * this.S) / 255.0)}% ${((vFactor * this.V) / 255.0)}%)`
     }
     toArray() {
         return [this.H, this.S, this.V];
@@ -45,7 +52,7 @@ class FastLedUnits {
 
 class Leds {
     static All = 255;
-    static Config = 0;
+    static Config = 1;
 
     static _modes = ['linear-1', 'random-1', 'linear-2', 'center-2', 'random-2', 'linear-3', 'random-3', 'center-4'];
     static _leds = [1, 2, 4, 8, 16, 32, 64, 128];
