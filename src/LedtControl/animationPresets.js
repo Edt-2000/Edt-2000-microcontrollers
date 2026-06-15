@@ -88,7 +88,7 @@ class AnimationPresets extends HTMLElement {
     drawState() {
         let html = `<div>`;
 
-        for (let i = -4; i < 5; i++) {
+        for (let i = -2; i < 3; i++) {
             let x = i + this.currentPreset;
 
             if (x < 0) {
