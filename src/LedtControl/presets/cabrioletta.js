@@ -14,6 +14,14 @@ Songs.cabrioletta = {
             colors: [Colors.Red],
             fade: Constants.FadeTypes.oneByOne
         }),
+        Object.assign(new InvokerPreset(), {
+            channel: 1,
+            animation: Constants.AnimationTypes.allSinglePulse,
+            modifier: 128,
+            colors: [Colors.White],
+            fade: Constants.FadeTypes.oneByOne
+        }),
+
         Object.assign(new RepeaterPreset(), {
             channel: 4,
             animation: Constants.AnimationTypes.allSingleChaseUp,

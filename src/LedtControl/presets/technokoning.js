@@ -1,6 +1,6 @@
 Songs.technokoning = {
     name: "technokoning",
-    description: "Repeater 4 + 5 | Repeater 6 + 7",
+    description: "Repeater 4 + 5 en Repeater 6 + 7 afwisselen",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,

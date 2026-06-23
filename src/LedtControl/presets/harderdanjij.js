@@ -1,6 +1,6 @@
 Songs.harderdanjij = {
     name: "harder dan jij",
-    description: "",
+    description: "geweld",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,
@@ -33,6 +33,22 @@ Songs.harderdanjij = {
             channel: 5,
             animation: Constants.AnimationTypes.allSinglePulse,
             modifier: 73,
+            repeat: 223,
+            colors: [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime],
+            fade: Constants.FadeTypes.oneByOne
+        }),
+        Object.assign(new RepeaterPreset(), {
+            channel: 6,
+            animation: Constants.AnimationTypes.allSinglePulse,
+            modifier: 240,
+            repeat: 177,
+            colors: [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime],
+            fade: Constants.FadeTypes.fadeAll
+        }),
+        Object.assign(new RepeaterPreset(), {
+            channel: 7,
+            animation: Constants.AnimationTypes.allSinglePulse,
+            modifier: 245,
             repeat: 223,
             colors: [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime],
             fade: Constants.FadeTypes.oneByOne

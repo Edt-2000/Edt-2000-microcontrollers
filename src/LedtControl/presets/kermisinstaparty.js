@@ -1,10 +1,10 @@
 Songs.kermisinstaparty = {
     name: "kermis/instaparty",
-    description: "",
+    description: "alles is geoorloofd | gebruik spatiebalk om door kleuren heen lopen tijdens strobo",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,
-            config: "random-1"
+            config: "random-3"
         }),
         
         Object.assign(new InvokerPreset(), {
@@ -21,6 +21,12 @@ Songs.kermisinstaparty = {
             modifier: 80,
             colors: [Colors.Rainbow],
             fade: Constants.FadeTypes.sparkle
+        }),
+        Object.assign(new InvokerPreset(), {
+            channel: 2,
+            animation: Constants.AnimationTypes.strobo,
+            modifier: 239,
+            colors: [Colors.Red, Colors.Yellow, Colors.Pink, Colors.SeaGreen, Colors.Purple, Colors.Turquoise, Colors.Green, Colors.Orange, Colors.Blue, Colors.Lime],
         }),
 
         Object.assign(new RepeaterPreset(), {

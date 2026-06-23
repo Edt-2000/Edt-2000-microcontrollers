@@ -1,6 +1,6 @@
 Songs.parttimepowerranger = {
     name: "parttimepowerranger",
-    description: "Channel 0 + 1 partial pulses | Repeater 4 = flash slow / Repeater 5 = flash fast | Repeater 6 + 7 = chases | Strobeled hero moment",
+    description: "Z + X partial pulses | Repeater 4 = flash slow / Repeater 5 = flash fast | Repeater 6 + 7 = chases | Strobeled hero moment",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,

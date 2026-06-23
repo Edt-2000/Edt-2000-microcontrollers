@@ -1,6 +1,6 @@
 Songs.allesgejat = {
     name: "alles gejat",
-    description: "",
+    description: "repeater 4 tijdens Zelda, repeater 5 tijdens Gigi, repeater 6 + 7 rest",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,

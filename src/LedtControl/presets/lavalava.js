@@ -1,6 +1,6 @@
 Songs.lavalava = {
     name: "lava lava",
-    description: "",
+    description: "gebruik spectacles als kan | ALLEEN VUUR ANIMATIE (B) | gebruik kanaal 3 draaiknop voor vuur hoogte",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,

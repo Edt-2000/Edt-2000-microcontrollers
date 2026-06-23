@@ -25,7 +25,8 @@
 body {
     background-color: var(--bg);
     display: grid;
-    grid-template-columns:  repeat(8, minmax(0, 1fr));;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    ;
     grid-template-rows: 12rem 1fr;
     grid-auto-flow: dense;
     gap: 1rem;
@@ -38,6 +39,7 @@ body>div {
     grid-row: 2;
     min-height: 0;
 }
+
 body>div.first {
     grid-column: 1 / 9;
     grid-row: 1;
@@ -80,9 +82,11 @@ body>div.first {
 #devices span.failed {
     background: var(--disconnnected);
 }
+
 #devices span.warning {
     background: var(--connecting);
 }
+
 #devices span.ok {
     background: var(--connected);
 }
@@ -126,29 +130,30 @@ animation-presets>div {
     grid-auto-flow: dense;
     gap: 0.5rem;
 }
+
 animation-presets>div>p {
     grid-row: 2;
     grid-column: 1 / 10;
     padding: 0 1rem;
-    font-size: 18px !important;
+    font-size: 24px !important;
     text-align: center;
     color: var(--heading);
     margin: 0;
 }
 
-[data-device-type="powerbar"],[data-device-type="powerbar,strobe1"] {
+[data-device-type="powerbar"],
+[data-device-type="powerbar,strobe1"] {
     border: 1px solid var(--powerBarDevice);
 }
+
 [data-device-type="strobe1"] {
     border: 1px solid var(--strobeDevice);
 }
+
 [data-device-type="unit1,unit2,spectacle,powerbar"] {
     border: 1px solid var(--allDevices);
 }
 
-[data-under-preset="true"] {
-    box-shadow: 0px 0px 10px 1px white;
-}
 
 h2.type {
     position: absolute;
@@ -170,12 +175,14 @@ h2.tab {
     overflow: hidden;
     min-width: 0;
     max-width: 100%;
-    line-height: 25px;
+    line-height: 30px;
 }
+
 h2.tab.active {
     background: var(--accent);
     color: var(--bg);
 }
+
 h2.tab.hidden {
     background: var(--bg);
 }
@@ -199,8 +206,18 @@ p.color-setting {
     text-align: center;
     text-transform: uppercase;
     margin: 4px -4px;
-    white-space:nowrap;
-    overflow:hidden;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+[data-under-preset="true"] {
+    outline: 4px solid var(--heading);
+
+    p.text-setting,
+    p.value-setting,
+    p.color-setting {
+        background: var(--settingHighlight);
+    }
 }
 
 [data-button]::after {
@@ -258,7 +275,7 @@ p.color-setting.disabled::after {
     display: block;
     position: absolute;
     top: -1px;
-    left:-1px;
+    left: -1px;
     background: repeating-linear-gradient(-45deg,
             rgba(50, 50, 50, .5) 0px,
             rgba(50, 50, 50, .5) 4px,

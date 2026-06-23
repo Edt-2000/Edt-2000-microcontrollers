@@ -1,10 +1,26 @@
 Songs.bekopasfalt = {
     name: "bek op asfalt",
-    description: "",
+    description: "repeater 6 + 7 voor rustige stukjes, repeater 4 + 5 voor erbij",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,
             config: "random-1"
+        }),
+
+        Object.assign(new InvokerPreset(), {
+            channel: 0,
+            animation: Constants.AnimationTypes.allDoublePulse,
+            modifier: 211,
+            speed: 1,
+            colors: [Colors.Turquoise],
+            fade: Constants.FadeTypes.oneByOne
+        }),
+        Object.assign(new InvokerPreset(), {
+            channel: 1,
+            animation: Constants.AnimationTypes.allPartialSinglePulse,
+            modifier: 80,
+            colors: [Colors.Turquoise],
+            fade: Constants.FadeTypes.pulse
         }),
 
         Object.assign(new RepeaterPreset(), {
@@ -12,7 +28,7 @@ Songs.bekopasfalt = {
             animation: Constants.AnimationTypes.allDoublePulse,
             modifier: 75,
             repeat: 23,
-            colors: [Colors.Turquoise, Colors.Pink],
+            colors: [Colors.Turquoise, Colors.Turquoise],
             fade: Constants.FadeTypes.fadeAll
         }),
         Object.assign(new RepeaterPreset(), {

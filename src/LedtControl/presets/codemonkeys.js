@@ -1,6 +1,6 @@
 Songs.codemonkeys = {
     name: "code monkeys",
-    description: "2 repeaters + Z",
+    description: "repeater 4 + 5 tegelijkertijd | Z waar nodig",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,
@@ -14,6 +14,14 @@ Songs.codemonkeys = {
             colors: [Colors.Green, Colors.White],
             fade: Constants.FadeTypes.oneByOne
         }),
+        Object.assign(new InvokerPreset(), {
+            channel: 1,
+            animation: Constants.AnimationTypes.allPartialSinglePulse,
+            modifier: 211,
+            colors: [Colors.Blue],
+            fade: Constants.FadeTypes.oneByOne
+        }),
+
         Object.assign(new RepeaterPreset(), {
             channel: 4,
             animation: Constants.AnimationTypes.allPartialSinglePulse,
@@ -24,6 +32,22 @@ Songs.codemonkeys = {
         }),
         Object.assign(new RepeaterPreset(), {
             channel: 5,
+            animation: Constants.AnimationTypes.allPartialSinglePulse,
+            modifier: 9,
+            repeat: 213,
+            colors: [Colors.Blue],
+            fade: Constants.FadeTypes.oneByOne
+        }),
+        Object.assign(new RepeaterPreset(), {
+            channel: 6,
+            animation: Constants.AnimationTypes.allPartialSinglePulse,
+            modifier: 31,
+            repeat: 229,
+            colors: [Colors.Green, Colors.White],
+            fade: Constants.FadeTypes.fadeAll
+        }),
+        Object.assign(new RepeaterPreset(), {
+            channel: 7,
             animation: Constants.AnimationTypes.allPartialSinglePulse,
             modifier: 9,
             repeat: 213,

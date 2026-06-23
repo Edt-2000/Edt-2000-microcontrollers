@@ -1,6 +1,6 @@
 Songs.kleinbeetjeanders = {
     name: "klein beetje anders",
-    description: "2 kleuren voor tijdens djvt toontje - ",
+    description: "repeater 4 + 5 voor tijdens djvt toontje | rest impro",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,

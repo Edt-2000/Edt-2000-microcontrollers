@@ -1,6 +1,6 @@
 Songs.intens = {
     name: "intens",
-    description: "Repeater 4 / 5 - Noise",
+    description: "Repeater 4 / 5 overal - Noise (N) tijdens VOEL NIKS (Escape voor stop)",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,

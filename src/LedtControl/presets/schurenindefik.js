@@ -1,6 +1,6 @@
 Songs.schurenindefik = {
     name: "schuren in de fik",
-    description: "Z tijdens couplet | strobo + channel 2 M + powerbar strobe | X afwisseling | Strobeled aan",
+    description: "Z tijdens couplet | X voor refrein | strobo tijdens refrein | TEMPO",
     channels: [
         Object.assign(new ConfiguratorPreset(), {
             channel: 3,
